@@ -3,6 +3,7 @@
 <title>The Atelier — USA Parasite Club</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g2:#7a2bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -101,6 +102,17 @@ body{background:var(--ink);color:var(--bone);font-family:var(--mono);min-height:
 .hcsheet{width:460px;max-width:96vw;max-height:92vh;overflow:auto;background:#0e1016;border:1px solid #ffffff22;border-radius:20px;padding:24px}
 .hchd{display:flex;justify-content:space-between;align-items:flex-start}
 .hck{font-size:9px;letter-spacing:.2em;color:var(--lime);opacity:.8}
+.phsheet{text-align:center;width:400px}
+.phsheet .hchd{text-align:left}
+.phlead{font-size:12px;opacity:.72;line-height:1.6;margin:14px 2px 18px}
+.phqr{display:grid;place-items:center;margin:0 auto 18px;width:240px;height:240px;background:#fff;border-radius:16px;padding:16px}
+.phqr img,.phqr canvas{display:block}
+.phpicks{display:flex;gap:10px;justify-content:center;margin-bottom:12px}
+.phf{width:78px}
+.phf img{width:78px;height:78px;object-fit:cover;border-radius:10px;background:#fff;border:1px solid #ffffff18}
+.phfn{font-size:9px;letter-spacing:.04em;text-transform:uppercase;margin-top:5px;opacity:.85}
+.phmeta{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+.phhint{font-size:10px;opacity:.5}
 .hchd h3{font-family:var(--disp);font-size:32px;text-transform:uppercase;line-height:.9;margin-top:4px}
 .hcx{cursor:pointer;opacity:.6;font-size:16px}
 .hctabs{display:flex;gap:8px;margin:16px 0}
@@ -443,7 +455,35 @@ function reveal(){
         <div class="why">"${why(f)}"</div>
         <div class="row"><div class="x x1" onclick="tryOn('${f.nm}')">◉ Try on</div><div class="x x2">Add</div></div></div></div>`).join('')}
     </div>
-    <div class="again"><div class="b lime" onclick="houseCall()">📦 Try these at home</div><div class="b" onclick="refine()">Refine</div><div class="b" onclick="start()">Start over</div></div>`;
+    <div class="again"><div class="b lime" onclick="phoneHandoff()">📱 Continue on your phone</div><div class="b" onclick="houseCall()">📦 Try these at home</div><div class="b" onclick="refine()">Refine</div><div class="b" onclick="start()">Start over</div></div>`;
+}
+
+/* ---------- Continue on your phone (deep-link handoff to the iOS app) ---------- */
+function slug(s){ return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,''); }
+function buildHandoffURL(){
+  const picks=window.__picks||[];
+  const pd=(window.__fit&&window.__fit.pdMm)?window.__fit.pdMm:63;
+  const list=picks.map(f=>`${f.nm}|${f.br}`).join(',');
+  return `usaparasiteclub://atelier?pd=${pd}&picks=${encodeURIComponent(list)}`;
+}
+function phoneHandoff(){
+  const picks=window.__picks||[];
+  const pd=(window.__fit&&window.__fit.pdMm)?window.__fit.pdMm:63;
+  const url=buildHandoffURL();
+  margaux("Scan this with your phone — your three frames and your fit jump straight into the app, and I'll meet you there.");
+  let ov=document.getElementById('phov'); if(!ov){ov=document.createElement('div');ov.id='phov';ov.className='hcov';document.body.appendChild(ov);}
+  ov.innerHTML=`<div class="hcsheet phsheet">
+    <div class="hchd"><div><div class="hck">USA·PARASITE·CLUB</div><h3>Continue on your phone</h3></div><div class="hcx" onclick="document.getElementById('phov').remove()">✕</div></div>
+    <p class="phlead">Open your iPhone camera and point it here. The Atelier app opens with the three frames Adrian picked — already sized to your face.</p>
+    <div class="phqr"><div id="qrbox"></div></div>
+    <div class="phpicks">${picks.map(f=>`<div class="phf"><img src="${f.img}?width=120"><div class="phfn">${f.nm}</div></div>`).join('')}</div>
+    <div class="phmeta">PD ${pd}mm · ${picks.length} frames · sized to you</div>
+    <div class="phhint">No app yet? It's on your test phone. (Public download coming soon.)</div>
+  </div>`;
+  try{
+    const box=document.getElementById('qrbox'); box.innerHTML='';
+    new QRCode(box,{text:url,width:208,height:208,colorDark:'#0a0a0c',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  }catch(e){ document.getElementById('qrbox').innerHTML='<div style="font-size:11px;opacity:.7;padding:20px">QR unavailable — link: '+url+'</div>'; }
 }
 function tryOn(name){
   try{ window.open('tryon.html','_blank'); }catch(e){}
