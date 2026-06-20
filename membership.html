@@ -1,0 +1,127 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Club — USA Parasite Club</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g2:#7a2bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--bone);font-family:var(--mono)}a{color:inherit;text-decoration:none}
+.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
+.ticker{background:var(--lime);color:var(--ink);overflow:hidden;white-space:nowrap}
+.ticker .run{display:inline-block;padding:7px 0;animation:scroll 28s linear infinite;font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:11px}.ticker .run span{padding:0 22px}@keyframes scroll{to{transform:translateX(-50%)}}
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.82);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff18}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font-family:var(--disp);font-size:19px;letter-spacing:.04em}.logo b{color:var(--lime)}
+.nav-links{display:flex;gap:24px}.nav-links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85}.nav-links a:hover{color:var(--lime)}.nav-links a.on{color:var(--lime)}
+.bag{border:1px solid #ffffff30;border-radius:40px;padding:6px 13px;font-size:11px;letter-spacing:.1em}
+/* hero */
+.hero{position:relative;min-height:74vh;display:flex;align-items:center;text-align:center;overflow:hidden;border-bottom:1px solid #ffffff14}
+.hero .bg{position:absolute;inset:0;background:url('https://cdn.shopify.com/s/files/1/1924/6071/files/SYSTEME1-LILIAN-FACE.jpg?width=1600') center 24%/cover;filter:grayscale(.25) contrast(1.05)}
+.hero .bg:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,12,.7),rgba(10,10,12,.55) 40%,rgba(10,10,12,.95))}
+.hero .glow{position:absolute;width:60vw;height:60vw;left:50%;top:-20vw;transform:translateX(-50%);background:radial-gradient(circle,var(--g2),transparent 60%);opacity:.45;filter:blur(34px)}
+.hero .c{position:relative;z-index:2;width:100%}
+.hero .k{display:inline-flex;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:7px 16px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:22px}
+.hero h1{font-family:var(--disp);font-size:clamp(54px,11vw,160px);line-height:.84;text-transform:uppercase}
+.hero h1 .g{background:linear-gradient(92deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{font-family:var(--serif);font-style:italic;font-size:20px;opacity:.9;margin:20px auto 0;max-width:34ch}
+/* atelier feature */
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;padding:84px 0;border-bottom:1px solid #ffffff14}
+.feat .av{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));margin-bottom:18px}
+.feat h2{font-family:var(--disp);font-size:clamp(34px,5vw,60px);text-transform:uppercase;line-height:.92}
+.feat .lead{font-family:var(--serif);font-style:italic;font-size:18px;opacity:.85;margin:16px 0}
+.feat p{font-size:13px;line-height:1.8;opacity:.78;max-width:48ch}
+.chatbox{background:#0e1016;border:1px solid #ffffff22;border-radius:18px;overflow:hidden}
+.chatbox .hd{display:flex;gap:12px;align-items:center;padding:15px 18px;background:linear-gradient(120deg,#13162100,#7a2bff22)}
+.chatbox .a{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3))}
+.chatbox .nm{font-size:13px}.chatbox .r{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;margin-top:2px}
+.bub{margin:14px 18px;padding:12px 15px;border-radius:14px;font-size:12.5px;line-height:1.6;max-width:82%}
+.bub.her{background:#171a22;font-family:var(--serif);font-style:italic}
+.bub.you{background:var(--lime);color:var(--ink);margin-left:auto;font-weight:700}
+.chatbox .bar{display:flex;gap:8px;padding:12px 14px;border-top:1px solid #ffffff12}
+.chatbox input{flex:1;background:#171a22;border:1px solid #ffffff18;border-radius:30px;padding:9px 14px;color:var(--bone);font-family:var(--mono);font-size:11px;outline:none}
+.chatbox .mic{width:38px;height:38px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+/* benefits */
+.shead{text-align:center;padding:80px 0 30px}.shead h2{font-family:var(--disp);font-size:clamp(34px,6vw,76px);text-transform:uppercase;line-height:.9}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:30px}
+.ben{border:1px solid #ffffff16;border-radius:14px;padding:24px;background:#101218;transition:.2s}.ben:hover{border-color:var(--lime)}
+.ben .i{font-size:22px;margin-bottom:12px}.ben h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}.ben p{font-size:12px;line-height:1.7;opacity:.76}
+/* tiers */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:20px 0 70px}
+.tier{border:1px solid #ffffff1c;border-radius:18px;padding:30px 26px;background:#0e1016;display:flex;flex-direction:column}
+.tier.feat-tier{border-color:var(--lime);background:linear-gradient(180deg,#11140d,#0e1016)}
+.tier .badge{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:12px}
+.tier h3{font-family:var(--disp);font-size:34px;text-transform:uppercase;line-height:.9}
+.tier .pr{font-size:13px;opacity:.7;margin:8px 0 18px}
+.tier ul{list-style:none;display:flex;flex-direction:column;gap:11px;font-size:12px;line-height:1.5;opacity:.88;flex:1}
+.tier li{padding-left:20px;position:relative}.tier li:before{content:"✦";position:absolute;left:0;color:var(--lime)}
+.tier .btn{margin-top:22px;text-align:center;font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:11px;padding:14px;border-radius:40px;cursor:pointer}
+.btn-lime{background:var(--lime);color:var(--ink)}.btn-ghost{border:1px solid #ffffff35}
+/* join */
+.join{text-align:center;background:var(--lime);color:var(--ink);border-radius:18px;padding:60px 30px;margin-bottom:40px;position:relative;overflow:hidden}
+.join h2{font-family:var(--disp);font-size:clamp(38px,7vw,92px);text-transform:uppercase;line-height:.86}
+.join p{font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin:14px auto 24px;max-width:46ch}
+.join .form{display:inline-flex;gap:8px;background:var(--ink);border-radius:40px;padding:6px 6px 6px 20px}
+.join input{background:transparent;border:0;color:var(--bone);font-family:var(--mono);font-size:12px;width:230px;outline:none;letter-spacing:.08em}
+.join .form .b{background:var(--lime);color:var(--ink);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:11px;padding:13px 22px;border-radius:40px}
+.seal{position:absolute;right:-26px;top:-26px;width:160px;height:160px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:9px;letter-spacing:.2em;opacity:.22;transform:rotate(-12deg);text-align:center}
+.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:9px 14px;font-size:10px;letter-spacing:.08em;color:#99a;text-transform:uppercase;text-align:center;margin-bottom:30px}
+@media(max-width:920px){.feat,.bgrid,.tiers{grid-template-columns:1fr}.nav-links{display:none}}
+</style></head><body>
+<div class="ticker"><div class="run"><span>★ MEMBERS ONLY</span><span>THE ATELIER IS OPEN</span><span>FIT GUARANTEED</span><span>FIRST ACCESS TO THE LAB</span><span>★ MEMBERS ONLY</span><span>THE ATELIER IS OPEN</span><span>FIT GUARANTEED</span><span>FIRST ACCESS TO THE LAB</span></div></div>
+<nav><div class="wrap nav-in"><div class="logo">USA<b>·</b>PARASITE<b>·</b>CLUB</div><div class="nav-links"><a href="sun.html">Optical</a><a href="sun.html">Sun</a><a href="index.html#houses">The Houses</a><a href="atelier.html">The Atelier</a><a class="on" href="membership.html">The Club</a></div><a class="bag" href="#">BAG · 0</a></div></nav>
+
+<header class="hero"><div class="bg"></div><div class="glow"></div>
+  <div class="wrap c"><div class="k">Members Only · Est. 2026</div>
+    <h1>Join the<br><span class="g">club.</span></h1>
+    <p>A private atelier for your eyes. Measured, styled, and remembered — like Europe, from your screen.</p>
+  </div>
+</header>
+
+<section class="wrap feat">
+  <div>
+    <div class="av"></div>
+    <h2>Meet Adrian,<br>your concierge.</h2>
+    <div class="lead">Every member gets a stylist who actually gets you.</div>
+    <p>He reads your face, learns your taste, and curates your three. He talks; you talk back. He remembers you next time. It's the feeling of a private boutique appointment — unhurried, intimate, obsessed with you — except he's always open, and your face never leaves your device.</p>
+  </div>
+  <div class="chatbox">
+    <div class="hd"><span class="a"></span><div><div class="nm">Adrian</div><div class="r">Your concierge</div></div></div>
+    <div class="bub her">"Hey — mind if I take a quick look at your face? I'll find the three frames made for you."</div>
+    <div class="bub you">I want something bold but wearable to work.</div>
+    <div class="bub her">"Then the Portrait Numan, the Parasite Camelia, and one wildcard. Shall we try them on?"</div>
+    <div class="bar"><input placeholder="Type, or hold to speak…"><div class="mic">🎙</div></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="shead"><h2>What members get</h2></div>
+  <div class="bgrid">
+    <div class="ben"><div class="i">✦</div><h3>The Atelier concierge</h3><p>Your voice stylist, on call. Curation, advice, and try-ons — as personal as a private appointment.</p></div>
+    <div class="ben"><div class="i">◎</div><h3>Fit-by-Face profile</h3><p>We measure your face once (on-device, private) and only ever show you frames that truly fit.</p></div>
+    <div class="ben"><div class="i">◉</div><h3>True-to-size try-on</h3><p>See every frame at its real size on your face — no guesswork, no surprises at delivery.</p></div>
+    <div class="ben"><div class="i">✓</div><h3>The Fit Guarantee</h3><p>If it doesn't sit right, we make it right — free adjustments, white-glove returns, always.</p></div>
+    <div class="ben"><div class="i">★</div><h3>Members-only drops</h3><p>First access to new arrivals and Parasite's limited Lab editions, in your size before anyone.</p></div>
+    <div class="ben"><div class="i">⤿</div><h3>One face, one file</h3><p>Your measurements and taste are remembered, so you never start over — and we follow up like we mean it.</p></div>
+  </div>
+
+  <div class="tiers">
+    <div class="tier"><div class="badge">Free</div><h3>The List</h3><div class="pr">Always free</div>
+      <ul><li>Drop alerts & first look</li><li>The digital Lookbook</li><li>Style notes from the houses</li></ul>
+      <div class="btn btn-ghost">Join the list</div></div>
+    <div class="tier feat-tier"><div class="badge">Most popular · free to join</div><h3>The Club</h3><div class="pr">Free with your first pair</div>
+      <ul><li>Everything in The List</li><li>The Atelier concierge (voice + chat)</li><li>Fit-by-Face profile saved</li><li>True-to-size try-on</li><li>The Fit Guarantee + free lifetime adjustments</li><li>White-glove returns</li><li>Members-only frames</li></ul>
+      <div class="btn btn-lime">Become a member</div></div>
+    <div class="tier"><div class="badge">By invitation</div><h3>Inner Circle</h3><div class="pr">For the obsessed</div>
+      <ul><li>Everything in The Club</li><li>Private concierge appointments</li><li>First access to Lab & collab editions</li><li>Home try-on box</li><li>Complimentary lens upgrades</li><li>A real human, on your side</li></ul>
+      <div class="btn btn-ghost">Request an invite</div></div>
+  </div>
+
+  <div class="join"><div class="seal">★ MEMBERS · ONLY ★<br>EST · 2026</div>
+    <h2>Step into the club</h2>
+    <p>Meet Adrian, your concierge — and find your three.</p>
+    <div class="form"><input placeholder="YOUR EMAIL ADDRESS"><span class="b">Enter</span></div>
+  </div>
+  <div class="note">Membership tiers & concierge are a concept direction — final perks TBD with you</div>
+</div>
+</body></html>

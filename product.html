@@ -1,0 +1,137 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NUMAN — USA Parasite Club</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--red:#E2402C;--g1:#2a3bff;--g2:#7a2bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--bone);font-family:var(--mono);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
+.ticker{background:var(--lime);color:var(--ink);overflow:hidden;white-space:nowrap}
+.ticker .run{display:inline-block;padding:7px 0;animation:scroll 28s linear infinite;font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:11px}
+.ticker .run span{padding:0 22px}@keyframes scroll{to{transform:translateX(-50%)}}
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.82);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff18}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font-family:var(--disp);font-size:19px;letter-spacing:.04em}.logo b{color:var(--lime)}
+.nav-links{display:flex;gap:24px}.nav-links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85}.nav-links a:hover{color:var(--lime)}
+.bag{border:1px solid #ffffff30;border-radius:40px;padding:6px 13px;font-size:11px;letter-spacing:.1em}
+.crumb{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;padding:22px 0 6px}
+.pdp{display:grid;grid-template-columns:1.15fr 1fr;gap:46px;padding-bottom:40px}
+.gal .main{aspect-ratio:1/1;background:#fff;border-radius:14px;overflow:hidden;position:relative}
+.gal .main img{width:100%;height:100%;object-fit:cover}
+.tryon{position:absolute;left:16px;bottom:16px;background:var(--ink);color:var(--bone);border:1px solid var(--lime);border-radius:40px;padding:11px 18px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;display:flex;gap:9px;align-items:center;cursor:pointer}
+.tryon b{color:var(--lime)}
+.thumbs{display:flex;gap:10px;margin-top:10px}
+.thumbs img{width:72px;height:72px;object-fit:cover;border-radius:9px;background:#fff;border:1px solid #ffffff20;cursor:pointer;opacity:.7;transition:.2s}
+.thumbs img:hover,.thumbs img.on{opacity:1;border-color:var(--lime)}
+.house-tag{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
+h1.t{font-family:var(--disp);font-size:62px;line-height:.9;text-transform:uppercase;margin:8px 0 6px}
+.price{font-size:15px;letter-spacing:.05em;opacity:.85;margin-bottom:18px}
+.desc{font-size:13px;line-height:1.7;opacity:.8;max-width:46ch;margin-bottom:22px}
+.swatches{display:flex;gap:9px;margin-bottom:24px}
+.sw{width:26px;height:26px;border-radius:50%;border:2px solid #ffffff30;cursor:pointer}
+.sw.on{border-color:var(--lime)}
+/* fit readout */
+.fit{border:1px solid #ffffff20;border-radius:14px;padding:16px 18px;margin-bottom:18px;background:#101218}
+.fit .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.fit .verdict{display:inline-flex;gap:8px;align-items:center;color:var(--lime);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.fit .scan{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.5;border-bottom:1px dotted #ffffff40;cursor:pointer}
+.measure{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.measure div{text-align:center}.measure .v{font-family:var(--disp);font-size:22px}.measure .k{font-size:9px;letter-spacing:.12em;text-transform:uppercase;opacity:.55;margin-top:2px}
+.cta{display:flex;gap:10px;margin-bottom:14px}
+.btn{font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:12px;padding:15px 22px;border-radius:40px;cursor:pointer;text-align:center}
+.btn-lime{background:var(--lime);color:var(--ink);flex:1}.btn-ink{background:#16181f;border:1px solid #ffffff30;flex:1}
+.concierge-nudge{display:flex;gap:12px;align-items:center;border:1px dashed #ffffff30;border-radius:14px;padding:13px 16px;font-size:12px}
+.concierge-nudge .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));flex:none}
+.concierge-nudge b{color:var(--lime);cursor:pointer}
+/* story */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;padding:70px 0;border-top:1px solid #ffffff14;margin-top:30px}
+.story .lead{font-family:var(--serif);font-style:italic;font-size:30px;line-height:1.25}.story .lead em{color:var(--lime)}
+.story p{font-size:13px;line-height:1.8;opacity:.78;margin-top:14px}
+.story .ph{aspect-ratio:4/3;background:#fff;border-radius:14px;overflow:hidden}.story .ph img{width:100%;height:100%;object-fit:cover}
+/* picks */
+.shead{display:flex;justify-content:space-between;align-items:baseline;padding:30px 0 22px}
+.shead h2{font-family:var(--disp);font-size:34px;text-transform:uppercase}.shead .idx{font-size:10.5px;letter-spacing:.2em;opacity:.5}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:50px}
+.card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;transition:.2s}.card:hover{transform:translateY(-3px);border-color:#ffffff40}
+.card .ph{aspect-ratio:1/1;background:#fff}.card .ph img{width:100%;height:100%;object-fit:cover}
+.card .meta{padding:12px 13px}.card .nm{font-size:11px;letter-spacing:.06em;text-transform:uppercase}.card .br{font-size:9px;letter-spacing:.16em;color:var(--lime);margin-top:4px}
+/* floating concierge */
+.atelier{position:fixed;right:22px;bottom:22px;z-index:60;width:320px;background:#0e1016;border:1px solid #ffffff22;border-radius:18px;overflow:hidden;box-shadow:0 20px 60px #000a}
+.atelier .hd{display:flex;gap:12px;align-items:center;padding:14px 16px;background:linear-gradient(120deg,#13162100,#7a2bff22)}
+.atelier .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));flex:none;position:relative}
+.atelier .av:after{content:"";position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:var(--lime);border:2px solid #0e1016}
+.atelier .nm{font-size:13px;letter-spacing:.04em}.atelier .role{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.55;margin-top:2px}
+.atelier .msg{padding:14px 16px;font-size:12.5px;line-height:1.6;font-family:var(--serif);font-style:italic;color:#e8e6df;border-top:1px solid #ffffff12}
+.atelier .bar{display:flex;gap:8px;padding:12px 14px;border-top:1px solid #ffffff12}
+.atelier input{flex:1;background:#171a22;border:1px solid #ffffff18;border-radius:30px;padding:9px 14px;color:var(--bone);font-family:var(--mono);font-size:11px;outline:none}
+.atelier .mic{width:38px;height:38px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:15px;cursor:pointer}
+.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:9px 14px;font-size:10px;letter-spacing:.08em;color:#99a;text-transform:uppercase;text-align:center;margin:6px 0 0}
+@media(max-width:920px){.pdp,.story{grid-template-columns:1fr}.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}.atelier{display:none}}
+</style></head><body>
+
+<div class="ticker"><div class="run"><span>★ FIT-BY-FACE ON EVERY FRAME</span><span>TRY ON TRUE-TO-SIZE</span><span>HANDMADE IN ITALY</span><span>THE ATELIER IS OPEN</span><span>★ FIT-BY-FACE ON EVERY FRAME</span><span>TRY ON TRUE-TO-SIZE</span><span>HANDMADE IN ITALY</span><span>THE ATELIER IS OPEN</span></div></div>
+<nav><div class="wrap nav-in"><div class="logo">USA<b>·</b>PARASITE<b>·</b>CLUB</div><div class="nav-links"><a href="sun.html">Optical</a><a href="sun.html">Sun</a><a href="index.html#houses">The Houses</a><a href="atelier.html">The Atelier</a><a href="membership.html">The Club</a></div><a class="bag" href="#">BAG · 0</a></div></nav>
+
+<div class="wrap">
+  <div class="crumb">Home / Portrait / Optical / Numan</div>
+  <div class="pdp">
+    <div class="gal">
+      <div class="main">
+        <img id="hero" src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_c13_front.jpg?width=1000">
+        <a class="tryon" href="tryon.html" style="text-decoration:none">◉ Try on <b>true-to-size</b></a>
+      </div>
+      <div class="thumbs">
+        <img class="on" onclick="document.getElementById('hero').src=this.src.replace('width=160','width=1000')" src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_c13_front.jpg?width=160">
+        <img onclick="document.getElementById('hero').src=this.src.replace('width=160','width=1000')" src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_c13_side.jpg?width=160">
+        <img onclick="document.getElementById('hero').src=this.src.replace('width=160','width=1000')" src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_black_front.jpg?width=160">
+        <img onclick="document.getElementById('hero').src=this.src.replace('width=160','width=1000')" src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_blue_front.jpg?width=160">
+      </div>
+    </div>
+    <div class="info">
+      <div class="house-tag">Portrait · Handmade in Italy</div>
+      <h1 class="t">Numan</h1>
+      <div class="price">$— <span style="opacity:.5;font-size:11px">· USD · pending price list</span></div>
+      <p class="desc">A sculpted acetate optical frame with a soft keyhole bridge. Contemporary, quietly confident — Portrait's hand at its most wearable.</p>
+      <div class="swatches">
+        <span class="sw on" style="background:#1a4d2e" title="Green Gradient"></span>
+        <span class="sw" style="background:#111" title="Black"></span>
+        <span class="sw" style="background:#2b3a67" title="Blue Gradient"></span>
+        <span class="sw" style="background:#d9c3a5" title="Crystal Nude"></span>
+      </div>
+      <div class="fit">
+        <div class="top"><span class="verdict">✓ Fits your face</span><span class="scan">↻ Re-scan my face</span></div>
+        <div class="measure">
+          <div><div class="v">50</div><div class="k">Lens</div></div>
+          <div><div class="v">21</div><div class="k">Bridge</div></div>
+          <div><div class="v">145</div><div class="k">Temple</div></div>
+          <div><div class="v">138</div><div class="k">Total mm</div></div>
+        </div>
+      </div>
+      <div class="cta"><div class="btn btn-lime">Add to bag</div><a class="btn btn-ink" href="tryon.html" style="text-decoration:none">◉ Try on true-to-size</a></div>
+      <div class="concierge-nudge"><span class="av"></span><div>Not sure it's the one? <a href="atelier.html" style="color:var(--lime);text-decoration:none"><b>Ask Adrian</b></a> — he'll style your three.</div></div>
+      <div class="note">Fit verdict &amp; measurements are a concept demo — powered by Fit-by-Face at launch</div>
+    </div>
+  </div>
+
+  <div class="story">
+    <div><div class="lead">Beauty isn't simple. <em>But it's worth it.</em></div><p>Every Portrait frame is born from a dialogue between design and the hands of Italian artisans. Numan takes shape over time, by hand — patience is not a limit here, it's the point. The frame only makes sense when it holds tension: softness and edge, romance and rebellion.</p></div>
+    <div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_crystalnude_front.jpg?width=900"></div>
+  </div>
+
+  <div class="shead"><h2>Adrian picked these for you</h2><div class="idx">[ CURATED · YOUR THREE ]</div></div>
+  <div class="pgrid">
+    <a class="card" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=600"></div><div class="meta"><div class="nm">Futura</div><div class="br">Portrait</div></div></a>
+    <a class="card" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/1924/6071/files/CAM459-FACE.jpg?width=600"></div><div class="meta"><div class="nm">Camelia 4</div><div class="br">Parasite</div></div></a>
+    <a class="card" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=600"></div><div class="meta"><div class="nm">Roland</div><div class="br">Portrait</div></div></a>
+    <a class="card" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/CEL103_fbc29530-6c1f-4ac8-a06a-c49e1e5b98f5.jpg?width=600"></div><div class="meta"><div class="nm">Celeste 1</div><div class="br">Acid</div></div></a>
+  </div>
+</div>
+
+<div class="atelier">
+  <div class="hd"><span class="av"></span><div><div class="nm">Adrian</div><div class="role">Your concierge</div></div></div>
+  <div class="msg">"The Numan suits your face beautifully — narrow bridge, like yours. Shall I show you two more, or try it on?"</div>
+  <div class="bar"><input placeholder="Type, or hold to speak…"><div class="mic">🎙</div></div>
+</div>
+</body></html>

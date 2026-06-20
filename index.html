@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USA PARASITE CLUB — Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0c; --bone:#F2EEE4; --lime:#C8FF00; --red:#E2402C;
+  --g1:#2a3bff; --g2:#7a2bff; --g3:#ff3ea5;
+  --mono:'Space Mono',monospace; --disp:'Anton',sans-serif; --serif:'Fraunces',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--bone);font-family:var(--mono);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:11px}
+
+/* ticker */
+.ticker{background:var(--lime);color:var(--ink);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--ink)}
+.ticker .run{display:inline-block;padding:8px 0;animation:scroll 28s linear infinite;font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:12px}
+.ticker .run span{padding:0 22px}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.78);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff18}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--disp);font-size:20px;letter-spacing:.04em;line-height:1}
+.logo b{color:var(--lime)}
+.nav-links{display:flex;gap:26px}
+.nav-links a{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85;transition:.2s}
+.nav-links a:hover{opacity:1;color:var(--lime)}
+.bag{border:1px solid #ffffff30;border-radius:40px;padding:7px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
+
+/* hero */
+.hero{position:relative;min-height:92vh;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid #ffffff14}
+.hero-img{position:absolute;inset:0;background:url('https://cdn.shopify.com/s/files/1/1924/6071/files/SYNTHESE1-LILIAN-FACE.jpg?width=1600') center 28%/cover no-repeat;filter:grayscale(.15) contrast(1.05)}
+.hero-img:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,12,.55) 0%,rgba(10,10,12,.15) 35%,rgba(10,10,12,.92) 100%)}
+.hero-glow{position:absolute;width:60vw;height:60vw;right:-12vw;top:-10vw;background:radial-gradient(circle,var(--g2),transparent 62%);opacity:.5;filter:blur(30px);animation:float 12s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(40px) scale(1.08)}}
+.hero-content{position:relative;z-index:2;width:100%;padding-bottom:54px}
+.kicker{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:7px 16px;margin-bottom:22px}
+.kicker b{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em}
+h1.hero-h{font-family:var(--disp);font-size:clamp(54px,10.5vw,150px);line-height:.88;letter-spacing:.01em;text-transform:uppercase}
+h1.hero-h .grad{background:linear-gradient(92deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:26px}
+.btn{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:700;padding:15px 26px;border-radius:40px;transition:.2s;display:inline-block}
+.btn-lime{background:var(--lime);color:var(--ink)}
+.btn-lime:hover{transform:translateY(-2px)}
+.btn-ghost{border:1px solid #ffffff45}
+.btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+.stat{font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.7;text-transform:uppercase}
+
+/* product marquee */
+.strip{border-bottom:1px solid #ffffff14;padding:18px 0;overflow:hidden;white-space:nowrap}
+.strip .row{display:inline-flex;gap:14px;animation:scroll 40s linear infinite}
+.strip img{height:120px;width:160px;object-fit:cover;border-radius:8px;background:#fff;filter:grayscale(.1)}
+
+/* section heads */
+.shead{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:74px 0 26px}
+.shead h2{font-family:var(--disp);font-size:clamp(32px,5vw,68px);text-transform:uppercase;line-height:.92;letter-spacing:.01em}
+.shead .idx{font-family:var(--mono);font-size:11px;letter-spacing:.2em;opacity:.55}
+
+/* houses */
+.houses{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:30px}
+.house{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:3/4;border:1px solid #ffffff14;isolation:isolate}
+.house img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:.6s;filter:grayscale(.2)}
+.house:hover img{transform:scale(1.06);filter:grayscale(0)}
+.house:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(10,10,12,.9))}
+.house .body{position:absolute;z-index:2;bottom:0;padding:22px}
+.house .tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--lime);text-transform:uppercase}
+.house h3{font-family:var(--disp);font-size:34px;text-transform:uppercase;margin:6px 0 8px;line-height:.9}
+.house p{font-size:12.5px;line-height:1.55;opacity:.82;max-width:30ch}
+
+/* manifesto */
+.manifesto{padding:96px 0;text-align:center;position:relative}
+.manifesto .lead{font-family:var(--serif);font-style:italic;font-size:clamp(26px,4.2vw,52px);line-height:1.2;max-width:20ch;margin:0 auto 26px}
+.manifesto .lead em{color:var(--lime);font-style:italic}
+.manifesto p{max-width:60ch;margin:0 auto;font-size:13.5px;line-height:1.9;opacity:.78}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--lime),transparent);margin:0 auto;max-width:200px}
+
+/* grid */
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:40px}
+.card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;transition:.25s}
+.card:hover{border-color:#ffffff40;transform:translateY(-3px)}
+.card .ph{aspect-ratio:1/1;background:#fff;overflow:hidden}
+.card .ph img{width:100%;height:100%;object-fit:cover}
+.card .meta{padding:13px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card .nm{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:1.3}
+.card .br{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--lime);margin-top:5px}
+.card .pr{font-family:var(--mono);font-size:11px;white-space:nowrap;opacity:.8}
+
+/* club CTA */
+.club{margin:30px 0 0;background:var(--lime);color:var(--ink);border-radius:18px;padding:64px 40px;text-align:center;position:relative;overflow:hidden}
+.club h2{font-family:var(--disp);font-size:clamp(40px,8vw,108px);text-transform:uppercase;line-height:.86}
+.club p{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:14px auto 26px;max-width:50ch}
+.club .form{display:inline-flex;gap:8px;background:var(--ink);border-radius:40px;padding:6px 6px 6px 20px}
+.club input{background:transparent;border:0;color:var(--bone);font-family:var(--mono);font-size:12px;letter-spacing:.1em;width:240px;outline:none}
+.club .form .btn-lime{background:var(--lime)}
+.seal{position:absolute;right:-30px;top:-30px;width:180px;height:180px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.2em;opacity:.25;transform:rotate(-12deg)}
+
+/* footer */
+footer{padding:70px 0 50px;border-top:1px solid #ffffff14;margin-top:64px}
+.fcols{display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px}
+.fcols .logo{font-size:30px}
+.fcol h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.55;margin-bottom:14px}
+.fcol a{display:block;font-size:12.5px;opacity:.85;margin-bottom:9px}
+.fcol a:hover{color:var(--lime)}
+.fbase{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:46px;padding-top:22px;border-top:1px solid #ffffff14;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;opacity:.6;text-transform:uppercase}
+.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:10px 16px;margin:18px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#aab;text-transform:uppercase;text-align:center}
+.reveal{opacity:0;transform:translateY(24px);transition:.7s}
+.reveal.in{opacity:1;transform:none}
+@media(max-width:900px){.houses{grid-template-columns:1fr}.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+</style>
+</head>
+<body>
+
+<div class="ticker"><div class="run" id="run">
+<span>★ USA PARASITE CLUB</span><span>MEMBERS ONLY</span><span>HANDMADE IN ITALY</span><span>ENGINEERED IN FRANCE</span><span>WORN IN AMERICA</span><span>574 FRAMES · 3 HOUSES</span>
+<span>★ USA PARASITE CLUB</span><span>MEMBERS ONLY</span><span>HANDMADE IN ITALY</span><span>ENGINEERED IN FRANCE</span><span>WORN IN AMERICA</span><span>574 FRAMES · 3 HOUSES</span>
+</div></div>
+
+<nav><div class="wrap nav-in">
+  <div class="logo">USA<b>·</b>PARASITE<b>·</b>CLUB</div>
+  <div class="nav-links">
+    <a href="sun.html">Optical</a><a href="sun.html">Sun</a><a href="index.html#houses">The Houses</a><a href="membership.html">The Club</a><a href="atelier.html">The Atelier</a>
+  </div>
+  <a class="bag" href="#">BAG · 0</a>
+</div></nav>
+
+<header class="hero">
+  <div class="hero-img"></div><div class="hero-glow"></div>
+  <div class="wrap hero-content">
+    <div class="kicker"><b>EST. 2026 · NEW YORK · U.S.A.</b></div>
+    <h1 class="hero-h">European eyes,<br><span class="grad">American soul.</span></h1>
+    <div class="hero-sub">
+      <a class="btn btn-lime" href="sun.html">Shop the club</a>
+      <a class="btn btn-ghost" href="#houses">Meet the houses</a>
+      <span class="stat">3 European houses · 574 frames · 1 American club</span>
+    </div>
+  </div>
+</header>
+
+<div class="strip"><div class="row">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/ATO117-FACE.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/AUS104.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/VEG662-FACE.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/SONIC_BLACK_FRONT.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/PIX101.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/RENEE_GREEN_FRONT.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/ATO117-FACE.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/AUS104.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/VEG662-FACE.jpg?width=320" alt="">
+  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/SONIC_BLACK_FRONT.jpg?width=320" alt="">
+</div></div>
+
+<section id="houses" class="wrap">
+  <div class="shead reveal"><h2>Three houses,<br>one membership.</h2><div class="idx">[ 01 / THE HOUSES ]</div></div>
+  <div class="houses">
+    <a class="house reveal" href="sun.html">
+      <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/SYSTEME1-FELICIE-FACE.jpg?width=800" alt="Parasite">
+      <div class="body"><div class="tag">France · Futurist</div><h3>Parasite</h3><p>Sci-fi sculptural frames engineered in France. The avant-garde edge of the club.</p></div>
+    </a>
+    <a class="house reveal" href="sun.html">
+      <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/GEOMETRICS4-LILIAN-FACE.jpg?width=800" alt="Acid">
+      <div class="body"><div class="tag">France · Designer</div><h3>Acid</h3><p>Art and architecture, distilled. Designer frames that transcend the trend cycle.</p></div>
+    </a>
+    <a class="house reveal" href="sun.html">
+      <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=800" alt="Portrait">
+      <div class="body"><div class="tag">Italy · Handmade</div><h3>Portrait</h3><p>Premium acetate handmade in Italy. Where romance meets rebellion.</p></div>
+    </a>
+  </div>
+</section>
+
+<section class="wrap manifesto reveal">
+  <div class="rule"></div>
+  <p class="lead" style="margin-top:34px">There's no braver image than the one you <em>choose</em> to be seen in.</p>
+  <p>We didn't invent these frames — three European houses did, one obsession at a time. We brought them home. Parasite's future, Acid's art, Portrait's hand, dialed in for America: priced in dollars, shipped from here, worn like a signature. Pick the face you want the world to meet.</p>
+</section>
+
+<section id="grid" class="wrap">
+  <div class="shead reveal"><h2>This week<br>at the club.</h2><div class="idx">[ 02 / NEW DROP ]</div></div>
+  <div class="pgrid">
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_c13_front.jpg?width=600"></div><div class="meta"><div><div class="nm">Numan</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/1924/6071/files/BIO122_e7befc95-fdab-4a99-bdb3-bd17489934ed.jpg?width=600"></div><div class="meta"><div><div class="nm">Biomorph 1</div><div class="br">Parasite</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=600"></div><div class="meta"><div><div class="nm">Futura</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/CEL103_fbc29530-6c1f-4ac8-a06a-c49e1e5b98f5.jpg?width=600"></div><div class="meta"><div><div class="nm">Celeste 1</div><div class="br">Acid</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=600"></div><div class="meta"><div><div class="nm">Roland</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/1924/6071/files/CAM459-FACE.jpg?width=600"></div><div class="meta"><div><div class="nm">Camelia 4</div><div class="br">Parasite</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/AVALANCHE_GOLD_FRONT.jpg?width=600"></div><div class="meta"><div><div class="nm">Avalanche</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
+    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/AUS104.jpg?width=600"></div><div class="meta"><div><div class="nm">Australe 1</div><div class="br">Acid</div></div><div class="pr">$—</div></div></a>
+  </div>
+  <div class="note">Prices show $— · placeholder pending your US price list</div>
+</section>
+
+<section id="club" class="wrap">
+  <div class="club reveal">
+    <div class="seal">★ MEMBERS · ONLY ★ EST · 2026 ★</div>
+    <h2>Join the club</h2>
+    <p>First access to drops, limited Lab editions & members-only frames. No spam — just the good stuff.</p>
+    <div class="form"><input placeholder="YOUR EMAIL ADDRESS"><a class="btn btn-lime" href="#">Join</a></div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="fcols">
+    <div style="max-width:280px">
+      <div class="logo">USA<b style="color:var(--lime)">·</b>PARASITE<b style="color:var(--lime)">·</b>CLUB</div>
+      <p style="font-size:12.5px;opacity:.7;margin-top:14px;line-height:1.7">Designed in Europe. Dialed in for America. Eyewear from Parasite, Acid &amp; Portrait — under one roof.</p>
+    </div>
+    <div class="fcol"><h4>Shop</h4><a href="sun.html">Optical</a><a href="sun.html">Sun</a><a href="lookbook.html">Lookbook</a><a href="#">The Lab</a></div>
+    <div class="fcol"><h4>Houses</h4><a href="#">Parasite</a><a href="#">Acid</a><a href="#">Portrait</a></div>
+    <div class="fcol"><h4>Club</h4><a href="#">Membership</a><a href="#">Find your fit</a><a href="#">Shipping &amp; returns</a><a href="#">Contact</a></div>
+  </div>
+  <div class="fbase"><span>© 2026 USA Parasite Club</span><span>Handmade in Italy · Engineered in France · Worn in America</span></div>
+</footer>
+
+<script>
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

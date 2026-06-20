@@ -1,0 +1,172 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Try On True-to-Size — USA Parasite Club</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--bone);font-family:var(--mono);min-height:100vh}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ffffff16}
+.logo{font-family:var(--disp);font-size:17px;letter-spacing:.04em}.logo b{color:var(--lime)}
+.tt{font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.6}
+.wrap{max-width:980px;margin:0 auto;padding:22px}
+.stagebox{position:relative;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:4/3;border:1px solid #ffffff18;perspective:900px}
+video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#frame{position:absolute;left:0;top:0;mix-blend-mode:multiply;pointer-events:none;transform-origin:center;transform-style:preserve-3d;backface-visibility:hidden;display:none;will-change:transform}
+.hud{position:absolute;left:14px;top:14px;z-index:3;display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:rgba(10,10,12,.7);border:1px solid var(--lime);color:var(--lime);border-radius:30px;padding:7px 12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+.pill.dim{border-color:#ffffff30;color:var(--bone);opacity:.8}
+.center-msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;z-index:2;padding:24px}
+.center-msg .in{max-width:420px}
+.center-msg h2{font-family:var(--disp);font-size:clamp(28px,5vw,46px);text-transform:uppercase;line-height:.92;margin-bottom:12px}
+.center-msg p{font-size:12.5px;line-height:1.7;opacity:.82;margin-bottom:20px}
+.start{background:var(--lime);color:var(--ink);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:13px;padding:16px 28px;border-radius:40px;cursor:pointer;display:inline-block;border:0}
+.err{color:#ffb4a8;font-size:11px;line-height:1.6;margin-top:14px}
+/* frame rail */
+.rail{display:flex;gap:10px;overflow-x:auto;padding:16px 0 8px}
+.fr{flex:none;width:104px;cursor:pointer;border:1px solid #ffffff18;border-radius:12px;overflow:hidden;background:#0e1016;transition:.15s}
+.fr.on{border-color:var(--lime)}
+.fr .ph{height:84px;background:#fff}.fr .ph img{width:100%;height:100%;object-fit:cover}
+.fr .m{padding:8px 9px}.fr .n{font-size:10px;letter-spacing:.03em;text-transform:uppercase;line-height:1.2}.fr .b{font-size:8px;letter-spacing:.14em;color:var(--lime);margin-top:3px}
+/* controls */
+.ctrls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:14px 2px}
+.ctrl{display:flex;flex-direction:column;gap:5px;min-width:150px}
+.ctrl label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
+input[type=range]{accent-color:var(--lime)}
+.toggle{margin-left:auto;display:flex;gap:8px}
+.tg{border:1px solid #ffffff28;border-radius:30px;padding:9px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.tg.on{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
+.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:10px 14px;font-size:10px;letter-spacing:.06em;color:#99a;text-transform:uppercase;text-align:center;margin-top:14px;line-height:1.6}
+</style></head><body>
+<div class="top"><div class="logo">USA<b>·</b>PARASITE<b>·</b>CLUB · <span class="tt">Try-On · True-to-Size</span></div><a href="#" onclick="if(window.history.length>1){history.back()}else{window.close()};return false;" style="text-decoration:none;border:1px solid #ffffff35;border-radius:30px;padding:7px 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);cursor:pointer">✕ Close</a></div>
+<div class="wrap">
+  <div class="stagebox" id="stage">
+    <video id="vid" playsinline muted autoplay></video>
+    <img id="frame" crossorigin="anonymous">
+    <div class="hud" id="hud" style="display:none">
+      <span class="pill" id="pTrue">◉ True-to-size</span>
+      <span class="pill dim" id="pPd">PD —</span>
+      <span class="pill dim" id="pW">Frame —</span>
+    </div>
+    <div class="center-msg" id="cmsg"><div class="in">
+      <h2>See them on,<br>at their real size.</h2>
+      <p>We use your pupillary distance as a ruler, so every frame appears at its true scale — oversized looks oversized, refined looks refined. Your camera stays on your device.</p>
+      <button class="start" id="startBtn">◉ Start the mirror</button>
+      <div class="err" id="err"></div>
+    </div></div>
+  </div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="ctrls">
+    <div class="ctrl"><label>Size · nudge</label><input id="sSize" type="range" min="0.8" max="1.25" step="0.01" value="1"></div>
+    <div class="ctrl"><label>Vertical · nudge</label><input id="sY" type="range" min="-40" max="40" step="1" value="0"></div>
+    <div class="toggle">
+      <div class="tg on" id="tgAuto">Auto-fit</div>
+      <div class="tg" id="tgManual">Manual</div>
+    </div>
+  </div>
+  <div class="note">Working Phase-2 prototype · real frames overlaid true-to-size · if the camera won't start, open this file in Chrome and allow camera (camera needs a secure context — works from the live site or a local server).</div>
+</div>
+
+<script type="module">
+const P='https://cdn.shopify.com/s/files/1/0065/5609/0423/files/',R='https://cdn.shopify.com/s/files/1/1924/6071/files/',A='https://cdn.shopify.com/s/files/1/0556/3446/0745/files/';
+// hero frames chosen to overlay cleanly (dark/saturated acetate on white). totalMm = real frame width.
+const HERO=[
+ {nm:'Numan · Black',br:'Portrait',img:P+'NUMAN_black_front.jpg',mm:138},
+ {nm:'Roland · Red',br:'Portrait',img:P+'ROLAND__red_front.jpg',mm:142},
+ {nm:'The Modernist',br:'Portrait',img:P+'THEMODERNIST-C01-1.jpg',mm:140},
+ {nm:'Sonic · Sun',br:'Portrait',img:P+'SONIC_BLACK_FRONT.jpg',mm:146},
+ {nm:'Atom 1',br:'Parasite',img:R+'ATO117-FACE.jpg',mm:142},
+ {nm:'Australe 1',br:'Acid',img:A+'AUS104.jpg',mm:146},
+];
+let cur=0, mode='auto', landmarker=null, running=false, lastFace=false;
+const vid=document.getElementById('vid'), frameImg=document.getElementById('frame');
+const sSize=document.getElementById('sSize'), sY=document.getElementById('sY');
+
+// build rail
+const rail=document.getElementById('rail');
+rail.innerHTML=HERO.map((f,i)=>`<div class="fr ${i===0?'on':''}" data-i="${i}"><div class="ph"><img src="${f.img}?width=220"></div><div class="m"><div class="n">${f.nm}</div><div class="b">${f.br}</div></div></div>`).join('');
+rail.querySelectorAll('.fr').forEach(el=>el.onclick=()=>{cur=+el.dataset.i;rail.querySelectorAll('.fr').forEach(x=>x.classList.remove('on'));el.classList.add('on');setFrame();});
+function setFrame(){ frameImg.src=HERO[cur].img+'?width=700'; document.getElementById('pW').textContent='Frame '+HERO[cur].mm+'mm'; }
+setFrame();
+
+document.getElementById('tgAuto').onclick=()=>setMode('auto');
+document.getElementById('tgManual').onclick=()=>setMode('manual');
+function setMode(m){mode=m;document.getElementById('tgAuto').classList.toggle('on',m==='auto');document.getElementById('tgManual').classList.toggle('on',m==='manual');}
+
+document.getElementById('startBtn').onclick=start;
+async function start(){
+  const err=document.getElementById('err'); err.textContent='';
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:960}},audio:false});
+    vid.srcObject=stream; await vid.play();
+    document.getElementById('cmsg').style.display='none';
+    document.getElementById('hud').style.display='flex';
+    frameImg.style.display='block';
+    running=true;
+    loadLandmarker(); // async, non-blocking
+    requestAnimationFrame(loop);
+  }catch(e){
+    err.innerHTML='Camera couldn’t start ('+e.name+'). Open this file in Chrome and allow camera access, or run it from the live site / a local server.';
+  }
+}
+async function loadLandmarker(){
+  try{
+    const vision=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12');
+    const fileset=await vision.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12/wasm');
+    landmarker=await vision.FaceLandmarker.createFromOptions(fileset,{
+      baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'},
+      runningMode:'VIDEO',numFaces:1,outputFacialTransformationMatrixes:true});
+  }catch(e){ landmarker=null; setMode('manual'); document.getElementById('pTrue').textContent='Manual fit'; }
+}
+function loop(t){
+  if(!running)return;
+  const W=vid.clientWidth, H=vid.clientHeight;
+  let placed=false;
+  if(mode==='auto' && landmarker && vid.readyState>=2){
+    let res; try{ res=landmarker.detectForVideo(vid, performance.now()); }catch(e){}
+    if(res && res.faceLandmarks && res.faceLandmarks[0]){
+      const lm=res.faceLandmarks[0];
+      const mx=i=>(1-lm[i].x)*W, my=i=>lm[i].y*H; // mirror x to match flipped video
+      // outer eye corners (stable for orientation); ORDER by x so the frame can never flip
+      let a={x:mx(33),y:my(33)}, b={x:mx(263),y:my(263)};
+      if(a.x>b.x){const t=a;a=b;b=t;}
+      const cx=(a.x+b.x)/2, cy=(a.y+b.y)/2;
+      // PD from iris centers when available, else from eye-corner span
+      let pdPx;
+      if(lm.length>=474){ pdPx=Math.hypot(mx(468)-mx(473), my(468)-my(473)); }
+      else { pdPx=Math.hypot(b.x-a.x, b.y-a.y)*0.83; }
+      let ang=Math.atan2(b.y-a.y, b.x-a.x);   // small head-tilt, never inverted
+      if(Math.abs(ang)>0.6) ang=0;            // guard against bad frames
+      // HEAD-TURN: yaw/pitch from the facial transformation matrix → 3D rotation
+      let yaw=0, pitch=0;
+      const FM=res.facialTransformationMatrixes&&res.facialTransformationMatrixes[0]&&res.facialTransformationMatrixes[0].data;
+      if(FM){ yaw=Math.atan2(FM[8],FM[10]); pitch=Math.asin(Math.max(-1,Math.min(1,-FM[9]))); }
+      const ry=-yaw*0.9, rx=pitch*0.5;        // mirror flips yaw sign
+      const pxPerMm=pdPx/63;                  // avg adult PD ~63mm
+      const wPx=HERO[cur].mm*pxPerMm*parseFloat(sSize.value);
+      const natW=frameImg.naturalWidth||700, natH=frameImg.naturalHeight||300;
+      const hPx=wPx*(natH/natW);
+      frameImg.style.width=wPx+'px';
+      // sit slightly above the pupil line so the bridge lands on the nose, and turn with the head
+      frameImg.style.transform=`translate(${cx-wPx/2}px,${cy-hPx/2-hPx*0.06+(+sY.value)}px) rotateX(${rx}rad) rotateY(${ry}rad) rotateZ(${ang}rad)`;
+      document.getElementById('pTrue').textContent = Math.abs(yaw)>0.35 ? '◉ Head-turn' : '◉ True-to-size';
+      document.getElementById('pPd').textContent='PD ~'+Math.round(pdPx/pxPerMm)+'mm';
+      placed=true; lastFace=true;
+    } else if(lastFace===false){
+      document.getElementById('pPd').textContent='Looking for you…';
+    }
+  }
+  if(!placed){ // manual / fallback: center it
+    const wPx=W*0.42*parseFloat(sSize.value);
+    const natW=frameImg.naturalWidth||700, natH=frameImg.naturalHeight||300, hPx=wPx*(natH/natW);
+    frameImg.style.width=wPx+'px';
+    frameImg.style.transform=`translate(${W/2-wPx/2}px,${H*0.38-hPx/2+(+sY.value)}px)`;
+    if(mode!=='auto'){document.getElementById('pTrue').textContent='Manual fit';document.getElementById('pPd').textContent='Drag to fit';}
+  }
+  requestAnimationFrame(loop);
+}
+</script>
+</body></html>
