@@ -68,6 +68,18 @@ function toast(t){const e=document.getElementById('toast');e.textContent=t;e.cla
 function toggleFav(h,b,ev){ev.preventDefault();ev.stopPropagation();let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);toast('Removed');}else{a.push(h);bump(b);toast('Saved to favorites');}setFavs(a);render();}
 function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Let Adrian build your three from what you like.';document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
 const SUBS={Portrait:[['essential','Essential'],['editorial','Editorial'],['metal','Metal']],Acid:[['acetate','Acétate'],['metal','Métal'],['premium','Premium'],['boost','Boost']],Parasite:[['lab','LAB']]};
+// --- consistent grouping: house -> category -> model (colour variants together) ---
+const BRANDORDER={Portrait:0,Acid:1,Parasite:2};
+const CATRANK={Portrait:{essential:0,editorial:1,metal:2},Acid:{acetate:0,metal:1,premium:2},Parasite:{lab:0,optical:1,sun:2}};
+function pcat(p){if(p.b==='Parasite')return (p.cols&&p.cols.includes('lab'))?'lab':(p.t==='Sunglasses'?'sun':'optical');return (p.cols&&p.cols[0])||(p.t==='Sunglasses'?'sun':'optical');}
+function baseModel(p){const s=(p.model||p.n||'');return (s.replace(/\s*\d+\s*$/,'').trim()||s).toUpperCase();}
+function sortCatalog(list){return list.slice().sort((a,b)=>{
+  const ba=BRANDORDER[a.b]??9, bb=BRANDORDER[b.b]??9; if(ba!==bb)return ba-bb;
+  const ra=(CATRANK[a.b]||{})[pcat(a)]??9, rb=(CATRANK[b.b]||{})[pcat(b)]??9; if(ra!==rb)return ra-rb;
+  const ma=baseModel(a), mb=baseModel(b); if(ma!==mb)return ma.localeCompare(mb);
+  const ta=a.t==='Sunglasses'?1:0, tb=b.t==='Sunglasses'?1:0; if(ta!==tb)return ta-tb;
+  return (a.n||'').localeCompare(b.n||'');
+});}
 let subFilter=null;const subBar=document.getElementById('subfilters');
 function renderSubs(){const L=SUBS[filter]||[];if(!L.length){subBar.style.display='none';subBar.innerHTML='';return;}subBar.style.display='flex';subBar.innerHTML=L.map(s=>`<span class="chip ${subFilter===s[0]?'sel':''}" data-s="${s[0]}">${s[1]}</span>`).join('');}
 subBar.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;subFilter=(subFilter===c.dataset.s)?null:c.dataset.s;renderSubs();render();});
@@ -88,7 +100,7 @@ function render(){
 document.getElementById('filters').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;favMode=false;subFilter=null;document.querySelectorAll('#filters .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');filter=c.dataset.f;if(['Portrait','Acid','Parasite'].includes(filter))bump(filter);renderSubs();render();});
 document.getElementById('favtab').onclick=()=>{favMode=true;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));render();window.scrollTo({top:0});};
 setFavs(favs());
-fetch('products.json').then(r=>r.json()).then(d=>{ALL=d;loading.style.display='none';
+fetch('products.json').then(r=>r.json()).then(d=>{ALL=sortCatalog(d);loading.style.display='none';
   const b=new URLSearchParams(location.search).get('b');
   if(b){filter=b;document.querySelectorAll('.chip').forEach(x=>{x.classList.toggle('sel',x.dataset.f===b);});}
   if(location.hash==='#favorites'){favMode=true;}
