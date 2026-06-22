@@ -49,6 +49,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
     <span class="chip" data-f="Sunglasses">Sun</span>
     <span class="count" id="count">—</span>
   </div>
+  <div id="subfilters" class="filters" style="top:108px;padding:0 0 14px;display:none"></div>
   <div class="nudge" id="nudge"><div class="t" id="nudgetxt"></div><div class="go" onclick="location.href='atelier.html'">Let Adrian narrow it down →</div></div>
   <div id="grid" class="pgrid"></div>
   <div id="loading" class="loading">Loading the collection…</div>
@@ -65,8 +66,15 @@ function bump(b){const o=aff();o[b]=(o[b]||0)+1;localStorage.setItem('upc_aff',J
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1700);}
 function toggleFav(h,b,ev){ev.preventDefault();ev.stopPropagation();let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);toast('Removed');}else{a.push(h);bump(b);toast('Saved to favorites');}setFavs(a);render();}
 function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Let Adrian build your three from what you like.';document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
+const SUBS={Acid:[['acetate','Acétate'],['metal','Métal'],['premium','Premium'],['boost','Boost']],Parasite:[['lab','LAB']]};
+let subFilter=null;const subBar=document.getElementById('subfilters');
+function renderSubs(){const L=SUBS[filter]||[];if(!L.length){subBar.style.display='none';subBar.innerHTML='';return;}subBar.style.display='flex';subBar.innerHTML=L.map(s=>`<span class="chip ${subFilter===s[0]?'sel':''}" data-s="${s[0]}">${s[1]}</span>`).join('');}
+subBar.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;subFilter=(subFilter===c.dataset.s)?null:c.dataset.s;renderSubs();render();});
 function render(){
-  let list = favMode ? ALL.filter(p=>favs().includes(p.h)) : (filter==='all'?ALL:ALL.filter(p=>p.b===filter||p.t===filter));
+  let list;
+  if(favMode) list=ALL.filter(p=>favs().includes(p.h));
+  else if(subFilter) list=ALL.filter(p=>p.b===filter&&(p.cols||[]).includes(subFilter));
+  else list=(filter==='all'?ALL:ALL.filter(p=>p.b===filter||p.t===filter));
   countEl.textContent=list.length+(favMode?' favorites':' frames');
   if(favMode&&!list.length){grid.innerHTML='<div class="loading" style="grid-column:1/-1">No favorites yet — tap the ♥ on frames you love.</div>';return;}
   const F=favs();
@@ -76,14 +84,14 @@ function render(){
       <div class="meta"><div class="br">${p.b}</div><div class="nm">${p.n}</div><div class="pr">$${p.p}${p.c&&+p.c>+p.p?`<span class="was">$${p.c}</span>`:''}</div></div>
     </a>`).join('');
 }
-document.getElementById('filters').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;favMode=false;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');filter=c.dataset.f;if(['Portrait','Acid','Parasite'].includes(filter))bump(filter);render();});
+document.getElementById('filters').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;favMode=false;subFilter=null;document.querySelectorAll('#filters .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');filter=c.dataset.f;if(['Portrait','Acid','Parasite'].includes(filter))bump(filter);renderSubs();render();});
 document.getElementById('favtab').onclick=()=>{favMode=true;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));render();window.scrollTo({top:0});};
 setFavs(favs());
 fetch('products.json').then(r=>r.json()).then(d=>{ALL=d;loading.style.display='none';
   const b=new URLSearchParams(location.search).get('b');
   if(b){filter=b;document.querySelectorAll('.chip').forEach(x=>{x.classList.toggle('sel',x.dataset.f===b);});}
   if(location.hash==='#favorites'){favMode=true;}
-  render();
+  renderSubs();render();
 });
 </script>
 </body></html>

@@ -304,6 +304,14 @@ const MAPS={'Round':'round','Rectangular':'rect','Cat-eye':'cat','Geometric':'ge
 const MAPT={'Black':'dark','Warm tortoise':'warm','Cool metal':'cool','Bright & clear':'clear'};
 
 let step=-1;
+/* ---------- golden thread: seed from what they browsed/favorited ---------- */
+let seedBrand=null, seedFavCount=0;
+(function seed(){ try{
+  const aff=JSON.parse(localStorage.getItem('upc_aff')||'{}');
+  const favs=JSON.parse(localStorage.getItem('upc_favs')||'[]'); seedFavCount=favs.length;
+  const top=Object.entries(aff).sort((a,b)=>b[1]-a[1])[0];
+  if(top && top[1]>=2) seedBrand=top[0];
+}catch(e){} })();
 function setProg(n){const p=document.getElementById('prog');p.style.display='flex';[...p.children].forEach((i,x)=>i.className=x<n?'on':'')}
 
 function start(){ // screen 0
@@ -320,7 +328,7 @@ function enter(){
   document.getElementById('concHd').style.display='flex';
   document.getElementById('cName').textContent='Adrian';
   document.getElementById('cRole').textContent='Your concierge';
-  margaux("Hey — I'm Adrian, and I'll help you find your pair. First, a quick look at your face so I only show you frames that actually fit. It never leaves your screen.");
+  margaux((seedBrand?`I saw you've been drawn to ${seedBrand}${seedFavCount?` and saved a few favorites`:''} — let me build your three around that. `:"Hey — I'm Adrian, and I'll help you find your pair. ")+"First, a quick look at your face so I only show you frames that actually fit. It never leaves your screen.");
   document.getElementById('body').innerHTML=
    `<div class="scanbox">
       <div class="scanface" id="sf">
@@ -425,6 +433,7 @@ function score(f){
   if(use==='Work' && (f.vibe==='quiet'||f.vibe==='classic')) s+=1;
   if(use==='Going out' && f.size==='statement') s+=1;
   if(f.br==='Portrait') s+=0.6; // gentle premium-base lean
+  if(seedBrand && f.br===seedBrand) s+=5; // lean into the house they browsed/saved
   s += Math.random()*0.4;
   return s;
 }
@@ -447,7 +456,7 @@ function why(f){
 function reveal(){
   setProg(4);
   const picks=curate(); window.__picks=picks;
-  margaux("Here they are — your three, each picked for a reason. Tap to try them on, or ask me to tweak.");
+  margaux(seedBrand?`Here are my three — leaning into your love of ${seedBrand}.`:"Here are my three recommendations for you.");
   document.getElementById('body').innerHTML=
    `<div class="three">${picks.map(f=>`
       <div class="fr"><div class="ph"><img src="${f.img}?width=600"></div>
