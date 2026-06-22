@@ -68,7 +68,7 @@ fetch('products.json').then(r=>r.json()).then(D=>{
       <div class="price">$${p.p}${off?`<span class="was">$${p.c}</span><span class="off">−${off}%</span>`:''}</div>
       <div class="desc">${p.desc||''}</div>
       <div class="acts">
-        <div class="btn out" onclick="location.href='atelier.html'">◉ Try it on with Adrian</div>
+        <div class="btn out" onclick="localStorage.setItem('upc_atelier_brand','${p.b}');location.href='getapp.html?b='+encodeURIComponent('${p.b}')">◉ Try it on with Adrian</div>
         <div class="btn lime" onclick="toast('Checkout opens at launch')">Add to bag</div>
         <div class="btn ${isFav(p.h)?'faved':'ghost'}" id="favbtn" onclick="const on=toggleFav('${p.h}','${p.b}');this.className='btn '+(on?'faved':'ghost');this.textContent=on?'♥ In your favorites':'♡ Add to favorites';toast(on?'Saved to favorites':'Removed')">${isFav(p.h)?'♥ In your favorites':'♡ Add to favorites'}</div>
       </div>

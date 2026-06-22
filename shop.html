@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g2:#7a2bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{background:var(--ink);color:var(--bone);font-family:var(--mono)}a{color:inherit;text-decoration:none}
 .wrap{max-width:1320px;margin:0 auto;padding:0 28px}
@@ -16,6 +16,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .nav-links{display:flex;gap:24px}.nav-links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85}.nav-links a:hover{color:var(--lime)}.nav-links a.on{color:var(--lime)}
 .bag{border:1px solid #ffffff30;border-radius:40px;padding:6px 13px;font-size:11px;letter-spacing:.1em;cursor:pointer}.bag:hover{border-color:var(--lime);color:var(--lime)}
 .head{padding:30px 0 6px}.head h1{font-family:var(--disp);font-size:clamp(38px,7vw,80px);line-height:.9;text-transform:uppercase}.head p{font-family:var(--serif);font-style:italic;font-size:16px;opacity:.8;margin-top:8px}
+.restart{display:inline-block;margin-top:14px;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:8px 16px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}.restart:hover{background:var(--lime);color:var(--ink)}
 .filters{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding:18px 0 18px;position:sticky;top:62px;background:var(--ink);z-index:40}
 .chip{border:1px solid #ffffff28;border-radius:40px;padding:9px 16px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.15s}.chip:hover{border-color:#ffffff60}.chip.sel{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
 .sep{width:1px;height:20px;background:#ffffff22;margin:0 4px}
@@ -31,17 +32,88 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .heart{position:absolute;right:9px;top:9px;z-index:5;width:38px;height:38px;border-radius:50%;background:rgba(10,10,12,.6);display:grid;place-items:center;font-size:17px;cursor:pointer;color:#fff;transition:.15s;border:1px solid #ffffff25}.heart:hover{background:rgba(10,10,12,.85);transform:scale(1.08)}.heart.on{color:var(--lime);border-color:var(--lime)}
 .meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}.br{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime)}.nm{font-family:var(--disp);font-size:17px;text-transform:uppercase;line-height:.98}.pr{font-size:12px;margin-top:2px}.pr .was{opacity:.45;text-decoration:line-through;margin-left:7px;font-size:11px}
 .loading{padding:80px 0;text-align:center;opacity:.6;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:80}.toast.show{opacity:1}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:120}.toast.show{opacity:1}
+/* wizard */
+.wiz{position:fixed;inset:0;z-index:90;background:rgba(8,8,10,.97);backdrop-filter:blur(8px);overflow:auto;display:none}
+.wiz.show{display:block}
+.wiz-in{max-width:1080px;margin:0 auto;padding:64px 24px 80px;min-height:100%;display:flex;flex-direction:column;justify-content:center;position:relative}
+.wskip{position:absolute;top:20px;right:24px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;cursor:pointer}.wskip:hover{color:var(--lime)}
+.wsteps{display:flex;gap:8px;margin-bottom:26px}.wdot{width:30px;height:3px;border-radius:3px;background:#ffffff25}.wdot.on{background:var(--lime)}
+.step{display:none}.step.on{display:block;animation:fade .4s ease}@keyframes fade{from{opacity:0;transform:translateY(12px)}}
+.ey{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:10px}
+.step h2{font-family:var(--disp);font-size:clamp(32px,5.5vw,60px);text-transform:uppercase;line-height:.92}
+.step .sub{font-family:var(--serif);font-style:italic;opacity:.75;margin:8px 0 26px;font-size:16px}
+.wcards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.wcard{position:relative;border:1px solid #ffffff20;border-radius:14px;overflow:hidden;aspect-ratio:3/4;cursor:pointer;transition:.2s}
+.wcard:hover{border-color:var(--lime);transform:translateY(-3px)}
+.wcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.25);transition:.5s}.wcard:hover img{filter:none;transform:scale(1.05)}
+.wcard:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 32%,rgba(10,10,12,.93))}
+.wcard .b{position:absolute;z-index:2;bottom:0;padding:20px}
+.wcard .t{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
+.wcard h3{font-family:var(--disp);font-size:32px;text-transform:uppercase;margin:4px 0 7px;line-height:.9}
+.wcard p{font-size:12px;line-height:1.5;opacity:.86;max-width:30ch}
+.wbtns{display:flex;flex-wrap:wrap;gap:12px}
+.wbtn{border:1px solid #ffffff30;border-radius:40px;padding:16px 30px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:.18s;font-weight:700;background:none;color:var(--bone)}.wbtn:hover{border-color:var(--lime);color:var(--lime)}
+.wbtn.big{flex:1;min-width:180px;text-align:center}
+.clubbox{margin-top:26px;border:1px solid var(--lime);border-radius:14px;padding:18px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap;justify-content:space-between;background:#11140a}
+.clubbox .ct{font-size:12px;line-height:1.7;max-width:60ch}.clubbox .ct b{color:var(--lime)}
+.clubbox a{background:var(--lime);color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:13px 18px;border-radius:30px;white-space:nowrap}
+.adrianrow{margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.adrianbtn{background:linear-gradient(92deg,var(--g1),var(--g2),var(--g3));color:#fff;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:15px 24px;border-radius:40px;cursor:pointer;border:0}
+.wback{background:none;border:0;color:var(--bone);opacity:.6;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;margin-top:26px}
+.wback:hover{opacity:1;color:var(--lime)}
 @media(max-width:1024px){.pgrid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:720px){.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
+@media(max-width:720px){.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}.wcards{grid-template-columns:1fr}}
 </style></head><body>
 <div class="ticker"><div class="run"><span>★ USA PARASITE CLUB</span><span>574 FRAMES · 3 HOUSES</span><span>HANDMADE IN ITALY · ENGINEERED IN FRANCE</span><span>FREE US SHIPPING & RETURNS</span><span>★ USA PARASITE CLUB</span><span>574 FRAMES · 3 HOUSES</span><span>HANDMADE IN ITALY · ENGINEERED IN FRANCE</span><span>FREE US SHIPPING & RETURNS</span></div></div>
-<nav><div class="wrap nav-in"><a class="logo" href="index.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a class="on" href="shop.html">Shop</a><a href="atelier.html">The Atelier</a><a href="membership.html">The Club</a></div><span class="bag" id="favtab">♥ <span id="favn">0</span> Favorites</span></div></nav>
+<nav><div class="wrap nav-in"><a class="logo" href="index.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a class="on" href="shop.html">Shop</a><a href="getapp.html">The Atelier</a><a href="membership.html">The Club</a></div><span class="bag" id="favtab">♥ <span id="favn">0</span> Favorites</span></div></nav>
+
+<!-- guided start wizard -->
+<div class="wiz" id="wiz"><div class="wiz-in">
+  <div class="wskip" id="wskip">Browse all 574 →</div>
+  <div class="wsteps"><span class="wdot" id="wd0"></span><span class="wdot" id="wd1"></span><span class="wdot" id="wd2"></span></div>
+
+  <div class="step" id="stBrand">
+    <div class="ey">Start here</div>
+    <h2>Choose your house</h2>
+    <div class="sub">Three European houses, one American club. Where do you want to begin?</div>
+    <div class="wcards" id="brandCards"></div>
+  </div>
+
+  <div class="step" id="stType">
+    <div class="ey" id="typeEy"></div>
+    <h2>How will you wear it?</h2>
+    <div class="sub">Optical for every day, Sun for the spotlight — or see both.</div>
+    <div class="wbtns">
+      <span class="wbtn big" data-t="Eyeglasses">Optical</span>
+      <span class="wbtn big" data-t="Sunglasses">Sun</span>
+      <span class="wbtn big" data-t="">Both</span>
+    </div>
+    <button class="wback" data-to="brand">← Back to the houses</button>
+  </div>
+
+  <div class="step" id="stCat">
+    <div class="ey" id="catEy"></div>
+    <h2 id="catH">Pick a line</h2>
+    <div class="sub" id="catSub"></div>
+    <div class="wbtns" id="catBtns"></div>
+    <div class="adrianrow">
+      <button class="adrianbtn" id="catAdrian">◉ Try it on with Adrian</button>
+      <span style="font-size:11px;opacity:.6;letter-spacing:.08em;text-transform:uppercase">Fit any frame true-to-size in the app</span>
+    </div>
+    <div class="clubbox">
+      <div class="ct"><b>The Club —</b> free House Call home try-on, member pricing &amp; first access to Lab drops, and your fit + favorites saved across web and app.</div>
+      <a id="clubjoin" href="#">Create your profile</a>
+    </div>
+    <button class="wback" data-to="type">← Back</button>
+  </div>
+</div></div>
 
 <div class="wrap">
-  <div class="head"><h1 id="title">The Collection.</h1><p>Three European houses, 574 frames, sized to your face — now in America.</p></div>
+  <div class="head"><h1 id="title">The Collection.</h1><p id="subtitle">Three European houses, 574 frames, sized to your face — now in America.</p>
+  <span class="restart" id="restart">↺ Start the guided pick</span></div>
   <div class="filters" id="filters">
-    <span class="chip sel" data-f="all">All</span>
+    <span class="chip" data-f="all">All</span>
     <span class="chip" data-f="Portrait">Portrait</span>
     <span class="chip" data-f="Acid">Acid</span>
     <span class="chip" data-f="Parasite">Parasite</span>
@@ -51,44 +123,67 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
     <span class="count" id="count">—</span>
   </div>
   <div id="subfilters" class="filters" style="top:108px;padding:0 0 14px;display:none"></div>
-  <div class="nudge" id="nudge"><div class="t" id="nudgetxt"></div><div class="go" onclick="location.href='atelier.html'">Let Adrian narrow it down →</div></div>
+  <div class="nudge" id="nudge"><div class="t" id="nudgetxt"></div><div class="go" id="nudgego">Try it on with Adrian →</div></div>
   <div id="grid" class="pgrid"></div>
   <div id="loading" class="loading">Loading the collection…</div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
+const ACCOUNT_URL="https://shopify.com/100157817145/account"; // Shopify customer account / create profile
+const HOUSES={
+  Portrait:{tag:'Italy · Handmade',concept:'Premium acetate, handmade in Italy. Where romance meets rebellion.',img:'https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=800',subs:[['essential','Essential'],['editorial','Editorial'],['metal','Metal']]},
+  Acid:{tag:'France · Designer',concept:'Fresh & French. Art and architecture, distilled into designer frames.',img:'https://cdn.shopify.com/s/files/1/0556/3446/0745/files/GEOMETRICS4-LILIAN-FACE.jpg?width=800',subs:[['acetate','Acétate'],['metal','Métal'],['premium','Premium'],['boost','Boost']]},
+  Parasite:{tag:'France · Futurist',concept:'Sci-fi sculptural frames engineered in France. The avant-garde edge of the club.',img:'https://cdn.shopify.com/s/files/1/1924/6071/files/SYSTEME1-FELICIE-FACE.jpg?width=800',subs:[['lab','LAB']]}
+};
+const ORDER=['Portrait','Acid','Parasite'];
 const grid=document.getElementById('grid'),countEl=document.getElementById('count'),loading=document.getElementById('loading');
-let ALL=[],filter='all',favMode=false;
+let ALL=[],favMode=false,selBrand=null,selType=null,selSub=null;
 const favs=()=>JSON.parse(localStorage.getItem('upc_favs')||'[]');
 const setFavs=a=>{localStorage.setItem('upc_favs',JSON.stringify(a));document.getElementById('favn').textContent=a.length;};
 const aff=()=>JSON.parse(localStorage.getItem('upc_aff')||'{}');
 function bump(b){const o=aff();o[b]=(o[b]||0)+1;localStorage.setItem('upc_aff',JSON.stringify(o));maybeNudge();}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1700);}
 function toggleFav(h,b,ev){ev.preventDefault();ev.stopPropagation();let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);toast('Removed');}else{a.push(h);bump(b);toast('Saved to favorites');}setFavs(a);render();}
-function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Let Adrian build your three from what you like.';document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
-const SUBS={Portrait:[['essential','Essential'],['editorial','Editorial'],['metal','Metal']],Acid:[['acetate','Acétate'],['metal','Métal'],['premium','Premium'],['boost','Boost']],Parasite:[['lab','LAB']]};
-// --- consistent grouping: house -> category -> model (colour variants together) ---
+function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Adrian can build your three from what you like.';document.getElementById('nudge').dataset.brand=top[0];document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
+
+// ---- grouping/sort ----
+const SUBS=HOUSES; // alias for sub lookups
 const BRANDORDER={Portrait:0,Acid:1,Parasite:2};
 const CATRANK={Portrait:{essential:0,editorial:1,metal:2},Acid:{acetate:0,metal:1,premium:2},Parasite:{lab:0,optical:1,sun:2}};
 function pcat(p){if(p.b==='Parasite')return (p.cols&&p.cols.includes('lab'))?'lab':(p.t==='Sunglasses'?'sun':'optical');return (p.cols&&p.cols[0])||(p.t==='Sunglasses'?'sun':'optical');}
 function baseModel(p){const s=(p.model||p.n||'');return (s.replace(/\s*\d+\s*$/,'').trim()||s).toUpperCase();}
 function sortCatalog(list){return list.slice().sort((a,b)=>{
-  const ba=BRANDORDER[a.b]??9, bb=BRANDORDER[b.b]??9; if(ba!==bb)return ba-bb;
-  const ra=(CATRANK[a.b]||{})[pcat(a)]??9, rb=(CATRANK[b.b]||{})[pcat(b)]??9; if(ra!==rb)return ra-rb;
-  const ma=baseModel(a), mb=baseModel(b); if(ma!==mb)return ma.localeCompare(mb);
-  const ta=a.t==='Sunglasses'?1:0, tb=b.t==='Sunglasses'?1:0; if(ta!==tb)return ta-tb;
+  const ba=BRANDORDER[a.b]??9,bb=BRANDORDER[b.b]??9;if(ba!==bb)return ba-bb;
+  const ra=(CATRANK[a.b]||{})[pcat(a)]??9,rb=(CATRANK[b.b]||{})[pcat(b)]??9;if(ra!==rb)return ra-rb;
+  const ma=baseModel(a),mb=baseModel(b);if(ma!==mb)return ma.localeCompare(mb);
+  const ta=a.t==='Sunglasses'?1:0,tb=b.t==='Sunglasses'?1:0;if(ta!==tb)return ta-tb;
   return (a.n||'').localeCompare(b.n||'');
 });}
-let subFilter=null;const subBar=document.getElementById('subfilters');
-function renderSubs(){const L=SUBS[filter]||[];if(!L.length){subBar.style.display='none';subBar.innerHTML='';return;}subBar.style.display='flex';subBar.innerHTML=L.map(s=>`<span class="chip ${subFilter===s[0]?'sel':''}" data-s="${s[0]}">${s[1]}</span>`).join('');}
-subBar.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;subFilter=(subFilter===c.dataset.s)?null:c.dataset.s;renderSubs();render();});
+
+// ---- sub-filter chips row ----
+const subBar=document.getElementById('subfilters');
+function renderSubs(){const L=(selBrand&&HOUSES[selBrand])?HOUSES[selBrand].subs:[];if(!L.length){subBar.style.display='none';subBar.innerHTML='';return;}subBar.style.display='flex';subBar.innerHTML=L.map(s=>`<span class="chip ${selSub===s[0]?'sel':''}" data-s="${s[0]}">${s[1]}</span>`).join('');}
+subBar.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;selSub=(selSub===c.dataset.s)?null:c.dataset.s;renderSubs();render();});
+
+// ---- chips ----
+function syncChips(){document.querySelectorAll('#filters .chip').forEach(c=>{const f=c.dataset.f;let on=false;if(f==='all')on=!selBrand&&!selType;else if(f===selBrand)on=true;else if(f===selType)on=true;c.classList.toggle('sel',on&&!favMode);});}
+document.getElementById('filters').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;favMode=false;const f=c.dataset.f;
+  if(f==='all'){selBrand=null;selType=null;selSub=null;}
+  else if(['Portrait','Acid','Parasite'].includes(f)){selBrand=(selBrand===f?null:f);selSub=null;if(selBrand)bump(selBrand);}
+  else if(['Eyeglasses','Sunglasses'].includes(f)){selType=(selType===f?null:f);}
+  syncChips();renderSubs();render();});
+document.getElementById('favtab').onclick=()=>{favMode=true;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));render();window.scrollTo({top:0});};
+
 function render(){
   let list;
-  if(favMode) list=ALL.filter(p=>favs().includes(p.h));
-  else if(subFilter) list=ALL.filter(p=>p.b===filter&&(p.cols||[]).includes(subFilter));
-  else list=(filter==='all'?ALL:ALL.filter(p=>p.b===filter||p.t===filter));
+  if(favMode){list=ALL.filter(p=>favs().includes(p.h));}
+  else{list=ALL;if(selBrand)list=list.filter(p=>p.b===selBrand);if(selType)list=list.filter(p=>p.t===selType);if(selSub)list=list.filter(p=>(p.cols||[]).includes(selSub));}
   countEl.textContent=list.length+(favMode?' favorites':' frames');
+  // title
+  if(favMode){document.getElementById('title').textContent='Your favorites.';}
+  else if(selBrand){document.getElementById('title').textContent=selBrand+'.';}
+  else{document.getElementById('title').textContent='The Collection.';}
   if(favMode&&!list.length){grid.innerHTML='<div class="loading" style="grid-column:1/-1">No favorites yet — tap the ♥ on frames you love.</div>';return;}
   const F=favs();
   grid.innerHTML=list.map(p=>`
@@ -97,14 +192,51 @@ function render(){
       <div class="meta"><div class="br">${p.b}</div><div class="nm">${p.n}</div><div class="pr">$${p.p}${p.c&&+p.c>+p.p?`<span class="was">$${p.c}</span>`:''}</div></div>
     </a>`).join('');
 }
-document.getElementById('filters').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;favMode=false;subFilter=null;document.querySelectorAll('#filters .chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');filter=c.dataset.f;if(['Portrait','Acid','Parasite'].includes(filter))bump(filter);renderSubs();render();});
-document.getElementById('favtab').onclick=()=>{favMode=true;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));render();window.scrollTo({top:0});};
+
+// ========== WIZARD ==========
+const wiz=document.getElementById('wiz');
+function showStep(id){document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');
+  const m={stBrand:0,stType:1,stCat:2}[id];['wd0','wd1','wd2'].forEach((d,i)=>document.getElementById(d).classList.toggle('on',i<=m));}
+function openWizard(step,brand){
+  wiz.classList.add('show');document.body.style.overflow='hidden';
+  // brand cards
+  document.getElementById('brandCards').innerHTML=ORDER.map(b=>{const h=HOUSES[b];return `<div class="wcard" data-b="${b}"><img src="${h.img}" alt="${b}"><div class="b"><div class="t">${h.tag}</div><h3>${b}</h3><p>${h.concept}</p></div></div>`;}).join('');
+  if(brand){selBrand=brand;buildCat();showStep(step||'stType');document.getElementById('typeEy').textContent=brand;}
+  else{showStep('stBrand');}
+}
+function closeWizard(){wiz.classList.remove('show');document.body.style.overflow='';syncChips();renderSubs();render();}
+document.getElementById('wskip').onclick=()=>{selBrand=null;selType=null;selSub=null;closeWizard();};
+document.getElementById('restart').onclick=()=>openWizard('stBrand');
+// pick brand
+document.getElementById('brandCards').addEventListener('click',e=>{const c=e.target.closest('.wcard');if(!c)return;selBrand=c.dataset.b;selSub=null;bump(selBrand);document.getElementById('typeEy').textContent=selBrand;showStep('stType');});
+// pick type
+document.querySelector('#stType .wbtns').addEventListener('click',e=>{const b=e.target.closest('.wbtn');if(!b)return;selType=b.dataset.t||null;buildCat();showStep('stCat');});
+// back buttons
+document.querySelectorAll('.wback').forEach(btn=>btn.onclick=()=>{showStep(btn.dataset.to==='brand'?'stBrand':'stType');});
+// build category step for selBrand/selType
+function buildCat(){
+  const h=HOUSES[selBrand];const tw=selType==='Eyeglasses'?'Optical':selType==='Sunglasses'?'Sun':'';
+  document.getElementById('catEy').textContent=selBrand+(tw?' · '+tw:'');
+  document.getElementById('catH').textContent='Pick a line';
+  document.getElementById('catSub').textContent=h.concept;
+  const btns=[['','See everything']].concat(h.subs);
+  document.getElementById('catBtns').innerHTML=btns.map(s=>`<span class="wbtn" data-s="${s[0]}">${s[1]}</span>`).join('');
+  document.getElementById('clubjoin').href=ACCOUNT_URL;
+  document.getElementById('catAdrian').onclick=()=>{localStorage.setItem('upc_atelier_brand',selBrand);location.href='getapp.html?b='+encodeURIComponent(selBrand);};
+}
+document.getElementById('catBtns').addEventListener('click',e=>{const b=e.target.closest('.wbtn');if(!b)return;selSub=b.dataset.s||null;closeWizard();});
+
+// nudge + account
+document.getElementById('nudgego').onclick=()=>{const b=document.getElementById('nudge').dataset.brand||selBrand||'';localStorage.setItem('upc_atelier_brand',b);location.href='getapp.html'+(b?'?b='+encodeURIComponent(b):'');};
+
 setFavs(favs());
 fetch('products.json').then(r=>r.json()).then(d=>{ALL=sortCatalog(d);loading.style.display='none';
-  const b=new URLSearchParams(location.search).get('b');
-  if(b){filter=b;document.querySelectorAll('.chip').forEach(x=>{x.classList.toggle('sel',x.dataset.f===b);});}
-  if(location.hash==='#favorites'){favMode=true;}
-  renderSubs();render();
+  const qp=new URLSearchParams(location.search);
+  const b=qp.get('b');
+  if(location.hash==='#favorites'){favMode=true;render();return;}
+  if(qp.get('all')==='1'){closeWizard();return;}
+  openWizard(b?'stType':'stBrand', b&&HOUSES[b]?b:null);
+  render();
 });
 </script>
 </body></html>

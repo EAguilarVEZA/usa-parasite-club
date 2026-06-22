@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meet Adrian — USA Parasite Club</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g2:#7a2bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}body{background:var(--ink);color:var(--bone);font-family:var(--mono)}a{color:inherit;text-decoration:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff18}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1180px;margin:0 auto;padding:0 24px}
+.logo{font-family:var(--disp);font-size:18px;letter-spacing:.04em}.logo b{color:var(--lime)}
+.nav-links{display:flex;gap:22px}.nav-links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85}.nav-links a:hover{color:var(--lime)}
+.hero{text-align:center;padding:54px 0 10px}
+.ey{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:6px 15px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}
+h1{font-family:var(--disp);font-size:clamp(40px,8vw,76px);line-height:.9;text-transform:uppercase}
+h1 .grad{background:linear-gradient(92deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-family:var(--serif);font-style:italic;font-size:17px;opacity:.85;margin:18px auto 0;max-width:48ch;line-height:1.5}
+.house-tune{margin:20px auto 0;display:none;font-size:11px;letter-spacing:.14em;text-transform:uppercase}.house-tune b{color:var(--lime)}
+.phone{margin:34px auto 0;max-width:420px}
+.steps{margin:34px auto 0;max-width:440px;display:flex;flex-direction:column;gap:16px}
+.s{display:flex;gap:16px;align-items:flex-start;text-align:left;border:1px solid #ffffff14;border-radius:14px;padding:16px 18px;background:#101218}
+.s .n{flex:none;width:30px;height:30px;border-radius:50%;background:var(--lime);color:var(--ink);font-weight:700;display:grid;place-items:center}
+.s h4{font-family:var(--disp);font-size:18px;text-transform:uppercase;line-height:1;margin-bottom:4px}
+.s p{font-size:12.5px;opacity:.8;line-height:1.5}
+.cta{margin:34px auto 0;max-width:440px}
+.getapp{display:block;background:var(--lime);color:var(--ink);font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:18px;border-radius:40px;text-align:center;cursor:pointer;transition:.18s}.getapp:hover{transform:translateY(-2px)}
+.badge{display:flex;gap:10px;justify-content:center;margin-top:14px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.openapp{display:block;text-align:center;margin-top:16px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.7;cursor:pointer}.openapp:hover{color:var(--lime)}
+.beta{margin:18px auto 0;max-width:440px;border:1px dashed #ffffff30;border-radius:10px;padding:12px 16px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#aab;text-align:center}
+.alt{text-align:center;margin:40px 0 70px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.55}.alt a{color:var(--lime)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:80}.toast.show{opacity:1}
+@media(max-width:720px){.nav-links{display:none}}
+</style></head><body>
+<nav><div class="nav-in"><a class="logo" href="index.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a>
+<div class="nav-links"><a href="shop.html">Shop</a><a href="membership.html">The Club</a><a href="shop.html">Back to frames</a></div></div></nav>
+
+<div class="wrap hero">
+  <div class="ey">★ The Atelier · with Adrian</div>
+  <h1>Adrian lives<br>in the <span class="grad">app.</span></h1>
+  <p class="lead">Adrian is your private optician. To measure your face true-to-size and fit frames on you in 3D, he needs the camera — so the Atelier happens in the USA Parasite Club app.</p>
+  <div class="house-tune" id="tune">Tuned for <b id="tuneName"></b></div>
+</div>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="s"><span class="n">1</span><div><h4>Get the app</h4><p>Download USA Parasite Club — free. One tap and you're in the Atelier.</p></div></div>
+    <div class="s"><span class="n">2</span><div><h4>Measure your face</h4><p>A quick wire-frame scan reads your pupillary distance, bridge and face width — your true fit.</p></div></div>
+    <div class="s"><span class="n">3</span><div><h4>Answer Adrian's questions</h4><p id="q3">Tell Adrian what you're after and he curates your three — then you try them on, live on your face.</p></div></div>
+  </div>
+
+  <div class="cta">
+    <span class="getapp" id="getapp">Get the app</span>
+    <div class="badge"><span>iPhone · TrueDepth</span><span>·</span><span>Free to download</span></div>
+    <span class="openapp" id="openapp">Already installed? Open Adrian →</span>
+  </div>
+  <div class="beta" id="beta">Beta — the App Store / TestFlight link is being finalized. Tap “Get the app” to register your interest; we’ll notify you the moment it’s live.</div>
+
+  <div class="alt">Not ready for the app? <a href="shop.html">Keep browsing the frames →</a> · <a href="atelier.html">Preview the experience on web →</a></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// ===== wire these when the build is published =====
+const APP_URL=""; // e.g. TestFlight: https://testflight.apple.com/join/XXXX  — paste here
+// ==================================================
+const qp=new URLSearchParams(location.search);
+const brand=qp.get('b')||localStorage.getItem('upc_atelier_brand')||'';
+if(brand){localStorage.setItem('upc_atelier_brand',brand);
+  document.getElementById('tune').style.display='inline-block';
+  document.getElementById('tuneName').textContent=brand;
+  document.getElementById('q3').textContent='Tell Adrian what you want from your '+brand+' — shape, vibe, colour — and he curates your three, then you try them on live.';
+}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),2200);}
+if(APP_URL){document.getElementById('beta').style.display='none';}
+document.getElementById('getapp').onclick=()=>{ if(APP_URL){location.href=APP_URL;} else {toast('Thanks — we’ll notify you when the app goes live.');} };
+document.getElementById('openapp').onclick=()=>{ const dl='usaparasiteclub://atelier'+(brand?'?brand='+encodeURIComponent(brand):''); location.href=dl; setTimeout(()=>toast('No app found yet — tap “Get the app”.'),700); };
+</script>
+</body></html>
