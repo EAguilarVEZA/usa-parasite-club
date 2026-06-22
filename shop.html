@@ -26,8 +26,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:70px}
 .card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;transition:.2s;position:relative;display:flex;flex-direction:column}.card:hover{transform:translateY(-3px);border-color:#ffffff40}
 .card .ph{aspect-ratio:1/1;background:#fff;position:relative;overflow:hidden}.card .ph img{width:100%;height:100%;object-fit:cover;transition:.3s}.card:hover .ph img{transform:scale(1.04)}
-.flag{position:absolute;left:10px;top:10px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;background:var(--lime);color:var(--ink);padding:4px 9px;border-radius:30px;font-weight:700}
-.heart{position:absolute;right:9px;top:9px;width:32px;height:32px;border-radius:50%;background:rgba(10,10,12,.55);display:grid;place-items:center;font-size:15px;cursor:pointer;color:#fff;transition:.15s;border:1px solid #ffffff20}.heart:hover{background:rgba(10,10,12,.8)}.heart.on{color:var(--lime);border-color:var(--lime)}
+.flag{position:absolute;left:10px;top:10px;z-index:3;font-size:9px;letter-spacing:.12em;text-transform:uppercase;background:var(--lime);color:var(--ink);padding:4px 9px;border-radius:30px;font-weight:700;pointer-events:none}
+.card .ph img{position:relative;z-index:1}
+.heart{position:absolute;right:9px;top:9px;z-index:5;width:38px;height:38px;border-radius:50%;background:rgba(10,10,12,.6);display:grid;place-items:center;font-size:17px;cursor:pointer;color:#fff;transition:.15s;border:1px solid #ffffff25}.heart:hover{background:rgba(10,10,12,.85);transform:scale(1.08)}.heart.on{color:var(--lime);border-color:var(--lime)}
 .meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}.br{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime)}.nm{font-family:var(--disp);font-size:17px;text-transform:uppercase;line-height:.98}.pr{font-size:12px;margin-top:2px}.pr .was{opacity:.45;text-decoration:line-through;margin-left:7px;font-size:11px}
 .loading{padding:80px 0;text-align:center;opacity:.6;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:80}.toast.show{opacity:1}
@@ -66,7 +67,7 @@ function bump(b){const o=aff();o[b]=(o[b]||0)+1;localStorage.setItem('upc_aff',J
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1700);}
 function toggleFav(h,b,ev){ev.preventDefault();ev.stopPropagation();let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);toast('Removed');}else{a.push(h);bump(b);toast('Saved to favorites');}setFavs(a);render();}
 function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Let Adrian build your three from what you like.';document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
-const SUBS={Acid:[['acetate','Acétate'],['metal','Métal'],['premium','Premium'],['boost','Boost']],Parasite:[['lab','LAB']]};
+const SUBS={Portrait:[['essential','Essential'],['editorial','Editorial'],['metal','Metal']],Acid:[['acetate','Acétate'],['metal','Métal'],['premium','Premium'],['boost','Boost']],Parasite:[['lab','LAB']]};
 let subFilter=null;const subBar=document.getElementById('subfilters');
 function renderSubs(){const L=SUBS[filter]||[];if(!L.length){subBar.style.display='none';subBar.innerHTML='';return;}subBar.style.display='flex';subBar.innerHTML=L.map(s=>`<span class="chip ${subFilter===s[0]?'sel':''}" data-s="${s[0]}">${s[1]}</span>`).join('');}
 subBar.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;subFilter=(subFilter===c.dataset.s)?null:c.dataset.s;renderSubs();render();});
