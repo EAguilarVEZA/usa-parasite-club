@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
 body{background:var(--ink);color:var(--bone);font-family:var(--mono)}a{color:inherit;text-decoration:none}
 .wrap{max-width:1320px;margin:0 auto;padding:0 28px}
@@ -14,75 +14,76 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:62px}
 .logo{font-family:var(--disp);font-size:19px;letter-spacing:.04em}.logo b{color:var(--lime)}
 .nav-links{display:flex;gap:24px}.nav-links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85}.nav-links a:hover{color:var(--lime)}.nav-links a.on{color:var(--lime)}
-.bag{border:1px solid #ffffff30;border-radius:40px;padding:6px 13px;font-size:11px;letter-spacing:.1em}
-.head{padding:34px 0 8px}
-.head h1{font-family:var(--disp);font-size:clamp(40px,7vw,84px);line-height:.9;text-transform:uppercase}
-.head p{font-family:var(--serif);font-style:italic;font-size:16px;opacity:.8;margin-top:8px}
-.filters{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding:18px 0 22px;position:sticky;top:62px;background:var(--ink);z-index:40}
-.chip{border:1px solid #ffffff28;border-radius:40px;padding:9px 16px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.15s}
-.chip:hover{border-color:#ffffff60}
-.chip.sel{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
+.bag{border:1px solid #ffffff30;border-radius:40px;padding:6px 13px;font-size:11px;letter-spacing:.1em;cursor:pointer}.bag:hover{border-color:var(--lime);color:var(--lime)}
+.head{padding:30px 0 6px}.head h1{font-family:var(--disp);font-size:clamp(38px,7vw,80px);line-height:.9;text-transform:uppercase}.head p{font-family:var(--serif);font-style:italic;font-size:16px;opacity:.8;margin-top:8px}
+.filters{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding:18px 0 18px;position:sticky;top:62px;background:var(--ink);z-index:40}
+.chip{border:1px solid #ffffff28;border-radius:40px;padding:9px 16px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.15s}.chip:hover{border-color:#ffffff60}.chip.sel{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
+.sep{width:1px;height:20px;background:#ffffff22;margin:0 4px}
 .count{margin-left:auto;font-size:10.5px;letter-spacing:.14em;opacity:.55;text-transform:uppercase}
+.nudge{background:#16181f;border:1px solid var(--lime);border-radius:12px;padding:12px 18px;margin:0 0 18px;display:none;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.nudge.show{display:flex}.nudge .t{font-size:12px}.nudge .t b{color:var(--lime)}
+.nudge .go{background:var(--lime);color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:9px 16px;border-radius:30px;cursor:pointer}
 .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:70px}
-.card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;transition:.2s;position:relative;display:flex;flex-direction:column}
-.card:hover{transform:translateY(-3px);border-color:#ffffff40}
-.card .ph{aspect-ratio:1/1;background:#fff;position:relative;overflow:hidden}.card .ph img{width:100%;height:100%;object-fit:cover;transition:.3s}
-.card:hover .ph img{transform:scale(1.04)}
+.card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;transition:.2s;position:relative;display:flex;flex-direction:column}.card:hover{transform:translateY(-3px);border-color:#ffffff40}
+.card .ph{aspect-ratio:1/1;background:#fff;position:relative;overflow:hidden}.card .ph img{width:100%;height:100%;object-fit:cover;transition:.3s}.card:hover .ph img{transform:scale(1.04)}
 .flag{position:absolute;left:10px;top:10px;font-size:9px;letter-spacing:.12em;text-transform:uppercase;background:var(--lime);color:var(--ink);padding:4px 9px;border-radius:30px;font-weight:700}
-.meta{padding:13px 14px 15px;display:flex;flex-direction:column;gap:5px;flex:1}
-.br{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime)}
-.nm{font-family:var(--disp);font-size:18px;text-transform:uppercase;line-height:.98;letter-spacing:.02em}
-.pr{font-size:12px;margin-top:2px}.pr .was{opacity:.45;text-decoration:line-through;margin-left:7px;font-size:11px}
-.add{margin-top:auto;border:1px solid var(--lime);color:var(--lime);border-radius:30px;padding:9px;text-align:center;font-size:10px;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:.15s}
-.add:hover{background:var(--lime);color:var(--ink)}
-.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:10px 14px;font-size:10px;letter-spacing:.06em;color:#99a;text-transform:uppercase;text-align:center;margin:0 0 24px}
+.heart{position:absolute;right:9px;top:9px;width:32px;height:32px;border-radius:50%;background:rgba(10,10,12,.55);display:grid;place-items:center;font-size:15px;cursor:pointer;color:#fff;transition:.15s;border:1px solid #ffffff20}.heart:hover{background:rgba(10,10,12,.8)}.heart.on{color:var(--lime);border-color:var(--lime)}
+.meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}.br{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime)}.nm{font-family:var(--disp);font-size:17px;text-transform:uppercase;line-height:.98}.pr{font-size:12px;margin-top:2px}.pr .was{opacity:.45;text-decoration:line-through;margin-left:7px;font-size:11px}
 .loading{padding:80px 0;text-align:center;opacity:.6;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
-.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.06em;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:80}
-.toast.show{opacity:1}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:80}.toast.show{opacity:1}
 @media(max-width:1024px){.pgrid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
 </style></head><body>
 <div class="ticker"><div class="run"><span>★ USA PARASITE CLUB</span><span>574 FRAMES · 3 HOUSES</span><span>HANDMADE IN ITALY · ENGINEERED IN FRANCE</span><span>FREE US SHIPPING & RETURNS</span><span>★ USA PARASITE CLUB</span><span>574 FRAMES · 3 HOUSES</span><span>HANDMADE IN ITALY · ENGINEERED IN FRANCE</span><span>FREE US SHIPPING & RETURNS</span></div></div>
-<nav><div class="wrap nav-in"><a class="logo" href="index.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a class="on" href="shop.html">Shop</a><a href="sun.html">Sun</a><a href="atelier.html">The Atelier</a><a href="membership.html">The Club</a></div><a class="bag" href="#">BAG · 0</a></div></nav>
+<nav><div class="wrap nav-in"><a class="logo" href="index.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a class="on" href="shop.html">Shop</a><a href="atelier.html">The Atelier</a><a href="membership.html">The Club</a></div><span class="bag" id="favtab">♥ <span id="favn">0</span> Favorites</span></div></nav>
 
 <div class="wrap">
-  <div class="head"><h1>The Collection.</h1><p>Three European houses, 574 frames, sized to your face — now in America.</p></div>
+  <div class="head"><h1 id="title">The Collection.</h1><p>Three European houses, 574 frames, sized to your face — now in America.</p></div>
   <div class="filters" id="filters">
     <span class="chip sel" data-f="all">All</span>
     <span class="chip" data-f="Portrait">Portrait</span>
     <span class="chip" data-f="Acid">Acid</span>
     <span class="chip" data-f="Parasite">Parasite</span>
+    <span class="sep"></span>
     <span class="chip" data-f="Eyeglasses">Optical</span>
     <span class="chip" data-f="Sunglasses">Sun</span>
     <span class="count" id="count">—</span>
   </div>
-  <div class="note">Live preview of your real catalog · checkout opens once the store is launched on Shopify</div>
+  <div class="nudge" id="nudge"><div class="t" id="nudgetxt"></div><div class="go" onclick="location.href='atelier.html'">Let Adrian narrow it down →</div></div>
   <div id="grid" class="pgrid"></div>
   <div id="loading" class="loading">Loading the collection…</div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-const grid=document.getElementById('grid'), countEl=document.getElementById('count'), loading=document.getElementById('loading');
-let ALL=[], filter='all';
-function priceHTML(p){ return `<div class="pr">$${p.p}${p.c && +p.c>+p.p ? `<span class="was">$${p.c}</span>`:''}</div>`; }
+const grid=document.getElementById('grid'),countEl=document.getElementById('count'),loading=document.getElementById('loading');
+let ALL=[],filter='all',favMode=false;
+const favs=()=>JSON.parse(localStorage.getItem('upc_favs')||'[]');
+const setFavs=a=>{localStorage.setItem('upc_favs',JSON.stringify(a));document.getElementById('favn').textContent=a.length;};
+const aff=()=>JSON.parse(localStorage.getItem('upc_aff')||'{}');
+function bump(b){const o=aff();o[b]=(o[b]||0)+1;localStorage.setItem('upc_aff',JSON.stringify(o));maybeNudge();}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1700);}
+function toggleFav(h,b,ev){ev.preventDefault();ev.stopPropagation();let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);toast('Removed');}else{a.push(h);bump(b);toast('Saved to favorites');}setFavs(a);render();}
+function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Let Adrian build your three from what you like.';document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
 function render(){
-  const list = filter==='all' ? ALL : ALL.filter(p=> p.b===filter || p.t===filter);
-  countEl.textContent = list.length+' frames';
-  grid.innerHTML = list.map(p=>`
-    <a class="card" href="#" onclick="addBag('${p.n.replace(/'/g,"")}');return false;">
-      <div class="ph">${p.t==='Sunglasses'?'<span class="flag">Sun</span>':''}<img loading="lazy" src="${p.img}?width=500" alt="${p.n}"></div>
-      <div class="meta"><div class="br">${p.b}</div><div class="nm">${p.n}</div>${priceHTML(p)}
-        <div class="add">Add to bag</div></div>
+  let list = favMode ? ALL.filter(p=>favs().includes(p.h)) : (filter==='all'?ALL:ALL.filter(p=>p.b===filter||p.t===filter));
+  countEl.textContent=list.length+(favMode?' favorites':' frames');
+  if(favMode&&!list.length){grid.innerHTML='<div class="loading" style="grid-column:1/-1">No favorites yet — tap the ♥ on frames you love.</div>';return;}
+  const F=favs();
+  grid.innerHTML=list.map(p=>`
+    <a class="card" href="p.html?h=${p.h}">
+      <div class="ph">${p.t==='Sunglasses'?'<span class="flag">Sun</span>':''}<span class="heart ${F.includes(p.h)?'on':''}" onclick="toggleFav('${p.h}','${p.b}',event)">${F.includes(p.h)?'♥':'♡'}</span><img loading="lazy" src="${p.img}?width=500" alt="${p.n}"></div>
+      <div class="meta"><div class="br">${p.b}</div><div class="nm">${p.n}</div><div class="pr">$${p.p}${p.c&&+p.c>+p.p?`<span class="was">$${p.c}</span>`:''}</div></div>
     </a>`).join('');
 }
-function addBag(name){ const t=document.getElementById('toast'); t.textContent='“'+name+'” — checkout opens at launch'; t.classList.add('show'); clearTimeout(window._tt); window._tt=setTimeout(()=>t.classList.remove('show'),1800); }
-document.getElementById('filters').addEventListener('click',e=>{
-  const c=e.target.closest('.chip'); if(!c)return;
-  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel')); c.classList.add('sel');
-  filter=c.dataset.f; render();
+document.getElementById('filters').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;favMode=false;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));c.classList.add('sel');filter=c.dataset.f;if(['Portrait','Acid','Parasite'].includes(filter))bump(filter);render();});
+document.getElementById('favtab').onclick=()=>{favMode=true;document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));render();window.scrollTo({top:0});};
+setFavs(favs());
+fetch('products.json').then(r=>r.json()).then(d=>{ALL=d;loading.style.display='none';
+  const b=new URLSearchParams(location.search).get('b');
+  if(b){filter=b;document.querySelectorAll('.chip').forEach(x=>{x.classList.toggle('sel',x.dataset.f===b);});}
+  if(location.hash==='#favorites'){favMode=true;}
+  render();
 });
-fetch('products.json').then(r=>r.json()).then(d=>{ ALL=d; loading.style.display='none'; render(); })
-  .catch(()=>{ loading.textContent='Could not load the catalog.'; });
 </script>
 </body></html>
