@@ -64,9 +64,41 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .wback:hover{opacity:1;color:var(--lime)}
 @media(max-width:1024px){.pgrid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:720px){.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}.wcards{grid-template-columns:1fr}}
+/* club gate */
+.guestbar{display:none;align-items:center;justify-content:center;gap:14px;background:#14160d;border-bottom:1px solid var(--lime);padding:9px 16px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;flex-wrap:wrap}
+.guestbar b{color:var(--lime)}
+.guestbar .jb{background:var(--lime);color:var(--ink);font-weight:700;padding:7px 14px;border-radius:30px;cursor:pointer;letter-spacing:.1em}
+.lock{color:var(--lime);font-size:11px;letter-spacing:.04em}
+.joincard-grid{border:1px dashed var(--lime);border-radius:12px;display:grid;place-items:center;text-align:center;background:#11140a;cursor:pointer;padding:20px;min-height:220px}
+.jg-lock{font-size:24px}.jg-t{font-family:var(--disp);font-size:22px;text-transform:uppercase;margin-top:6px}.jg-s{font-size:11px;opacity:.8;margin:6px 0 12px;line-height:1.5}.jg-btn{background:var(--lime);color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 16px;border-radius:30px;display:inline-block}
+.joinwrap{position:fixed;inset:0;z-index:130;background:rgba(8,8,10,.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:22px}
+.joinwrap.show{display:flex}
+.joincard{background:#101218;border:1px solid var(--lime);border-radius:18px;max-width:440px;width:100%;padding:30px;position:relative}
+.joincard .jx{position:absolute;right:16px;top:13px;cursor:pointer;opacity:.6;font-size:18px}
+.jey{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+.joincard h3{font-family:var(--disp);font-size:34px;text-transform:uppercase;line-height:.95;margin-bottom:8px}
+.joincard p{font-size:12.5px;opacity:.85;line-height:1.6;margin-bottom:14px}
+.perks{list-style:none;display:flex;flex-direction:column;gap:7px;margin:0 0 18px}
+.perks li{font-size:12px;padding-left:20px;position:relative}.perks li:before{content:"★";color:var(--lime);position:absolute;left:0}
+#joinform{display:flex;gap:8px;background:var(--ink);border:1px solid #ffffff25;border-radius:40px;padding:6px 6px 6px 16px}
+#joinform input{flex:1;background:transparent;border:0;color:var(--bone);font-family:var(--mono);font-size:12px;outline:none}
+#joinform button{background:var(--lime);color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:0;padding:11px 16px;border-radius:30px;cursor:pointer;white-space:nowrap}
+.jfine{font-size:10.5px;opacity:.6;margin-top:12px;text-align:center;letter-spacing:.04em}.jfine a{color:var(--lime);cursor:pointer}
 </style></head><body>
 <div class="ticker"><div class="run"><span>★ USA PARASITE CLUB</span><span>574 FRAMES · 3 HOUSES</span><span>HANDMADE IN ITALY · ENGINEERED IN FRANCE</span><span>FREE US SHIPPING & RETURNS</span><span>★ USA PARASITE CLUB</span><span>574 FRAMES · 3 HOUSES</span><span>HANDMADE IN ITALY · ENGINEERED IN FRANCE</span><span>FREE US SHIPPING & RETURNS</span></div></div>
 <nav><div class="wrap nav-in"><a class="logo" href="index.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a class="on" href="shop.html">Shop</a><a href="getapp.html">The Atelier</a><a href="membership.html">The Club</a></div><span class="bag" id="favtab">♥ <span id="favn">0</span> Favorites</span></div></nav>
+<div class="guestbar" id="guestbar"><span>You're tasting as a <b>guest</b> — join free to unlock prices, all 574 frames &amp; try-on.</span><span class="jb" id="guestjoin">★ Join the club</span></div>
+
+<!-- club gate modal -->
+<div class="joinwrap" id="join"><div class="joincard">
+  <span class="jx" id="jx">✕</span>
+  <div class="jey">★ Founding Members</div>
+  <h3>Your email<br>is your key.</h3>
+  <p>The club is members-only. Join free to unlock all 574 frames, member pricing, virtual try-on with Adrian, and free House Call home try-on.</p>
+  <ul class="perks"><li>Founding-member pricing</li><li>Free first House Call home try-on</li><li>First access to limited Lab drops</li></ul>
+  <form id="joinform"><input type="email" id="jemail" placeholder="your@email.com" required><button type="submit">Enter the club</button></form>
+  <div class="jfine">No spam — just the good stuff. <a id="jlater">Keep looking →</a></div>
+</div></div>
 
 <!-- guided start wizard -->
 <div class="wiz" id="wiz"><div class="wiz-in">
@@ -145,6 +177,16 @@ const aff=()=>JSON.parse(localStorage.getItem('upc_aff')||'{}');
 function bump(b){const o=aff();o[b]=(o[b]||0)+1;localStorage.setItem('upc_aff',JSON.stringify(o));maybeNudge();}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1700);}
 function toggleFav(h,b,ev){ev.preventDefault();ev.stopPropagation();let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);toast('Removed');}else{a.push(h);bump(b);toast('Saved to favorites');}setFavs(a);render();}
+// ===== club gate (soft rope) =====
+function isMember(){return !!localStorage.getItem('upc_member');}
+function joinClub(email){localStorage.setItem('upc_member',JSON.stringify({email:email,ts:Date.now()}));/* TODO: Klaviyo identify -> window._learnq && _learnq.push(['identify',{$email:email}]); */}
+const joinEl=()=>document.getElementById('join');
+function openJoin(){joinEl().classList.add('show');document.body.style.overflow='hidden';}
+function closeJoin(){joinEl().classList.remove('show');if(!document.getElementById('wiz').classList.contains('show'))document.body.style.overflow='';}
+function updateGuest(){document.getElementById('guestbar').style.display=isMember()?'none':'flex';}
+function priceHTML(p){return isMember()?`$${p.p}${p.c&&+p.c>+p.p?`<span class="was">$${p.c}</span>`:''}`:`<span class="lock">🔒 Member price</span>`;}
+function cardClick(e){if(!isMember()){e.preventDefault();openJoin();return false;}return true;}
+function cardHeart(h,b,e){e.preventDefault();e.stopPropagation();if(!isMember()){openJoin();return;}toggleFav(h,b,e);}
 function maybeNudge(){const o=aff();const top=Object.entries(o).sort((a,b)=>b[1]-a[1])[0];if(top&&top[1]>=3&&!sessionStorage.getItem('nudged')){document.getElementById('nudgetxt').innerHTML='Loving <b>'+top[0]+'</b>? Adrian can build your three from what you like.';document.getElementById('nudge').dataset.brand=top[0];document.getElementById('nudge').classList.add('show');sessionStorage.setItem('nudged','1');}}
 
 // ---- grouping/sort ----
@@ -179,18 +221,21 @@ function render(){
   let list;
   if(favMode){list=ALL.filter(p=>favs().includes(p.h));}
   else{list=ALL;if(selBrand)list=list.filter(p=>p.b===selBrand);if(selType)list=list.filter(p=>p.t===selType);if(selSub)list=list.filter(p=>(p.cols||[]).includes(selSub));}
-  countEl.textContent=list.length+(favMode?' favorites':' frames');
-  // title
+  const total=list.length, guest=!isMember();
+  let shown=(guest&&!favMode)?list.slice(0,8):list;
+  countEl.textContent=(guest&&!favMode)?('Preview · '+total+' frames'):(total+(favMode?' favorites':' frames'));
   if(favMode){document.getElementById('title').textContent='Your favorites.';}
   else if(selBrand){document.getElementById('title').textContent=selBrand+'.';}
   else{document.getElementById('title').textContent='The Collection.';}
-  if(favMode&&!list.length){grid.innerHTML='<div class="loading" style="grid-column:1/-1">No favorites yet — tap the ♥ on frames you love.</div>';return;}
+  if(favMode&&!shown.length){grid.innerHTML='<div class="loading" style="grid-column:1/-1">No favorites yet — tap the ♥ on frames you love.</div>';return;}
   const F=favs();
-  grid.innerHTML=list.map(p=>`
-    <a class="card" href="p.html?h=${p.h}">
-      <div class="ph">${p.t==='Sunglasses'?'<span class="flag">Sun</span>':''}<span class="heart ${F.includes(p.h)?'on':''}" onclick="toggleFav('${p.h}','${p.b}',event)">${F.includes(p.h)?'♥':'♡'}</span><img loading="lazy" src="${p.img}?width=500" alt="${p.n}"></div>
-      <div class="meta"><div class="br">${p.b}</div><div class="nm">${p.n}</div><div class="pr">$${p.p}${p.c&&+p.c>+p.p?`<span class="was">$${p.c}</span>`:''}</div></div>
+  let html=shown.map(p=>`
+    <a class="card" href="p.html?h=${p.h}" onclick="return cardClick(event)">
+      <div class="ph">${p.t==='Sunglasses'?'<span class="flag">Sun</span>':''}<span class="heart ${F.includes(p.h)?'on':''}" onclick="cardHeart('${p.h}','${p.b}',event)">${F.includes(p.h)?'♥':'♡'}</span><img loading="lazy" src="${p.img}?width=500" alt="${p.n}"></div>
+      <div class="meta"><div class="br">${p.b}</div><div class="nm">${p.n}</div><div class="pr">${priceHTML(p)}</div></div>
     </a>`).join('');
+  if(guest&&!favMode&&total>shown.length){html+=`<div class="joincard-grid" onclick="openJoin()"><div><div class="jg-lock">🔒</div><div class="jg-t">+${total-shown.length} more</div><div class="jg-s">Join free to unlock all ${total} frames, member prices &amp; try-on.</div><span class="jg-btn">Enter the club</span></div></div>`;}
+  grid.innerHTML=html;
 }
 
 // ========== WIZARD ==========
@@ -222,12 +267,19 @@ function buildCat(){
   const btns=[['','See everything']].concat(h.subs);
   document.getElementById('catBtns').innerHTML=btns.map(s=>`<span class="wbtn" data-s="${s[0]}">${s[1]}</span>`).join('');
   document.getElementById('clubjoin').href=ACCOUNT_URL;
-  document.getElementById('catAdrian').onclick=()=>{localStorage.setItem('upc_atelier_brand',selBrand);location.href='getapp.html?b='+encodeURIComponent(selBrand);};
+  document.getElementById('catAdrian').onclick=()=>{if(!isMember()){openJoin();return;}localStorage.setItem('upc_atelier_brand',selBrand);location.href='getapp.html?b='+encodeURIComponent(selBrand);};
 }
 document.getElementById('catBtns').addEventListener('click',e=>{const b=e.target.closest('.wbtn');if(!b)return;selSub=b.dataset.s||null;closeWizard();});
 
 // nudge + account
-document.getElementById('nudgego').onclick=()=>{const b=document.getElementById('nudge').dataset.brand||selBrand||'';localStorage.setItem('upc_atelier_brand',b);location.href='getapp.html'+(b?'?b='+encodeURIComponent(b):'');};
+document.getElementById('nudgego').onclick=()=>{if(!isMember()){openJoin();return;}const b=document.getElementById('nudge').dataset.brand||selBrand||'';localStorage.setItem('upc_atelier_brand',b);location.href='getapp.html'+(b?'?b='+encodeURIComponent(b):'');};
+
+// join gate bindings
+document.getElementById('guestjoin').onclick=openJoin;
+document.getElementById('jx').onclick=closeJoin;
+document.getElementById('jlater').onclick=closeJoin;
+document.getElementById('joinform').addEventListener('submit',e=>{e.preventDefault();const em=document.getElementById('jemail').value.trim();if(!em)return;joinClub(em);closeJoin();updateGuest();renderSubs();render();toast('Welcome to the club ★');});
+updateGuest();
 
 setFavs(favs());
 fetch('products.json').then(r=>r.json()).then(d=>{ALL=sortCatalog(d);loading.style.display='none';

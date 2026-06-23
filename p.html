@@ -36,14 +36,36 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 .mc{border:1px solid #ffffff14;border-radius:10px;overflow:hidden;background:#101218}.mc .ph{aspect-ratio:1/1;background:#fff}.mc img{width:100%;height:100%;object-fit:cover}.mc .m{padding:9px 10px}.mc .mb{font-size:8px;letter-spacing:.16em;color:var(--lime);text-transform:uppercase}.mc .mn{font-family:var(--disp);font-size:13px;text-transform:uppercase;line-height:1}.mc .mp{font-size:10px;opacity:.7;margin-top:3px}
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:80}.toast.show{opacity:1}
+.lock{color:var(--lime)}
+.joinwrap{position:fixed;inset:0;z-index:130;background:rgba(8,8,10,.92);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:22px}.joinwrap.show{display:flex}
+.joincard{background:#101218;border:1px solid var(--lime);border-radius:18px;max-width:440px;width:100%;padding:30px;position:relative}
+.joincard .jx{position:absolute;right:16px;top:13px;cursor:pointer;opacity:.6;font-size:18px}
+.jey{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime);margin-bottom:8px}
+.joincard h3{font-family:var(--disp);font-size:32px;text-transform:uppercase;line-height:.95;margin-bottom:8px}
+.joincard p{font-size:12.5px;opacity:.85;line-height:1.6;margin-bottom:14px}
+.perks{list-style:none;display:flex;flex-direction:column;gap:7px;margin:0 0 18px;padding:0}
+.perks li{font-size:12px;padding-left:20px;position:relative}.perks li:before{content:"★";color:var(--lime);position:absolute;left:0}
+#joinform{display:flex;gap:8px;background:var(--ink);border:1px solid #ffffff25;border-radius:40px;padding:6px 6px 6px 16px}
+#joinform input{flex:1;background:transparent;border:0;color:var(--bone);font-family:var(--mono);font-size:12px;outline:none}
+#joinform button{background:var(--lime);color:var(--ink);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;border:0;padding:11px 16px;border-radius:30px;cursor:pointer;white-space:nowrap}
+.jfine{font-size:10.5px;opacity:.6;margin-top:12px;text-align:center}.jfine a{color:var(--lime);cursor:pointer}
 @media(max-width:900px){.pdp{grid-template-columns:1fr;gap:24px}.info{position:static}.mgrid{grid-template-columns:repeat(2,1fr)}}
 </style></head><body>
-<nav><div class="wrap nav-in"><a class="logo" href="shop.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a href="shop.html">Shop</a><a href="atelier.html">The Atelier</a><a href="membership.html">The Club</a></div><a class="bag" href="#" id="favlink">♥ <span id="favn">0</span></a></div></nav>
+<nav><div class="wrap nav-in"><a class="logo" href="shop.html">USA<b>·</b>PARASITE<b>·</b>CLUB</a><div class="nav-links"><a href="shop.html">Shop</a><a href="getapp.html">The Atelier</a><a href="membership.html">The Club</a></div><a class="bag" href="#" id="favlink">♥ <span id="favn">0</span></a></div></nav>
 <div class="wrap">
   <div class="crumb" id="crumb"><a href="shop.html">Shop</a></div>
   <div id="pdp" class="pdp"></div>
   <div class="more" id="more"></div>
 </div>
+<div class="joinwrap" id="join"><div class="joincard">
+  <span class="jx" id="jx">✕</span>
+  <div class="jey">★ Founding Members</div>
+  <h3>Your email is your key.</h3>
+  <p>The club is members-only. Join free to reveal member pricing, virtual try-on with Adrian, and free House Call home try-on.</p>
+  <ul class="perks"><li>Founding-member pricing</li><li>Free first House Call</li><li>First access to Lab drops</li></ul>
+  <form id="joinform"><input type="email" id="jemail" placeholder="your@email.com" required><button type="submit">Enter the club</button></form>
+  <div class="jfine">No spam — just the good stuff. <a id="jlater">Keep looking →</a></div>
+</div></div>
 <div class="toast" id="toast"></div>
 <script>
 const qs=new URLSearchParams(location.search), HANDLE=qs.get('h');
@@ -53,6 +75,13 @@ function isFav(h){return favs().includes(h);}
 function toggleFav(h,brand){let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);}else{a.push(h);bumpAffinity(brand);}setFavs(a);return a.includes(h);}
 function bumpAffinity(brand){const k='upc_aff';const o=JSON.parse(localStorage.getItem(k)||'{}');o[brand]=(o[brand]||0)+1;localStorage.setItem(k,JSON.stringify(o));}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1800);}
+function isMember(){return !!localStorage.getItem('upc_member');}
+function joinClub(email){localStorage.setItem('upc_member',JSON.stringify({email:email,ts:Date.now()}));}
+function openJoin(){document.getElementById('join').classList.add('show');document.body.style.overflow='hidden';}
+function closeJoin(){document.getElementById('join').classList.remove('show');document.body.style.overflow='';}
+document.getElementById('jx').onclick=closeJoin;
+document.getElementById('jlater').onclick=closeJoin;
+document.getElementById('joinform').addEventListener('submit',e=>{e.preventDefault();const em=document.getElementById('jemail').value.trim();if(!em)return;joinClub(em);closeJoin();location.reload();});
 document.getElementById('favn').textContent=favs().length;
 document.getElementById('favlink').onclick=e=>{e.preventDefault();location.href='shop.html#favorites';};
 fetch('products.json').then(r=>r.json()).then(D=>{
@@ -65,19 +94,19 @@ fetch('products.json').then(r=>r.json()).then(D=>{
       <div class="thumbs">${p.imgs.map((s,i)=>`<img class="${i===0?'on':''}" src="${s}?width=160" onclick="document.getElementById('main').src='${s}?width=900';document.querySelectorAll('.thumbs img').forEach(t=>t.classList.remove('on'));this.classList.add('on')">`).join('')}</div></div>
     <div class="info">
       <div class="house">${p.b}</div><h1>${p.n}</h1><div class="kind">${p.t==='Sunglasses'?'Sunglasses':'Optical frame'}</div>
-      <div class="price">$${p.p}${off?`<span class="was">$${p.c}</span><span class="off">−${off}%</span>`:''}</div>
+      <div class="price">${isMember()?('$'+p.p+(off?`<span class="was">$${p.c}</span><span class="off">−${off}%</span>`:'')):'<span class="lock">🔒 Member price — join to reveal</span>'}</div>
       <div class="desc">${p.desc||''}</div>
       <div class="acts">
-        <div class="btn out" onclick="localStorage.setItem('upc_atelier_brand','${p.b}');location.href='getapp.html?b='+encodeURIComponent('${p.b}')">◉ Try it on with Adrian</div>
-        <div class="btn lime" onclick="toast('Checkout opens at launch')">Add to bag</div>
-        <div class="btn ${isFav(p.h)?'faved':'ghost'}" id="favbtn" onclick="const on=toggleFav('${p.h}','${p.b}');this.className='btn '+(on?'faved':'ghost');this.textContent=on?'♥ In your favorites':'♡ Add to favorites';toast(on?'Saved to favorites':'Removed')">${isFav(p.h)?'♥ In your favorites':'♡ Add to favorites'}</div>
+        <div class="btn out" onclick="if(!isMember()){openJoin();return}localStorage.setItem('upc_atelier_brand','${p.b}');location.href='getapp.html?b='+encodeURIComponent('${p.b}')">◉ Try it on with Adrian</div>
+        <div class="btn lime" onclick="if(!isMember()){openJoin();return}toast('Checkout opens at launch')">${isMember()?'Add to bag':'Join to buy'}</div>
+        <div class="btn ${isFav(p.h)?'faved':'ghost'}" id="favbtn" onclick="if(!isMember()){openJoin();return}const on=toggleFav('${p.h}','${p.b}');this.className='btn '+(on?'faved':'ghost');this.textContent=on?'♥ In your favorites':'♡ Add to favorites';toast(on?'Saved to favorites':'Removed')">${isFav(p.h)?'♥ In your favorites':'♡ Add to favorites'}</div>
       </div>
       <div class="spec">House · ${p.b}<br>Type · ${p.t}<br>Made in ${p.b==='Portrait'?'Italy':'France'} · True-to-size in the Atelier</div>
     </div>`;
   // more from house
   const more=D.filter(x=>x.b===p.b&&x.h!==p.h).sort(()=>Math.random()-.5).slice(0,5);
   document.getElementById('more').innerHTML=`<h2>More from ${p.b}</h2><div class="mgrid">${more.map(m=>`
-    <a class="mc" href="p.html?h=${m.h}"><div class="ph"><img loading="lazy" src="${m.img}?width=300"></div><div class="m"><div class="mb">${m.b}</div><div class="mn">${m.n}</div><div class="mp">$${m.p}</div></div></a>`).join('')}</div>`;
+    <a class="mc" href="p.html?h=${m.h}"><div class="ph"><img loading="lazy" src="${m.img}?width=300"></div><div class="m"><div class="mb">${m.b}</div><div class="mn">${m.n}</div><div class="mp">${isMember()?('$'+m.p):'🔒 Members'}</div></div></a>`).join('')}</div>`;
   document.title=p.n+' — USA Parasite Club';
 });
 </script>

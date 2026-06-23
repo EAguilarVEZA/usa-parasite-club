@@ -206,10 +206,10 @@ footer{padding:70px 0 50px;border-top:1px solid #ffffff14;margin-top:64px}
 
 <section id="club" class="wrap">
   <div class="club reveal">
-    <div class="seal">★ MEMBERS · ONLY ★ EST · 2026 ★</div>
+    <div class="seal">★ FOUNDING · MEMBERS ★ EST · 2026 ★</div>
     <h2>Join the club</h2>
-    <p>Create your profile for member pricing, free House Call home try-on, first access to drops & limited Lab editions — and your fit saved across web and app.</p>
-    <div class="form"><input placeholder="YOUR EMAIL ADDRESS"><a class="btn btn-lime" href="https://shopify.com/100157817145/account">Create profile</a></div>
+    <p>Founding members get member pricing, free first House Call home try-on, and first access to limited Lab drops. Your email is your key — drop it in and step inside.</p>
+    <form class="form" id="hjoin"><input id="hemail" type="email" placeholder="YOUR EMAIL ADDRESS" required><button class="btn btn-lime" type="submit">Enter the club</button></form>
   </div>
 </section>
 
@@ -229,6 +229,8 @@ footer{padding:70px 0 50px;border-top:1px solid #ffffff14;margin-top:64px}
 <script>
 const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const hj=document.getElementById('hjoin');
+if(hj)hj.addEventListener('submit',e=>{e.preventDefault();const em=document.getElementById('hemail').value.trim();if(!em)return;localStorage.setItem('upc_member',JSON.stringify({email:em,ts:Date.now()}));location.href='shop.html';});
 </script>
 </body>
 </html>
