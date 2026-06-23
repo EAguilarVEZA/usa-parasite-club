@@ -183,7 +183,7 @@ function isMember(){return !!localStorage.getItem('upc_member');}
 const KLAVIYO_KEY='UyszVE', KLAVIYO_LIST='VvxDBR';
 function klaviyoTrack(email){
   try{ if(window.klaviyo&&klaviyo.identify) klaviyo.identify({'$email':email}); }catch(e){}
-  try{ fetch('https://a.klaviyo.com/client/subscriptions/?company_id='+KLAVIYO_KEY,{method:'POST',headers:{'Content-Type':'application/json','revision':'2024-10-15'},body:JSON.stringify({data:{type:'subscription',attributes:{custom_source:'Club gate',profile:{data:{type:'profile',attributes:{email:email,subscriptions:{email:{marketing:{consent:'SUBSCRIBED'}}}}}}},relationships:{list:{data:{type:'list',id:KLAVIYO_LIST}}}}})}); }catch(e){}
+  try{ fetch('https://a.klaviyo.com/client/subscriptions/?company_id='+KLAVIYO_KEY,{method:'POST',headers:{'Content-Type':'application/json','revision':'2024-10-15'},body:JSON.stringify({data:{type:'subscription',attributes:{custom_source:'Club gate',profile:{data:{type:'profile',attributes:{email:email}}}},relationships:{list:{data:{type:'list',id:KLAVIYO_LIST}}}}})}); }catch(e){}
 }
 function joinClub(email){localStorage.setItem('upc_member',JSON.stringify({email:email,ts:Date.now()}));klaviyoTrack(email);}
 const joinEl=()=>document.getElementById('join');
