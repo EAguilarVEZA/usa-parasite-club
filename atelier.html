@@ -1,6 +1,6 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Atelier — USA Parasite Club</title>
+<title>The Atelier — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -136,7 +136,7 @@ body{background:var(--ink);color:var(--bone);font-family:var(--mono);min-height:
 <div class="bgglow"></div>
 <div class="stage">
   <div class="top">
-    <div class="logo">USA<b>·</b>PARASITE<b>·</b>CLUB · <span style="opacity:.6">THE ATELIER</span></div>
+    <div class="logo">PARASITE<b>·</b>CLUB<b>·</b>USA · <span style="opacity:.6">THE ATELIER</span></div>
     <div style="display:flex;gap:8px;align-items:center">
       <div class="vtoggle" id="vgear">⚙ Voice</div>
       <div class="vtoggle" id="vtog">🔇 Off</div>
@@ -482,7 +482,7 @@ function phoneHandoff(){
   margaux("Scan this with your phone — your three frames and your fit jump straight into the app, and I'll meet you there.");
   let ov=document.getElementById('phov'); if(!ov){ov=document.createElement('div');ov.id='phov';ov.className='hcov';document.body.appendChild(ov);}
   ov.innerHTML=`<div class="hcsheet phsheet">
-    <div class="hchd"><div><div class="hck">USA·PARASITE·CLUB</div><h3>Continue on your phone</h3></div><div class="hcx" onclick="document.getElementById('phov').remove()">✕</div></div>
+    <div class="hchd"><div><div class="hck">PARASITE·CLUB·USA</div><h3>Continue on your phone</h3></div><div class="hcx" onclick="document.getElementById('phov').remove()">✕</div></div>
     <p class="phlead">Open your iPhone camera and point it here. The Atelier app opens with the three frames Adrian picked — already sized to your face.</p>
     <div class="phqr"><div id="qrbox"></div></div>
     <div class="phpicks">${picks.map(f=>`<div class="phf"><img src="${f.img}?width=120"><div class="phfn">${f.nm}</div></div>`).join('')}</div>
@@ -515,7 +515,7 @@ function renderHC(){
   let ov=document.getElementById('hcov'); if(!ov){ov=document.createElement('div');ov.id='hcov';ov.className='hcov';document.body.appendChild(ov);}
   const extra = hcTier==='Inner Circle' ? `<div class="hcextra">+ Adrian adds 2 more he loves — up to ${t.frames} frames</div>` : '';
   ov.innerHTML=`<div class="hcsheet">
-    <div class="hchd"><div><div class="hck">USA·PARASITE·CLUB</div><h3>The House Call</h3></div><div class="hcx" onclick="document.getElementById('hcov').remove()">✕</div></div>
+    <div class="hchd"><div><div class="hck">PARASITE·CLUB·USA</div><h3>The House Call</h3></div><div class="hcx" onclick="document.getElementById('hcov').remove()">✕</div></div>
     <div class="hctabs">
       <div class="hctab ${hcTier==='Club'?'on':''}" onclick="hcTier='Club';renderHC()">The Club</div>
       <div class="hctab ${hcTier==='Inner Circle'?'on':''}" onclick="hcTier='Inner Circle';renderHC()">Inner Circle</div>
