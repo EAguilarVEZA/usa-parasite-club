@@ -3,6 +3,7 @@
 <title>USA Parasite Club</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script async src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UyszVE"></script>
 <style>
 :root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
 *{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
@@ -76,7 +77,12 @@ function toggleFav(h,brand){let a=favs();if(a.includes(h)){a=a.filter(x=>x!==h);
 function bumpAffinity(brand){const k='upc_aff';const o=JSON.parse(localStorage.getItem(k)||'{}');o[brand]=(o[brand]||0)+1;localStorage.setItem(k,JSON.stringify(o));}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(window._t);window._t=setTimeout(()=>e.classList.remove('show'),1800);}
 function isMember(){return !!localStorage.getItem('upc_member');}
-function joinClub(email){localStorage.setItem('upc_member',JSON.stringify({email:email,ts:Date.now()}));}
+const KLAVIYO_KEY='UyszVE', KLAVIYO_LIST='VvxDBR';
+function klaviyoTrack(email){
+  try{ if(window.klaviyo&&klaviyo.identify) klaviyo.identify({'$email':email}); }catch(e){}
+  try{ fetch('https://a.klaviyo.com/client/subscriptions/?company_id='+KLAVIYO_KEY,{method:'POST',headers:{'Content-Type':'application/json','revision':'2024-10-15'},body:JSON.stringify({data:{type:'subscription',attributes:{profile:{data:{type:'profile',attributes:{email:email}}}},relationships:{list:{data:{type:'list',id:KLAVIYO_LIST}}}}})}); }catch(e){}
+}
+function joinClub(email){localStorage.setItem('upc_member',JSON.stringify({email:email,ts:Date.now()}));klaviyoTrack(email);}
 function openJoin(){document.getElementById('join').classList.add('show');document.body.style.overflow='hidden';}
 function closeJoin(){document.getElementById('join').classList.remove('show');document.body.style.overflow='';}
 document.getElementById('jx').onclick=closeJoin;

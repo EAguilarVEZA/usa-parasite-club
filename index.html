@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script async src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UyszVE"></script>
 <style>
 :root{
   --ink:#0a0a0c; --bone:#F2EEE4; --lime:#C8FF00; --red:#E2402C;
@@ -229,8 +230,13 @@ footer{padding:70px 0 50px;border-top:1px solid #ffffff14;margin-top:64px}
 <script>
 const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+const KLAVIYO_KEY='UyszVE', KLAVIYO_LIST='VvxDBR';
+function klaviyoTrack(email){
+  try{ if(window.klaviyo&&klaviyo.identify) klaviyo.identify({'$email':email}); }catch(e){}
+  try{ return fetch('https://a.klaviyo.com/client/subscriptions/?company_id='+KLAVIYO_KEY,{method:'POST',headers:{'Content-Type':'application/json','revision':'2024-10-15'},body:JSON.stringify({data:{type:'subscription',attributes:{profile:{data:{type:'profile',attributes:{email:email}}}},relationships:{list:{data:{type:'list',id:KLAVIYO_LIST}}}}})}); }catch(e){}
+}
 const hj=document.getElementById('hjoin');
-if(hj)hj.addEventListener('submit',e=>{e.preventDefault();const em=document.getElementById('hemail').value.trim();if(!em)return;localStorage.setItem('upc_member',JSON.stringify({email:em,ts:Date.now()}));location.href='shop.html';});
+if(hj)hj.addEventListener('submit',e=>{e.preventDefault();const em=document.getElementById('hemail').value.trim();if(!em)return;localStorage.setItem('upc_member',JSON.stringify({email:em,ts:Date.now()}));klaviyoTrack(em);setTimeout(()=>{location.href='shop.html';},250);});
 </script>
 </body>
 </html>
