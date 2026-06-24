@@ -90,11 +90,12 @@ module.exports = async (req, res) => {
       do {
         const { status, j } = await gql(PAGE_Q, { c: cursor, n });
         if (status !== 200 || !j.data) return res.status(200).json({ status, error: j.errors || j, at: cursor });
-        for (const e of j.data.products.edges) {
+        // Process the page's products concurrently to beat the per-call time wall.
+        await Promise.all(j.data.products.edges.map(async (e) => {
           const node = e.node, v = node.variants.edges[0] && node.variants.edges[0].node;
           const target = price[node.handle];
           seen++;
-          if (!target) continue;
+          if (!target) return;
           if (doPrice && v && Number(v.price) !== Number(target.price)) {
             if (dry) pricedChanged++;
             else {
@@ -103,7 +104,9 @@ module.exports = async (req, res) => {
                 { pid: node.id, vid: v.id, p: String(target.price) }
               );
               const ue = m.j && m.j.data && m.j.data.productVariantsBulkUpdate && m.j.data.productVariantsBulkUpdate.userErrors;
-              if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message }); else pricedChanged++;
+              if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message });
+              else if (m.j && m.j.errors) errs.push({ h: node.handle, e: 'gql:' + JSON.stringify(m.j.errors).slice(0, 80) });
+              else pricedChanged++;
             }
           }
           if (doPub && node.status !== 'ACTIVE') {
@@ -114,10 +117,12 @@ module.exports = async (req, res) => {
                 { id: node.id }
               );
               const ue = m.j && m.j.data && m.j.data.productUpdate && m.j.data.productUpdate.userErrors;
-              if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message }); else published++;
+              if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message });
+              else if (m.j && m.j.errors) errs.push({ h: node.handle, e: 'gql:' + JSON.stringify(m.j.errors).slice(0, 80) });
+              else published++;
             }
           }
-        }
+        }));
         cursor = j.data.products.pageInfo.hasNextPage ? j.data.products.edges.slice(-1)[0].cursor : null;
         if (!cursor) done = true;
       } while (!done && Date.now() - t0 < 45000);
