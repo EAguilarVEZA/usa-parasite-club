@@ -8,7 +8,7 @@ const TOKEN = (process.env.SHOPIFY_ADMIN_TOKEN || '').trim();
 async function gql(query, variables) {
   const r = await fetch(`https://${STORE}.myshopify.com/admin/api/${V}/graphql.json`, {
     method: 'POST',
-    headers: { 'X-Shopify-Access-Token': TOKEN, 'Content-Type': 'application/json' },
+    headers: { 'Authorization': 'Bearer ' + TOKEN, 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, variables: variables || {} }),
   });
   const t = await r.text();
