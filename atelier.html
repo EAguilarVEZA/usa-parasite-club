@@ -206,6 +206,7 @@ $('houseOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(
 $('typeOpts').addEventListener('click',e=>{const b=e.target.closest('.opt');if(!b)return;document.querySelectorAll('#typeOpts .opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');ptype=b.dataset.t;});
 $('startBtn').onclick=()=>{ // seed house from affinity if "surprise"
   if(!house){const a=aff();const top=Object.entries(a).sort((x,y)=>y[1]-x[1])[0];if(top&&top[1]>=2)house=top[0];}
+  if(ptype==='Sunglasses'&&house&&!ALL.some(p=>p.b===house&&p.t==='Sunglasses'))ptype=''; // e.g. Acid has no sun
   buildPool(); step('stCurate'); renderTray();
   $('say').textContent= house? `Leaning into your love of ${house}. Here's the first.` : "Here's the first — let's see what lands.";
   showCard();

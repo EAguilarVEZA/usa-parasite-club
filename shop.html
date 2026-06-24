@@ -252,18 +252,32 @@ function openWizard(step,brand){
   wiz.classList.add('show');document.body.style.overflow='hidden';
   // brand cards
   document.getElementById('brandCards').innerHTML=ORDER.map(b=>{const h=HOUSES[b];return `<div class="wcard" data-b="${b}"><img src="${h.img}" alt="${b}"><div class="b"><div class="t">${h.tag}</div><h3>${b}</h3><p>${h.concept}</p></div></div>`;}).join('');
-  if(brand){selBrand=brand;buildCat();showStep(step||'stType');document.getElementById('typeEy').textContent=brand;}
+  if(brand){selBrand=brand;selSub=null;goType();}
   else{showStep('stBrand');}
 }
 function closeWizard(){wiz.classList.remove('show');document.body.style.overflow='';syncChips();renderSubs();render();}
 document.getElementById('wskip').onclick=()=>{selBrand=null;selType=null;selSub=null;closeWizard();};
 document.getElementById('restart').onclick=()=>openWizard('stBrand');
 // pick brand
-document.getElementById('brandCards').addEventListener('click',e=>{const c=e.target.closest('.wcard');if(!c)return;selBrand=c.dataset.b;selSub=null;bump(selBrand);document.getElementById('typeEy').textContent=selBrand;showStep('stType');});
+document.getElementById('brandCards').addEventListener('click',e=>{const c=e.target.closest('.wcard');if(!c)return;selBrand=c.dataset.b;selSub=null;bump(selBrand);goType();});
 // pick type
 document.querySelector('#stType .wbtns').addEventListener('click',e=>{const b=e.target.closest('.wbtn');if(!b)return;selType=b.dataset.t||null;buildCat();showStep('stCat');});
 // back buttons
-document.querySelectorAll('.wback').forEach(btn=>btn.onclick=()=>{showStep(btn.dataset.to==='brand'?'stBrand':'stType');});
+document.querySelectorAll('.wback').forEach(btn=>btn.onclick=()=>{
+  if(btn.dataset.to==='brand'){showStep('stBrand');return;}
+  const ts=brandTypeSet(selBrand);
+  showStep(ts.has('Eyeglasses')&&ts.has('Sunglasses')?'stType':'stBrand');
+});
+// decide type step (skip it for single-type houses, e.g. Acid = optical only)
+function brandTypeSet(b){return new Set(ALL.filter(p=>p.b===b).map(p=>p.t));}
+function goType(){
+  const ts=brandTypeSet(selBrand), hasOpt=ts.has('Eyeglasses'), hasSun=ts.has('Sunglasses');
+  document.getElementById('typeEy').textContent=selBrand;
+  if(hasOpt&&hasSun){
+    document.querySelector('#stType .wbtns').innerHTML='<span class="wbtn big" data-t="Eyeglasses">Optical</span><span class="wbtn big" data-t="Sunglasses">Sun</span><span class="wbtn big" data-t="">Both</span>';
+    showStep('stType');
+  } else { selType=(hasSun&&!hasOpt)?'Sunglasses':null; buildCat(); showStep('stCat'); }
+}
 // build category step for selBrand/selType
 function buildCat(){
   const h=HOUSES[selBrand];const tw=selType==='Eyeglasses'?'Optical':selType==='Sunglasses'?'Sun':'';
