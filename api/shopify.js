@@ -16,6 +16,17 @@ async function gql(query, variables) {
   return { status: r.status, j };
 }
 const numId = gid => (gid && String(gid).split('/').pop()) || null;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// gql with automatic backoff on Shopify THROTTLED.
+async function gqlR(query, variables) {
+  for (let i = 0; i < 7; i++) {
+    const r = await gql(query, variables);
+    const thr = r.j && r.j.errors && JSON.stringify(r.j.errors).indexOf('THROTTLED') !== -1;
+    if (!thr) return r;
+    await sleep(800 + i * 600);
+  }
+  return await gql(query, variables);
+}
 
 // Cache the price map (handle -> {price,name,brand,type}) across warm invocations.
 let PRICE = null;
@@ -82,50 +93,57 @@ module.exports = async (req, res) => {
       const dry = q.dry !== '0';
       const doPub = q.publish === '1';
       const doPrice = q.prices !== '0';
-      const n = Math.min(parseInt(q.n || '20', 10), 50);
+      const n = Math.min(parseInt(q.n || '40', 10), 100);
+      const CONC = Math.min(parseInt(q.conc || '3', 10), 6);
       let cursor = q.cursor || null;
       const t0 = Date.now();
       let seen = 0, pricedChanged = 0, published = 0, errs = [];
       let done = false;
+      // One product's work (price then publish), each call throttle-retried.
+      async function work(node) {
+        const v = node.variants.edges[0] && node.variants.edges[0].node;
+        const target = price[node.handle];
+        if (!target) return;
+        if (doPrice && v && Number(v.price) !== Number(target.price)) {
+          if (dry) pricedChanged++;
+          else {
+            const m = await gqlR(
+              `mutation($pid:ID!,$vid:ID!,$p:Money!){ productVariantsBulkUpdate(productId:$pid, variants:[{id:$vid, price:$p}]){ userErrors{ message } } }`,
+              { pid: node.id, vid: v.id, p: String(target.price) }
+            );
+            const ue = m.j && m.j.data && m.j.data.productVariantsBulkUpdate && m.j.data.productVariantsBulkUpdate.userErrors;
+            if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message });
+            else if (m.j && m.j.errors) errs.push({ h: node.handle, e: 'gql:' + JSON.stringify(m.j.errors).slice(0, 60) });
+            else pricedChanged++;
+          }
+        }
+        if (doPub && node.status !== 'ACTIVE') {
+          if (dry) published++;
+          else {
+            const m = await gqlR(
+              `mutation($id:ID!){ productUpdate(input:{id:$id, status:ACTIVE}){ userErrors{ message } } }`,
+              { id: node.id }
+            );
+            const ue = m.j && m.j.data && m.j.data.productUpdate && m.j.data.productUpdate.userErrors;
+            if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message });
+            else if (m.j && m.j.errors) errs.push({ h: node.handle, e: 'gql:' + JSON.stringify(m.j.errors).slice(0, 60) });
+            else published++;
+          }
+        }
+      }
       do {
-        const { status, j } = await gql(PAGE_Q, { c: cursor, n });
+        const { status, j } = await gqlR(PAGE_Q, { c: cursor, n });
         if (status !== 200 || !j.data) return res.status(200).json({ status, error: j.errors || j, at: cursor });
-        // Process the page's products concurrently to beat the per-call time wall.
-        await Promise.all(j.data.products.edges.map(async (e) => {
-          const node = e.node, v = node.variants.edges[0] && node.variants.edges[0].node;
-          const target = price[node.handle];
-          seen++;
-          if (!target) return;
-          if (doPrice && v && Number(v.price) !== Number(target.price)) {
-            if (dry) pricedChanged++;
-            else {
-              const m = await gql(
-                `mutation($pid:ID!,$vid:ID!,$p:Money!){ productVariantsBulkUpdate(productId:$pid, variants:[{id:$vid, price:$p}]){ userErrors{ message } } }`,
-                { pid: node.id, vid: v.id, p: String(target.price) }
-              );
-              const ue = m.j && m.j.data && m.j.data.productVariantsBulkUpdate && m.j.data.productVariantsBulkUpdate.userErrors;
-              if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message });
-              else if (m.j && m.j.errors) errs.push({ h: node.handle, e: 'gql:' + JSON.stringify(m.j.errors).slice(0, 80) });
-              else pricedChanged++;
-            }
-          }
-          if (doPub && node.status !== 'ACTIVE') {
-            if (dry) published++;
-            else {
-              const m = await gql(
-                `mutation($id:ID!){ productUpdate(input:{id:$id, status:ACTIVE}){ userErrors{ message } } }`,
-                { id: node.id }
-              );
-              const ue = m.j && m.j.data && m.j.data.productUpdate && m.j.data.productUpdate.userErrors;
-              if (ue && ue.length) errs.push({ h: node.handle, e: ue[0].message });
-              else if (m.j && m.j.errors) errs.push({ h: node.handle, e: 'gql:' + JSON.stringify(m.j.errors).slice(0, 80) });
-              else published++;
-            }
-          }
+        const nodes = j.data.products.edges.map(e => e.node);
+        seen += nodes.length;
+        // Bounded-concurrency pool over the page's products.
+        let idx = 0;
+        await Promise.all(Array.from({ length: CONC }, async () => {
+          while (idx < nodes.length) { const i = idx++; await work(nodes[i]); }
         }));
         cursor = j.data.products.pageInfo.hasNextPage ? j.data.products.edges.slice(-1)[0].cursor : null;
         if (!cursor) done = true;
-      } while (!done && Date.now() - t0 < 45000);
+      } while (!done && Date.now() - t0 < 50000);
       return res.status(200).json({ dry, doPrice, doPub, seen, pricedChanged, published, done, nextCursor: done ? null : cursor, errs: errs.slice(0, 10) });
     }
 
