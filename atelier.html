@@ -231,7 +231,18 @@ function openCard(mode){
 $('sendTrunk').onclick=()=>openCard('trunk');
 $('buyNow').onclick=()=>openCard('buy');
 $('cardX').onclick=()=>$('cardM').classList.remove('show');
-$('cardGo').onclick=()=>{ /* TODO: live Shop Pay + manual-capture hold once cart is wired */ localStorage.setItem('upc_card','1'); toast('Saved — checkout goes live shortly ★'); $('cardM').classList.remove('show'); };
+$('cardGo').onclick=()=>{
+  if(!locked.length){toast('Add at least one frame first');return;}
+  saveTrunk();
+  const hs=locked.map(p=>p.h).join(',');
+  const btn=$('cardGo'); btn.textContent='Opening secure checkout…'; btn.style.opacity='.7';
+  fetch('/api/shopify?action=trunk&handles='+encodeURIComponent(hs)+'&tier='+encodeURIComponent(tier()))
+    .then(r=>r.json()).then(d=>{
+      if(d&&d.ok&&d.draft&&d.draft.invoiceUrl){ localStorage.setItem('upc_card','1'); location.href=d.draft.invoiceUrl; }
+      else { toast('Could not open checkout — please try again'); btn.textContent='Add card with Shop Pay'; btn.style.opacity='1'; }
+    })
+    .catch(()=>{ toast('Network error — please try again'); btn.textContent='Add card with Shop Pay'; btn.style.opacity='1'; });
+};
 
 // join gate
 $('joinForm').addEventListener('submit',e=>{e.preventDefault();const em=$('jEmail').value.trim();if(!em)return;localStorage.setItem('upc_member',JSON.stringify({email:em,ts:Date.now()}));klaviyo(em);$('joinM').classList.remove('show');toast('Welcome to the club ★');});
