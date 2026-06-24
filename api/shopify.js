@@ -161,7 +161,61 @@ module.exports = async (req, res) => {
       return res.status(200).json({ count: out.length, draft: out.filter(p => p.status === 'DRAFT').length, products: out });
     }
 
-    return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'summary', 'sync', 'variants'] });
+    // Resolve one handle -> variant GID + numeric id.
+    async function variantForHandle(handle) {
+      const { j } = await gqlR(
+        `query($q:String!){ products(first:1, query:$q){ edges{ node{ id handle variants(first:1){ edges{ node{ id } } } } } } }`,
+        { q: 'handle:' + handle }
+      );
+      const node = j && j.data && j.data.products.edges[0] && j.data.products.edges[0].node;
+      const vgid = node && node.variants.edges[0] && node.variants.edges[0].node.id;
+      return vgid || null;
+    }
+
+    // Buy-now: 302 to the live Shopify cart permalink (Shop Pay available at checkout).
+    if (action === 'checkout') {
+      const handle = q.handle, qty = parseInt(q.qty || '1', 10) || 1;
+      if (!handle) return res.status(400).json({ error: 'handle required' });
+      const vgid = await variantForHandle(handle);
+      if (!vgid) return res.status(404).json({ error: 'variant not found for handle', handle });
+      const url = `https://${STORE}.myshopify.com/cart/${numId(vgid)}:${qty}`;
+      res.writeHead(302, { Location: url });
+      return res.end();
+    }
+
+    // Trunk hold: create a draft order (a quote/hold) for the selected frames.
+    // params: handles=h1,h2,... email=... tier=standard|inner
+    if (action === 'trunk') {
+      const handles = String(q.handles || '').split(',').map(s => s.trim()).filter(Boolean);
+      const email = q.email || null;
+      const tier = q.tier === 'inner' ? 'inner' : 'standard';
+      const limit = tier === 'inner' ? 5 : 3;
+      if (!handles.length) return res.status(400).json({ error: 'handles required' });
+      if (handles.length > limit) return res.status(400).json({ error: 'over tier limit', tier, limit, got: handles.length });
+      const lineItems = [], missing = [];
+      for (const h of handles) {
+        const vgid = await variantForHandle(h);
+        if (vgid) lineItems.push({ variantId: vgid, quantity: 1 }); else missing.push(h);
+      }
+      if (!lineItems.length) return res.status(404).json({ error: 'no variants resolved', missing });
+      const input = {
+        email: email || undefined,
+        lineItems,
+        tags: ['trunk', 'tier:' + tier],
+        note: `Parasite Club USA home try-on trunk (${tier}, ${lineItems.length}/${limit} frames).`,
+      };
+      const { j } = await gqlR(
+        `mutation($input:DraftOrderInput!){ draftOrderCreate(input:$input){ draftOrder{ id name invoiceUrl totalPrice } userErrors{ field message } } }`,
+        { input }
+      );
+      const r = j && j.data && j.data.draftOrderCreate;
+      if (!r || (r.userErrors && r.userErrors.length)) {
+        return res.status(200).json({ ok: false, errors: (r && r.userErrors) || j.errors || j, missing });
+      }
+      return res.status(200).json({ ok: true, tier, limit, draft: r.draftOrder, missing });
+    }
+
+    return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'summary', 'sync', 'variants', 'checkout', 'trunk'] });
   } catch (e) {
     return res.status(500).json({ error: String(e) });
   }
