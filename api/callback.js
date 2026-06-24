@@ -1,4 +1,4 @@
-// Vercel serverless — Step 2 of Shopify OAuth: exchange code for the real Admin API token.
+// Vercel serverless — Step 2 of Shopify OAuth: exchange code for the real Admin API token. (rev2)
 // Needs SHOPIFY_CLIENT_SECRET in Vercel env (the app's Client secret from the Dev Dashboard).
 const CLIENT_ID = process.env.SHOPIFY_CLIENT_ID || 'b6ae2108ce4b2a032292e1ea105d67ab';
 const CLIENT_SECRET = (process.env.SHOPIFY_CLIENT_SECRET || '').trim();
