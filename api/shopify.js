@@ -29,7 +29,7 @@ module.exports = async (req, res) => {
     if (action === 'ping') {
       const { status, j } = await gql(`{ shop { name myshopifyDomain currencyCode } }`);
       const shop = j && j.data && j.data.shop;
-      return res.status(200).json({ ok: !!shop, status, shop: shop || j });
+      return res.status(200).json({ ok: !!shop, status, shop: shop || j, token: { present: !!TOKEN, len: TOKEN.length, prefix: TOKEN.slice(0, 5) } });
     }
     if (action === 'variants') {
       let cursor = null, out = [], pages = 0;
