@@ -1,37 +1,21 @@
-// Vercel serverless — Shopify Admin API bridge for Parasite Club USA. (rev2)
+// Vercel serverless — Shopify Admin GraphQL bridge for Parasite Club USA. (rev3 / GraphQL)
 // Token lives ONLY in Vercel env (SHOPIFY_ADMIN_TOKEN). Store domain is public.
-// Actions (?action=): ping | variants | sync | trunk
+// New Shopify apps are GraphQL-only, so we use the GraphQL Admin API.
 const STORE = process.env.SHOPIFY_STORE || 'hne7dx-gc';
 const V = '2024-10';
 const TOKEN = (process.env.SHOPIFY_ADMIN_TOKEN || '').trim();
 
-async function sf(path, method = 'GET', body = null) {
-  const r = await fetch(`https://${STORE}.myshopify.com/admin/api/${V}/${path}`, {
-    method,
+async function gql(query, variables) {
+  const r = await fetch(`https://${STORE}.myshopify.com/admin/api/${V}/graphql.json`, {
+    method: 'POST',
     headers: { 'X-Shopify-Access-Token': TOKEN, 'Content-Type': 'application/json' },
-    body: body ? JSON.stringify(body) : undefined,
+    body: JSON.stringify({ query, variables: variables || {} }),
   });
   const t = await r.text();
   let j; try { j = JSON.parse(t); } catch (_) { j = { raw: t.slice(0, 400) }; }
-  return { status: r.status, headers: r.headers, json: j };
+  return { status: r.status, j };
 }
-
-async function allProducts() {
-  let path = `products.json?limit=250`, out = [];
-  for (let i = 0; i < 4; i++) {
-    const r = await sf(path);
-    if (r.status !== 200) return { error: r.status, detail: r.json };
-    (r.json.products || []).forEach(p => {
-      const v = p.variants && p.variants[0];
-      out.push({ id: p.id, handle: p.handle, title: p.title, status: p.status, vid: v && Number(v.id), price: v && v.price });
-    });
-    const link = r.headers.get('link') || '';
-    const m = link.match(/[?&]page_info=([^>&]+)>;\s*rel="next"/);
-    if (!m) break;
-    path = `products.json?limit=250&page_info=${m[1]}`;
-  }
-  return { products: out };
-}
+const numId = gid => (gid && String(gid).split('/').pop()) || null;
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -43,17 +27,28 @@ module.exports = async (req, res) => {
   const action = (req.query && req.query.action) || 'ping';
   try {
     if (action === 'ping') {
-      const { status, json } = await sf('shop.json');
-      return res.status(200).json({
-        ok: status === 200, status,
-        shop: json.shop ? { name: json.shop.name, domain: json.shop.myshopify_domain, currency: json.shop.currency, plan: json.shop.plan_name } : json,
-      });
+      const { status, j } = await gql(`{ shop { name myshopifyDomain currencyCode } }`);
+      const shop = j && j.data && j.data.shop;
+      return res.status(200).json({ ok: !!shop, status, shop: shop || j });
     }
     if (action === 'variants') {
-      const r = await allProducts();
-      if (r.error) return res.status(200).json(r);
-      const draft = r.products.filter(p => p.status === 'draft').length;
-      return res.status(200).json({ count: r.products.length, draft, products: r.products });
+      let cursor = null, out = [], pages = 0;
+      do {
+        const { status, j } = await gql(
+          `query($c:String){ products(first:250, after:$c){ edges{ cursor node{ id handle title status variants(first:1){ edges{ node{ id price } } } } } pageInfo{ hasNextPage } } }`,
+          { c: cursor }
+        );
+        if (status !== 200 || !j.data) return res.status(200).json({ status, error: j.errors || j });
+        const edges = j.data.products.edges;
+        edges.forEach(e => {
+          const n = e.node, v = n.variants.edges[0] && n.variants.edges[0].node;
+          out.push({ pid: numId(n.id), handle: n.handle, title: n.title, status: n.status, vid: v && numId(v.id), price: v && v.price });
+        });
+        cursor = edges.length ? edges[edges.length - 1].cursor : null;
+        if (!j.data.products.pageInfo.hasNextPage) cursor = null;
+      } while (cursor && ++pages < 6);
+      const draft = out.filter(p => p.status === 'DRAFT').length;
+      return res.status(200).json({ count: out.length, draft, products: out });
     }
     return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'variants'] });
   } catch (e) {
