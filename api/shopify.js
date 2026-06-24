@@ -120,7 +120,7 @@ module.exports = async (req, res) => {
         }
         cursor = j.data.products.pageInfo.hasNextPage ? j.data.products.edges.slice(-1)[0].cursor : null;
         if (!cursor) done = true;
-      } while (!done && Date.now() - t0 < 7000);
+      } while (!done && Date.now() - t0 < 45000);
       return res.status(200).json({ dry, doPrice, doPub, seen, pricedChanged, published, done, nextCursor: done ? null : cursor, errs: errs.slice(0, 10) });
     }
 
