@@ -1,9 +1,9 @@
-// Vercel serverless — Shopify Admin API bridge for Parasite Club USA.
+// Vercel serverless — Shopify Admin API bridge for Parasite Club USA. (rev2)
 // Token lives ONLY in Vercel env (SHOPIFY_ADMIN_TOKEN). Store domain is public.
 // Actions (?action=): ping | variants | sync | trunk
 const STORE = process.env.SHOPIFY_STORE || 'hne7dx-gc';
 const V = '2024-10';
-const TOKEN = process.env.SHOPIFY_ADMIN_TOKEN || '';
+const TOKEN = (process.env.SHOPIFY_ADMIN_TOKEN || '').trim();
 
 async function sf(path, method = 'GET', body = null) {
   const r = await fetch(`https://${STORE}.myshopify.com/admin/api/${V}/${path}`, {
