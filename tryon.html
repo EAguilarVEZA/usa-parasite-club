@@ -214,9 +214,18 @@ function prepFrame(p){
     const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
     const cc=c.getContext('2d');cc.drawImage(img,0,0);
     const d=cc.getImageData(0,0,c.width,c.height),a=d.data;
-    for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];
-      if(r>232&&g>232&&b>232)a[i+3]=0;else if(r>205&&g>205&&b>205)a[i+3]=55;}
-    cc.putImageData(d,0,0);keyCache[p.h]={canvas:c,w:c.width,h:c.height};
+    let minx=c.width,miny=c.height,maxx=0,maxy=0;                 // bounding box of real glasses pixels
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+      const i=(y*c.width+x)*4,r=a[i],g=a[i+1],b=a[i+2];
+      if(r>232&&g>232&&b>232){a[i+3]=0;continue;}                 // white bg → transparent, excluded from bbox
+      if(r>205&&g>205&&b>205)a[i+3]=70;                            // near-white edge → soft
+      if(x<minx)minx=x;if(x>maxx)maxx=x;if(y<miny)miny=y;if(y>maxy)maxy=y;
+    }
+    cc.putImageData(d,0,0);
+    const bw=Math.max(1,maxx-minx+1),bh=Math.max(1,maxy-miny+1);  // crop to the glasses so centring is exact
+    const t=document.createElement('canvas');t.width=bw;t.height=bh;
+    t.getContext('2d').drawImage(c,minx,miny,bw,bh,0,0,bw,bh);
+    keyCache[p.h]={canvas:t,w:bw,h:bh};
   }catch(e){keyCache[p.h]={canvas:img,w:img.naturalWidth,h:img.naturalHeight};}};
   img.onerror=()=>{keyCache[p.h]=null;};
   img.src=p.img+'?width=600';
@@ -240,45 +249,43 @@ async function openCam(){
   video.srcObject=stream;await video.play().catch(()=>{});
 }
 function fail(m){$('spin').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
-const L={rOut:33,lOut:263,faceR:234,faceL:454};
-let SM=null;                                        // smoothing state, lets the frame stay locked while you move
+const _Q=new URLSearchParams(location.search);
+const P_SCALE=parseFloat(_Q.get('scale'))||1.02;   // frame width vs face width (tunable: ?scale=)
+const P_VOFF=_Q.get('voff')!=null?parseFloat(_Q.get('voff')):0.05; // down-seat fraction (tunable: ?voff=)
+let SM=null;                                        // smoothing state, keeps the frame locked while you move
 function loop(){
   if(!running)return;
   const vw=video.videoWidth,vh=video.videoHeight;
   if(vw&&vh){
     if(view.width!==vw){view.width=vw;view.height=vh;}
-    ctx.save();
-    ctx.translate(vw,0);ctx.scale(-1,1);           // mirror once, for BOTH video + overlay
-    ctx.drawImage(video,0,0,vw,vh);
+    ctx.clearRect(0,0,vw,vh);
+    ctx.save();ctx.translate(vw,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,vw,vh);ctx.restore(); // mirrored video
     let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
     if(res&&res.faceLandmarks&&res.faceLandmarks[0]){
       const lm=res.faceLandmarks[0];
       if(calibrating)sampleCalib(lm,vw,vh);
-      drawFrame(lm,vw,vh);
-    } else { SM=null; }                            // face lost → reset so it re-locks cleanly
-    ctx.restore();
+      drawFrame(lm,vw,vh);                          // glasses drawn UPRIGHT in normal space
+    } else { SM=null; }
   }
   requestAnimationFrame(loop);
 }
 function drawFrame(lm,vw,vh){
   const fr=current&&keyCache[current.h];if(!fr)return;
-  const px=p=>({x:lm[p].x*vw,y:lm[p].y*vh});       // RAW coords — drawn inside the mirror, no 180° flip
-  const rO=px(33),lO=px(263),rin=px(133),lin=px(362),fR=px(234),fL=px(454);
-  const faceW=Math.hypot(fL.x-fR.x,fL.y-fR.y);
-  const cx=(rO.x+lO.x+rin.x+lin.x)/4;              // horizontal centre = between the eyes (stable)
-  const cy=(rO.y+lO.y+rin.y+lin.y)/4;             // pupil line
-  const ang=Math.atan2(lO.y-rO.y,lO.x-rO.x);      // head roll (tilt)
-  const fit=window._fit, scaleK=fit?fit.scaleK:1.18, vOffR=fit?fit.vOffR:0.10;
-  // low-pass smoothing → glasses stay glued through side-to-side / tilt instead of jittering
+  const X=p=>(1-lm[p].x)*vw, Y=p=>lm[p].y*vh;       // mirrored display coords (match the mirrored video)
+  const cx=(X(33)+X(263)+X(133)+X(362))/4;          // horizontal centre, between the eyes
+  const cy=(Y(33)+Y(263)+Y(133)+Y(362))/4;          // pupil line
+  const faceW=Math.hypot(X(454)-X(234),Y(454)-Y(234));
+  const ang=Math.atan2(Y(33)-Y(263),X(33)-X(263));  // roll: level head → ~0, never 180°
+  const fit=window._fit, scaleK=fit?fit.scaleK:P_SCALE, vOffR=fit?fit.vOffR:P_VOFF;
   if(!SM)SM={cx,cy,faceW,ang};
-  const k=0.45;
+  const k=0.5;
   SM.cx+=(cx-SM.cx)*k;SM.cy+=(cy-SM.cy)*k;SM.faceW+=(faceW-SM.faceW)*k;
   let da=ang-SM.ang;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;SM.ang+=da*k;
   const W=SM.faceW*scaleK,H=W*(fr.h/fr.w);
   ctx.save();
-  ctx.translate(SM.cx, SM.cy + SM.faceW*vOffR);    // seat on the nose, below pupil line
+  ctx.translate(SM.cx, SM.cy + SM.faceW*vOffR);     // seat just below the pupil line, on the nose
   ctx.rotate(SM.ang);
-  ctx.drawImage(fr.canvas,-W/2,-H/2,W,H);
+  ctx.drawImage(fr.canvas,-W/2,-H/2,W,H);           // NORMAL ctx → upright, not flipped
   ctx.restore();
 }
 // ---- Refine the fit: guided face measurement, then lock ----
@@ -297,7 +304,7 @@ function sampleCalib(lm,vw,vh){
 function finishCalib(){
   calibrating=false;
   const a=calSamples.slice().sort((x,y)=>x-y);const mv=a[Math.floor(a.length/2)]||0;
-  window._fit={scaleK:1.2, vOffR:Math.max(0.05,Math.min(0.20, mv+0.11))};
+  window._fit={scaleK:1.04, vOffR:Math.max(0.0,Math.min(0.12, mv+0.05))};
   SM=null;                                          // re-lock with the new fit
   $('fitpill').textContent='Perfect fit ✓';
   setTimeout(()=>{$('fit').style.display='none';},950);
