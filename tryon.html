@@ -245,10 +245,10 @@ function drawFrame(lm,vw,vh){
   const px=p=>({x:(1-lm[p].x)*vw,y:lm[p].y*vh});
   const fR=px(L.faceR),fL=px(L.faceL),rO=px(L.rOut),lO=px(L.lOut);
   const faceW=Math.hypot(fL.x-fR.x,fL.y-fR.y);
-  const w=faceW*1.06,h=w*(fr.h/fr.w);
+  const w=faceW*1.16,h=w*(fr.h/fr.w);             // a touch wider for confident fit
   const cx=(rO.x+lO.x)/2,cy=(rO.y+lO.y)/2;
   const ang=Math.atan2(lO.y-rO.y,lO.x-rO.x);
-  ctx.save();ctx.translate(cx,cy+h*0.04);ctx.rotate(ang);ctx.drawImage(fr.canvas,-w/2,-h/2,w,h);ctx.restore();
+  ctx.save();ctx.translate(cx,cy-h*0.04);ctx.rotate(ang);ctx.drawImage(fr.canvas,-w/2,-h/2,w,h);ctx.restore();
 }
 
 const REASONS=["it suits a similar face shape","it's a quieter everyday option","it leans a touch bolder","members are loving this one","it's the same fit, different mood"];
