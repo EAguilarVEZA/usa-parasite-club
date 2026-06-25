@@ -203,7 +203,7 @@ function prepFrame(p){
     const cc=c.getContext('2d');cc.drawImage(img,0,0);
     const d=cc.getImageData(0,0,c.width,c.height),a=d.data;
     for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];
-      if(r>234&&g>234&&b>234)a[i+3]=0;else if(r>210&&g>210&&b>210)a[i+3]=90;}
+      if(r>232&&g>232&&b>232)a[i+3]=0;else if(r>205&&g>205&&b>205)a[i+3]=55;}
     cc.putImageData(d,0,0);keyCache[p.h]={canvas:c,w:c.width,h:c.height};
   }catch(e){keyCache[p.h]={canvas:img,w:img.naturalWidth,h:img.naturalHeight};}};
   img.onerror=()=>{keyCache[p.h]=null;};
@@ -234,21 +234,24 @@ function loop(){
   const vw=video.videoWidth,vh=video.videoHeight;
   if(vw&&vh){
     if(view.width!==vw){view.width=vw;view.height=vh;}
-    ctx.save();ctx.translate(vw,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,vw,vh);ctx.restore();
+    ctx.save();
+    ctx.translate(vw,0);ctx.scale(-1,1);           // mirror once, for BOTH video + overlay
+    ctx.drawImage(video,0,0,vw,vh);
     let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
     if(res&&res.faceLandmarks&&res.faceLandmarks[0])drawFrame(res.faceLandmarks[0],vw,vh);
+    ctx.restore();
   }
   requestAnimationFrame(loop);
 }
 function drawFrame(lm,vw,vh){
   const fr=current&&keyCache[current.h];if(!fr)return;
-  const px=p=>({x:(1-lm[p].x)*vw,y:lm[p].y*vh});
+  const px=p=>({x:lm[p].x*vw,y:lm[p].y*vh});       // RAW coords — drawn inside the mirror, so no 180° flip
   const fR=px(L.faceR),fL=px(L.faceL),rO=px(L.rOut),lO=px(L.lOut);
   const faceW=Math.hypot(fL.x-fR.x,fL.y-fR.y);
-  const w=faceW*1.16,h=w*(fr.h/fr.w);             // a touch wider for confident fit
-  const cx=(rO.x+lO.x)/2,cy=(rO.y+lO.y)/2;
+  const w=faceW*1.18,h=w*(fr.h/fr.w);
+  const cx=(rO.x+lO.x)/2,cy=(rO.y+lO.y)/2;         // pupil line
   const ang=Math.atan2(lO.y-rO.y,lO.x-rO.x);
-  ctx.save();ctx.translate(cx,cy-h*0.04);ctx.rotate(ang);ctx.drawImage(fr.canvas,-w/2,-h/2,w,h);ctx.restore();
+  ctx.save();ctx.translate(cx,cy+h*0.05);ctx.rotate(ang);ctx.drawImage(fr.canvas,-w/2,-h/2,w,h);ctx.restore();
 }
 
 const REASONS=["it suits a similar face shape","it's a quieter everyday option","it leans a touch bolder","members are loving this one","it's the same fit, different mood"];
