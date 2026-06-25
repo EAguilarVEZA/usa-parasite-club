@@ -40,6 +40,9 @@ a{color:inherit;text-decoration:none}
 .note{margin-top:14px;font-size:10.5px;letter-spacing:.06em;opacity:.55;max-width:38ch}
 .spin{margin-top:24px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);display:none}
 .err{position:absolute;left:50%;top:62%;transform:translateX(-50%);z-index:45;background:#1a0e0e;border:1px solid #f3997b66;color:#f0b8a3;font-size:12px;padding:14px 18px;border-radius:12px;max-width:80%;text-align:center;display:none}
+.fit{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;pointer-events:none}
+.fit svg{width:min(72vw,320px);height:min(72vw,320px)}
+.fitpill{position:absolute;top:62px;left:50%;transform:translateX(-50%);background:#000b;border:1px solid #fff3;padding:9px 17px;border-radius:30px;font-size:13px;letter-spacing:.04em;font-weight:700}
 /* panel */
 .panel{position:relative;z-index:20;background:#0c0d11;border-top:1px solid #ffffff14;padding:12px 0 14px}
 .tabs{display:flex;gap:8px;padding:0 14px 10px;overflow-x:auto}
@@ -79,16 +82,25 @@ a{color:inherit;text-decoration:none}
 
     <div class="top">
       <a class="logo" href="index.html">PARASITE<b>·</b>CLUB<b>·</b>USA</a>
-      <div class="x" id="close">✕</div>
+      <div style="display:flex;gap:10px">
+        <div class="x" id="flip" title="Flip camera">⟲</div>
+        <div class="x" id="close">✕</div>
+      </div>
     </div>
     <div class="fname" id="fname"><div class="b" id="fb"></div><div class="n" id="fn"></div></div>
 
     <div class="tools" id="tools" style="display:none">
       <div class="rbtn" id="snap" title="Take a photo">📷</div>
-      <div class="rbtn" id="flip" title="Flip camera">⟲</div>
+      <div class="rbtn" id="refit" title="Refine the fit">👓</div>
     </div>
-    <div class="refine" id="refine" style="display:none">✦ Refine</div>
+    <div class="refine" id="refine" style="display:none">✦ For you</div>
     <div class="say" id="say"></div>
+
+    <div class="fit" id="fit">
+      <svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="120" fill="none" stroke="#ffffff44" stroke-width="4"/>
+      <circle id="prog" cx="150" cy="150" r="120" fill="none" stroke="var(--lime)" stroke-width="6" stroke-linecap="round" stroke-dasharray="754" stroke-dashoffset="754" transform="rotate(-90 150 150)"/></svg>
+      <div class="fitpill" id="fitpill">Keep still</div>
+    </div>
 
     <div class="err" id="err"></div>
 
@@ -229,6 +241,7 @@ async function openCam(){
 }
 function fail(m){$('spin').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
 const L={rOut:33,lOut:263,faceR:234,faceL:454};
+let SM=null;                                        // smoothing state, lets the frame stay locked while you move
 function loop(){
   if(!running)return;
   const vw=video.videoWidth,vh=video.videoHeight;
@@ -238,20 +251,57 @@ function loop(){
     ctx.translate(vw,0);ctx.scale(-1,1);           // mirror once, for BOTH video + overlay
     ctx.drawImage(video,0,0,vw,vh);
     let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
-    if(res&&res.faceLandmarks&&res.faceLandmarks[0])drawFrame(res.faceLandmarks[0],vw,vh);
+    if(res&&res.faceLandmarks&&res.faceLandmarks[0]){
+      const lm=res.faceLandmarks[0];
+      if(calibrating)sampleCalib(lm,vw,vh);
+      drawFrame(lm,vw,vh);
+    } else { SM=null; }                            // face lost → reset so it re-locks cleanly
     ctx.restore();
   }
   requestAnimationFrame(loop);
 }
 function drawFrame(lm,vw,vh){
   const fr=current&&keyCache[current.h];if(!fr)return;
-  const px=p=>({x:lm[p].x*vw,y:lm[p].y*vh});       // RAW coords — drawn inside the mirror, so no 180° flip
-  const fR=px(L.faceR),fL=px(L.faceL),rO=px(L.rOut),lO=px(L.lOut);
+  const px=p=>({x:lm[p].x*vw,y:lm[p].y*vh});       // RAW coords — drawn inside the mirror, no 180° flip
+  const rO=px(33),lO=px(263),rin=px(133),lin=px(362),fR=px(234),fL=px(454);
   const faceW=Math.hypot(fL.x-fR.x,fL.y-fR.y);
-  const w=faceW*1.18,h=w*(fr.h/fr.w);
-  const cx=(rO.x+lO.x)/2,cy=(rO.y+lO.y)/2;         // pupil line
-  const ang=Math.atan2(lO.y-rO.y,lO.x-rO.x);
-  ctx.save();ctx.translate(cx,cy+h*0.05);ctx.rotate(ang);ctx.drawImage(fr.canvas,-w/2,-h/2,w,h);ctx.restore();
+  const cx=(rO.x+lO.x+rin.x+lin.x)/4;              // horizontal centre = between the eyes (stable)
+  const cy=(rO.y+lO.y+rin.y+lin.y)/4;             // pupil line
+  const ang=Math.atan2(lO.y-rO.y,lO.x-rO.x);      // head roll (tilt)
+  const fit=window._fit, scaleK=fit?fit.scaleK:1.18, vOffR=fit?fit.vOffR:0.10;
+  // low-pass smoothing → glasses stay glued through side-to-side / tilt instead of jittering
+  if(!SM)SM={cx,cy,faceW,ang};
+  const k=0.45;
+  SM.cx+=(cx-SM.cx)*k;SM.cy+=(cy-SM.cy)*k;SM.faceW+=(faceW-SM.faceW)*k;
+  let da=ang-SM.ang;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;SM.ang+=da*k;
+  const W=SM.faceW*scaleK,H=W*(fr.h/fr.w);
+  ctx.save();
+  ctx.translate(SM.cx, SM.cy + SM.faceW*vOffR);    // seat on the nose, below pupil line
+  ctx.rotate(SM.ang);
+  ctx.drawImage(fr.canvas,-W/2,-H/2,W,H);
+  ctx.restore();
+}
+// ---- Refine the fit: guided face measurement, then lock ----
+let calibrating=false,calSamples=[];const CAL_TARGET=70;
+function refineFit(){ if(!running||!landmarker)return; calibrating=true;calSamples=[];$('fit').style.display='flex';$('fitpill').textContent='Keep still';$('prog').setAttribute('stroke-dashoffset','754'); }
+function sampleCalib(lm,vw,vh){
+  const px=p=>({x:lm[p].x*vw,y:lm[p].y*vh});
+  const rO=px(33),lO=px(263),fR=px(234),fL=px(454),nb=px(168);
+  const faceW=Math.hypot(fL.x-fR.x,fL.y-fR.y),eyeY=(rO.y+lO.y)/2;
+  calSamples.push((nb.y-eyeY)/faceW);
+  const prog=Math.min(calSamples.length/CAL_TARGET,1);
+  $('prog').setAttribute('stroke-dashoffset',String(754*(1-prog)));
+  if(prog>0.55&&prog<1)$('fitpill').textContent='Almost there';
+  if(calSamples.length>=CAL_TARGET)finishCalib();
+}
+function finishCalib(){
+  calibrating=false;
+  const a=calSamples.slice().sort((x,y)=>x-y);const mv=a[Math.floor(a.length/2)]||0;
+  window._fit={scaleK:1.2, vOffR:Math.max(0.05,Math.min(0.20, mv+0.11))};
+  SM=null;                                          // re-lock with the new fit
+  $('fitpill').textContent='Perfect fit ✓';
+  setTimeout(()=>{$('fit').style.display='none';},950);
+  say("<b>Adrian:</b> locked to your measurements — that's your true fit.");
 }
 
 const REASONS=["it suits a similar face shape","it's a quieter everyday option","it leans a touch bolder","members are loving this one","it's the same fit, different mood"];
@@ -267,6 +317,7 @@ function refine(){
 
 $('start').onclick=start;
 $('refine').onclick=refine;
+$('refit').onclick=refineFit;
 $('close').onclick=()=>{running=false;if(stream)stream.getTracks().forEach(t=>t.stop());location.href='shop.html';};
 $('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
 $('snap').onclick=()=>{try{const a=document.createElement('a');a.download='parasite-club-tryon.png';a.href=view.toDataURL('image/png');a.click();toast('Saved your look ★');}catch(e){toast('Could not save');}};
