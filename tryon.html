@@ -1,172 +1,281 @@
 <!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Try On True-to-Size — Parasite Club USA</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Try On — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--g1:#2a3bff;--g3:#ff3ea5;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--ink);color:var(--bone);font-family:var(--mono);min-height:100vh}
-.top{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid #ffffff16}
-.logo{font-family:var(--disp);font-size:17px;letter-spacing:.04em}.logo b{color:var(--lime)}
-.tt{font-size:10px;letter-spacing:.18em;text-transform:uppercase;opacity:.6}
-.wrap{max-width:980px;margin:0 auto;padding:22px}
-.stagebox{position:relative;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:4/3;border:1px solid #ffffff18;perspective:900px}
-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
-#frame{position:absolute;left:0;top:0;mix-blend-mode:multiply;pointer-events:none;transform-origin:center;transform-style:preserve-3d;backface-visibility:hidden;display:none;will-change:transform}
-.hud{position:absolute;left:14px;top:14px;z-index:3;display:flex;gap:8px;flex-wrap:wrap}
-.pill{background:rgba(10,10,12,.7);border:1px solid var(--lime);color:var(--lime);border-radius:30px;padding:7px 12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-.pill.dim{border-color:#ffffff30;color:var(--bone);opacity:.8}
-.center-msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;z-index:2;padding:24px}
-.center-msg .in{max-width:420px}
-.center-msg h2{font-family:var(--disp);font-size:clamp(28px,5vw,46px);text-transform:uppercase;line-height:.92;margin-bottom:12px}
-.center-msg p{font-size:12.5px;line-height:1.7;opacity:.82;margin-bottom:20px}
-.start{background:var(--lime);color:var(--ink);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:13px;padding:16px 28px;border-radius:40px;cursor:pointer;display:inline-block;border:0}
-.err{color:#ffb4a8;font-size:11px;line-height:1.6;margin-top:14px}
-/* frame rail */
-.rail{display:flex;gap:10px;overflow-x:auto;padding:16px 0 8px}
-.fr{flex:none;width:104px;cursor:pointer;border:1px solid #ffffff18;border-radius:12px;overflow:hidden;background:#0e1016;transition:.15s}
-.fr.on{border-color:var(--lime)}
-.fr .ph{height:84px;background:#fff}.fr .ph img{width:100%;height:100%;object-fit:cover}
-.fr .m{padding:8px 9px}.fr .n{font-size:10px;letter-spacing:.03em;text-transform:uppercase;line-height:1.2}.fr .b{font-size:8px;letter-spacing:.14em;color:var(--lime);margin-top:3px}
-/* controls */
-.ctrls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:14px 2px}
-.ctrl{display:flex;flex-direction:column;gap:5px;min-width:150px}
-.ctrl label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;opacity:.55}
-input[type=range]{accent-color:var(--lime)}
-.toggle{margin-left:auto;display:flex;gap:8px}
-.tg{border:1px solid #ffffff28;border-radius:30px;padding:9px 14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
-.tg.on{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
-.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:10px 14px;font-size:10px;letter-spacing:.06em;color:#99a;text-transform:uppercase;text-align:center;margin-top:14px;line-height:1.6}
+html,body{height:100%}
+body{background:#000;color:var(--bone);font-family:var(--mono);overflow:hidden}
+a{color:inherit;text-decoration:none}
+.stage{position:fixed;inset:0;display:flex;flex-direction:column}
+.cam{position:relative;flex:1;overflow:hidden;background:#0a0a0c}
+#view{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#video{display:none}
+.top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(#000a,transparent)}
+.logo{font-family:var(--disp);font-size:16px;letter-spacing:.04em}.logo b{color:var(--lime)}
+.x{width:34px;height:34px;border-radius:50%;background:#0008;border:1px solid #fff3;display:grid;place-items:center;font-size:15px;cursor:pointer}
+.fname{position:absolute;left:0;right:0;top:58px;text-align:center;z-index:15;pointer-events:none}
+.fname .b{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--lime)}
+.fname .n{font-family:var(--disp);font-size:22px;text-transform:uppercase;line-height:1;margin-top:2px;text-shadow:0 2px 14px #000a}
+/* bottom-left camera tools */
+.tools{position:absolute;left:14px;bottom:16px;z-index:18;display:flex;flex-direction:column;gap:11px}
+.rbtn{width:48px;height:48px;border-radius:50%;background:#0009;border:1px solid #fff3;display:grid;place-items:center;font-size:19px;cursor:pointer;backdrop-filter:blur(4px)}
+.rbtn:active{transform:scale(.93)}
+.rbtn small{font-size:8px;letter-spacing:.06em}
+/* refine pill bottom-right */
+.refine{position:absolute;right:14px;bottom:16px;z-index:18;background:#0009;border:1px solid var(--lime);color:var(--lime);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:13px 16px;border-radius:40px;cursor:pointer;backdrop-filter:blur(4px)}
+.refine:active{transform:scale(.96)}
+/* adrian note */
+.say{position:absolute;left:14px;right:14px;bottom:78px;z-index:17;text-align:center;font-size:12px;opacity:0;transition:.3s;pointer-events:none}
+.say.show{opacity:.92}
+.say b{color:var(--lime)}
+/* gate */
+.gate{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:radial-gradient(120% 80% at 50% 0%,#16181f,#0a0a0c)}
+.gate .ey{border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:6px 15px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:18px}
+.gate h1{font-family:var(--disp);font-size:clamp(34px,9vw,60px);line-height:.92;text-transform:uppercase}
+.gate p{font-size:13px;opacity:.8;max-width:42ch;margin:16px auto 0;line-height:1.6}
+.go{margin-top:26px;background:var(--lime);color:var(--ink);font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:17px 34px;border-radius:40px;border:none;cursor:pointer}
+.note{margin-top:14px;font-size:10.5px;letter-spacing:.06em;opacity:.55;max-width:38ch}
+.spin{margin-top:24px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime);display:none}
+.err{position:absolute;left:50%;top:62%;transform:translateX(-50%);z-index:45;background:#1a0e0e;border:1px solid #f3997b66;color:#f0b8a3;font-size:12px;padding:14px 18px;border-radius:12px;max-width:80%;text-align:center;display:none}
+/* panel */
+.panel{position:relative;z-index:20;background:#0c0d11;border-top:1px solid #ffffff14;padding:12px 0 14px}
+.tabs{display:flex;gap:8px;padding:0 14px 10px;overflow-x:auto}
+.tab{flex:none;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:7px 13px;border:1px solid #fff2;border-radius:30px;color:#cfcabd;cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
+.rail{display:flex;gap:10px;padding:0 14px 10px;overflow-x:auto;scroll-snap-type:x mandatory}
+.thumb{flex:none;width:74px;scroll-snap-align:center;cursor:pointer;text-align:center}
+.thumb .pic{width:74px;height:54px;border-radius:10px;background:#fff;border:2px solid transparent;overflow:hidden;display:grid;place-items:center}
+.thumb.on .pic{border-color:var(--lime)}
+.thumb .pic img{width:100%;height:100%;object-fit:contain}
+.thumb .lab{font-size:8.5px;letter-spacing:.04em;margin-top:4px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* colorways */
+.colors{display:none;align-items:center;gap:9px;padding:2px 14px 12px;overflow-x:auto}
+.colors .cl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.5;flex:none;margin-right:2px}
+.sw{flex:none;width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #fff3;overflow:hidden;cursor:pointer;display:grid;place-items:center}
+.sw.on{border-color:var(--lime)}
+.sw img{width:100%;height:100%;object-fit:cover}
+/* action */
+.act{display:flex;align-items:center;gap:10px;padding:2px 14px 0}
+.price{flex:none}.price .pl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.55}.price .pv{font-family:var(--disp);font-size:22px;line-height:1}
+.bag{flex:1;background:var(--lime);color:var(--ink);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:15px;border-radius:40px;border:none;text-align:center;cursor:pointer}
+.bag:active{transform:scale(.99)}
+.home{flex:none;background:transparent;border:1px solid #fff3;color:var(--bone);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:14px 15px;border-radius:40px;cursor:pointer}
+.home b{color:var(--lime)}
+.toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:11px 18px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:90;text-align:center}
+.toast.show{opacity:1}
+@media(min-width:760px){
+  .stage{flex-direction:row}
+  .cam{flex:1}
+  .panel{width:390px;border-top:none;border-left:1px solid #ffffff14;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:22px}
+}
 </style></head><body>
-<div class="top"><div class="logo">PARASITE<b>·</b>CLUB<b>·</b>USA · <span class="tt">Try-On · True-to-Size</span></div><a href="#" onclick="if(window.history.length>1){history.back()}else{window.close()};return false;" style="text-decoration:none;border:1px solid #ffffff35;border-radius:30px;padding:7px 14px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone);cursor:pointer">✕ Close</a></div>
-<div class="wrap">
-  <div class="stagebox" id="stage">
-    <video id="vid" playsinline muted autoplay></video>
-    <img id="frame" crossorigin="anonymous">
-    <div class="hud" id="hud" style="display:none">
-      <span class="pill" id="pTrue">◉ True-to-size</span>
-      <span class="pill dim" id="pPd">PD —</span>
-      <span class="pill dim" id="pW">Frame —</span>
+<div class="stage">
+  <div class="cam">
+    <video id="video" playsinline muted autoplay></video>
+    <canvas id="view"></canvas>
+
+    <div class="top">
+      <a class="logo" href="index.html">PARASITE<b>·</b>CLUB<b>·</b>USA</a>
+      <div class="x" id="close">✕</div>
     </div>
-    <div class="center-msg" id="cmsg"><div class="in">
-      <h2>See them on,<br>at their real size.</h2>
-      <p>We use your pupillary distance as a ruler, so every frame appears at its true scale — oversized looks oversized, refined looks refined. Your camera stays on your device.</p>
-      <button class="start" id="startBtn">◉ Start the mirror</button>
-      <div class="err" id="err"></div>
-    </div></div>
+    <div class="fname" id="fname"><div class="b" id="fb"></div><div class="n" id="fn"></div></div>
+
+    <div class="tools" id="tools" style="display:none">
+      <div class="rbtn" id="snap" title="Take a photo">📷</div>
+      <div class="rbtn" id="flip" title="Flip camera">⟲</div>
+    </div>
+    <div class="refine" id="refine" style="display:none">✦ Refine</div>
+    <div class="say" id="say"></div>
+
+    <div class="err" id="err"></div>
+
+    <div class="gate" id="gate">
+      <div class="ey">★ Virtual try-on · no download</div>
+      <h1>See them<br>on you.</h1>
+      <p>Point your camera, pick a frame, watch it land on your face in real time. Right here in your browser — phone or computer, nothing to install.</p>
+      <button class="go" id="start">Start try-on</button>
+      <div class="note">Camera is used only while you're here. Nothing is recorded or stored.</div>
+      <div class="spin" id="spin">Warming up the mirror…</div>
+    </div>
   </div>
 
-  <div class="rail" id="rail"></div>
-
-  <div class="ctrls">
-    <div class="ctrl"><label>Size · nudge</label><input id="sSize" type="range" min="0.8" max="1.25" step="0.01" value="1"></div>
-    <div class="ctrl"><label>Vertical · nudge</label><input id="sY" type="range" min="-40" max="40" step="1" value="0"></div>
-    <div class="toggle">
-      <div class="tg on" id="tgAuto">Auto-fit</div>
-      <div class="tg" id="tgManual">Manual</div>
+  <div class="panel" id="panel" style="display:none">
+    <div class="tabs" id="tabs"></div>
+    <div class="rail" id="rail"></div>
+    <div class="colors" id="colors"><span class="cl">Colors</span></div>
+    <div class="act">
+      <div class="price"><div class="pl">Price · USD</div><div class="pv" id="pv">$—</div></div>
+      <button class="bag" id="bag">Add to bag</button>
+      <button class="home" id="home">Try at <b>home</b></button>
     </div>
   </div>
-  <div class="note">Working Phase-2 prototype · real frames overlaid true-to-size · if the camera won't start, open this file in Chrome and allow camera (camera needs a secure context — works from the live site or a local server).</div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script type="module">
-const P='https://cdn.shopify.com/s/files/1/0065/5609/0423/files/',R='https://cdn.shopify.com/s/files/1/1924/6071/files/',A='https://cdn.shopify.com/s/files/1/0556/3446/0745/files/';
-// hero frames chosen to overlay cleanly (dark/saturated acetate on white). totalMm = real frame width.
-const HERO=[
- {nm:'Numan · Black',br:'Portrait',img:P+'NUMAN_black_front.jpg',mm:138},
- {nm:'Roland · Red',br:'Portrait',img:P+'ROLAND__red_front.jpg',mm:142},
- {nm:'The Modernist',br:'Portrait',img:P+'THEMODERNIST-C01-1.jpg',mm:140},
- {nm:'Sonic · Sun',br:'Portrait',img:P+'SONIC_BLACK_FRONT.jpg',mm:146},
- {nm:'Atom 1',br:'Parasite',img:R+'ATO117-FACE.jpg',mm:142},
- {nm:'Australe 1',br:'Acid',img:A+'AUS104.jpg',mm:146},
-];
-let cur=0, mode='auto', landmarker=null, running=false, lastFace=false;
-const vid=document.getElementById('vid'), frameImg=document.getElementById('frame');
-const sSize=document.getElementById('sSize'), sY=document.getElementById('sY');
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+const $=id=>document.getElementById(id);
+const CHECKOUT=h=>'/api/shopify?action=checkout&handle='+encodeURIComponent(h);
+let DATA=[],view=$('view'),ctx=view.getContext('2d'),video=$('video');
+let landmarker=null,stream=null,facing='user',running=false;
+let house='Portrait',type='all',current=null;
+const keyCache={};
+const modelKey=p=>p.b+'|'+(p.model||p.n);
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
+function say(html){const e=$('say');e.innerHTML=html;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),4200);}
+function tier(){try{return localStorage.getItem('upc_tier')==='inner'?'inner':'standard';}catch(e){return 'standard';}}
 
-// build rail
-const rail=document.getElementById('rail');
-rail.innerHTML=HERO.map((f,i)=>`<div class="fr ${i===0?'on':''}" data-i="${i}"><div class="ph"><img src="${f.img}?width=220"></div><div class="m"><div class="n">${f.nm}</div><div class="b">${f.br}</div></div></div>`).join('');
-rail.querySelectorAll('.fr').forEach(el=>el.onclick=()=>{cur=+el.dataset.i;rail.querySelectorAll('.fr').forEach(x=>x.classList.remove('on'));el.classList.add('on');setFrame();});
-function setFrame(){ frameImg.src=HERO[cur].img+'?width=700'; document.getElementById('pW').textContent='Frame '+HERO[cur].mm+'mm'; }
-setFrame();
+function applyParams(){
+  const q=new URLSearchParams(location.search);
+  const h=q.get('h'),b=q.get('b');
+  const fr=h&&DATA.find(p=>p.h===h);
+  if(fr)house=fr.b; else if(b&&['Portrait','Acid','Parasite'].includes(b))house=b;
+  window._wantH=fr?h:null;
+}
+fetch('products.json').then(r=>r.json()).then(d=>{
+  DATA=d;applyParams();buildTabs();
+  if(window._wantH)select(window._wantH);
+});
 
-document.getElementById('tgAuto').onclick=()=>setMode('auto');
-document.getElementById('tgManual').onclick=()=>setMode('manual');
-function setMode(m){mode=m;document.getElementById('tgAuto').classList.toggle('on',m==='auto');document.getElementById('tgManual').classList.toggle('on',m==='manual');}
+function buildTabs(){
+  const houses=['Portrait','Acid','Parasite'];
+  $('tabs').innerHTML=houses.map(h=>`<div class="tab${h===house?' on':''}" data-h="${h}">${h}</div>`).join('')
+    +`<div class="tab${type==='all'?' on':''}" data-t="all" style="margin-left:6px">All</div>`
+    +`<div class="tab${type==='Eyeglasses'?' on':''}" data-t="Eyeglasses">Optical</div>`
+    +`<div class="tab${type==='Sunglasses'?' on':''}" data-t="Sunglasses">Sun</div>`;
+  $('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+    if(t.dataset.h){house=t.dataset.h;current=null;}
+    if(t.dataset.t){type=t.dataset.t;current=null;}
+    buildTabs();buildRail();
+  });
+  buildRail();
+}
+function models(){
+  let l=DATA.filter(p=>p.b===house);
+  if(type!=='all')l=l.filter(p=>p.t===type);
+  const seen=new Set(),out=[];
+  l.forEach(p=>{const k=modelKey(p);if(!seen.has(k)){seen.add(k);out.push(p);}});
+  return out;
+}
+function colorways(p){return DATA.filter(x=>modelKey(x)===modelKey(p));}
+function buildRail(){
+  const list=models();
+  $('rail').innerHTML=list.slice(0,80).map(p=>`
+    <div class="thumb${current&&modelKey(current)===modelKey(p)?' on':''}" data-h="${p.h}">
+      <div class="pic"><img loading="lazy" crossorigin="anonymous" src="${p.img}?width=180" alt="${p.n}"></div>
+      <div class="lab">${(p.model||p.n)}</div>
+    </div>`).join('')||`<div style="padding:14px;font-size:12px;opacity:.6">No frames here.</div>`;
+  $('rail').querySelectorAll('.thumb').forEach(t=>t.onclick=()=>select(t.dataset.h));
+  if(!current&&list.length)select(list[0].h);
+}
+function buildColors(){
+  const cw=colorways(current);
+  const box=$('colors');
+  if(cw.length<2){box.style.display='none';return;}
+  box.style.display='flex';
+  box.innerHTML='<span class="cl">Colors</span>'+cw.map(c=>`
+    <div class="sw${c.h===current.h?' on':''}" data-h="${c.h}" title="${c.n}">
+      <img crossorigin="anonymous" src="${c.img}?width=80"></div>`).join('');
+  box.querySelectorAll('.sw').forEach(s=>s.onclick=()=>setColor(s.dataset.h));
+}
+function select(h){
+  current=DATA.find(p=>p.h===h);if(!current)return;
+  paint();buildRail();buildColors();
+}
+function setColor(h){
+  current=DATA.find(p=>p.h===h);if(!current)return;
+  paint();buildColors();
+  $('rail').querySelectorAll('.thumb').forEach(t=>t.classList.toggle('on',modelKey(DATA.find(p=>p.h===t.dataset.h))===modelKey(current)));
+}
+function paint(){
+  $('fb').textContent=current.b;$('fn').textContent=current.n;
+  $('pv').textContent='$'+current.p;
+  prepFrame(current);
+}
+function prepFrame(p){
+  if(keyCache[p.h]!==undefined&&keyCache[p.h]!==null)return;
+  const img=new Image();img.crossOrigin='anonymous';
+  img.onload=()=>{try{
+    const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+    const cc=c.getContext('2d');cc.drawImage(img,0,0);
+    const d=cc.getImageData(0,0,c.width,c.height),a=d.data;
+    for(let i=0;i<a.length;i+=4){const r=a[i],g=a[i+1],b=a[i+2];
+      if(r>234&&g>234&&b>234)a[i+3]=0;else if(r>210&&g>210&&b>210)a[i+3]=90;}
+    cc.putImageData(d,0,0);keyCache[p.h]={canvas:c,w:c.width,h:c.height};
+  }catch(e){keyCache[p.h]={canvas:img,w:img.naturalWidth,h:img.naturalHeight};}};
+  img.onerror=()=>{keyCache[p.h]=null;};
+  img.src=p.img+'?width=600';
+}
 
-document.getElementById('startBtn').onclick=start;
 async function start(){
-  const err=document.getElementById('err'); err.textContent='';
+  $('spin').style.display='block';
   try{
-    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:960}},audio:false});
-    vid.srcObject=stream; await vid.play();
-    document.getElementById('cmsg').style.display='none';
-    document.getElementById('hud').style.display='flex';
-    frameImg.style.display='block';
-    running=true;
-    loadLandmarker(); // async, non-blocking
-    requestAnimationFrame(loop);
-  }catch(e){
-    err.innerHTML='Camera couldn’t start ('+e.name+'). Open this file in Chrome and allow camera access, or run it from the live site / a local server.';
-  }
+    const vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
+    landmarker=await FaceLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"},runningMode:"VIDEO",numFaces:1});
+  }catch(e){return fail("Couldn't load the try-on engine. Check your connection and retry.");}
+  await openCam();
+  $('gate').style.display='none';$('panel').style.display='flex';$('tools').style.display='flex';$('refine').style.display='block';
+  say("<b>Adrian:</b> tap any frame — I'll fit it to your face. Hit ✦ Refine for a suggestion.");
+  running=true;requestAnimationFrame(loop);
 }
-async function loadLandmarker(){
-  try{
-    const vision=await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12');
-    const fileset=await vision.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.12/wasm');
-    landmarker=await vision.FaceLandmarker.createFromOptions(fileset,{
-      baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'},
-      runningMode:'VIDEO',numFaces:1,outputFacialTransformationMatrixes:true});
-  }catch(e){ landmarker=null; setMode('manual'); document.getElementById('pTrue').textContent='Manual fit'; }
+async function openCam(){
+  if(stream)stream.getTracks().forEach(t=>t.stop());
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:960}},audio:false});}
+  catch(e){return fail("Camera permission is needed to try frames on. Enable it and retry.");}
+  video.srcObject=stream;await video.play().catch(()=>{});
 }
-function loop(t){
+function fail(m){$('spin').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
+const L={rOut:33,lOut:263,faceR:234,faceL:454};
+function loop(){
   if(!running)return;
-  const W=vid.clientWidth, H=vid.clientHeight;
-  let placed=false;
-  if(mode==='auto' && landmarker && vid.readyState>=2){
-    let res; try{ res=landmarker.detectForVideo(vid, performance.now()); }catch(e){}
-    if(res && res.faceLandmarks && res.faceLandmarks[0]){
-      const lm=res.faceLandmarks[0];
-      const mx=i=>(1-lm[i].x)*W, my=i=>lm[i].y*H; // mirror x to match flipped video
-      // outer eye corners (stable for orientation); ORDER by x so the frame can never flip
-      let a={x:mx(33),y:my(33)}, b={x:mx(263),y:my(263)};
-      if(a.x>b.x){const t=a;a=b;b=t;}
-      const cx=(a.x+b.x)/2, cy=(a.y+b.y)/2;
-      // PD from iris centers when available, else from eye-corner span
-      let pdPx;
-      if(lm.length>=474){ pdPx=Math.hypot(mx(468)-mx(473), my(468)-my(473)); }
-      else { pdPx=Math.hypot(b.x-a.x, b.y-a.y)*0.83; }
-      let ang=Math.atan2(b.y-a.y, b.x-a.x);   // small head-tilt, never inverted
-      if(Math.abs(ang)>0.6) ang=0;            // guard against bad frames
-      // HEAD-TURN: yaw/pitch from the facial transformation matrix → 3D rotation
-      let yaw=0, pitch=0;
-      const FM=res.facialTransformationMatrixes&&res.facialTransformationMatrixes[0]&&res.facialTransformationMatrixes[0].data;
-      if(FM){ yaw=Math.atan2(FM[8],FM[10]); pitch=Math.asin(Math.max(-1,Math.min(1,-FM[9]))); }
-      const ry=-yaw*0.9, rx=pitch*0.5;        // mirror flips yaw sign
-      const pxPerMm=pdPx/63;                  // avg adult PD ~63mm
-      const wPx=HERO[cur].mm*pxPerMm*parseFloat(sSize.value);
-      const natW=frameImg.naturalWidth||700, natH=frameImg.naturalHeight||300;
-      const hPx=wPx*(natH/natW);
-      frameImg.style.width=wPx+'px';
-      // sit slightly above the pupil line so the bridge lands on the nose, and turn with the head
-      frameImg.style.transform=`translate(${cx-wPx/2}px,${cy-hPx/2-hPx*0.06+(+sY.value)}px) rotateX(${rx}rad) rotateY(${ry}rad) rotateZ(${ang}rad)`;
-      document.getElementById('pTrue').textContent = Math.abs(yaw)>0.35 ? '◉ Head-turn' : '◉ True-to-size';
-      document.getElementById('pPd').textContent='PD ~'+Math.round(pdPx/pxPerMm)+'mm';
-      placed=true; lastFace=true;
-    } else if(lastFace===false){
-      document.getElementById('pPd').textContent='Looking for you…';
-    }
-  }
-  if(!placed){ // manual / fallback: center it
-    const wPx=W*0.42*parseFloat(sSize.value);
-    const natW=frameImg.naturalWidth||700, natH=frameImg.naturalHeight||300, hPx=wPx*(natH/natW);
-    frameImg.style.width=wPx+'px';
-    frameImg.style.transform=`translate(${W/2-wPx/2}px,${H*0.38-hPx/2+(+sY.value)}px)`;
-    if(mode!=='auto'){document.getElementById('pTrue').textContent='Manual fit';document.getElementById('pPd').textContent='Drag to fit';}
+  const vw=video.videoWidth,vh=video.videoHeight;
+  if(vw&&vh){
+    if(view.width!==vw){view.width=vw;view.height=vh;}
+    ctx.save();ctx.translate(vw,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,vw,vh);ctx.restore();
+    let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
+    if(res&&res.faceLandmarks&&res.faceLandmarks[0])drawFrame(res.faceLandmarks[0],vw,vh);
   }
   requestAnimationFrame(loop);
 }
+function drawFrame(lm,vw,vh){
+  const fr=current&&keyCache[current.h];if(!fr)return;
+  const px=p=>({x:(1-lm[p].x)*vw,y:lm[p].y*vh});
+  const fR=px(L.faceR),fL=px(L.faceL),rO=px(L.rOut),lO=px(L.lOut);
+  const faceW=Math.hypot(fL.x-fR.x,fL.y-fR.y);
+  const w=faceW*1.06,h=w*(fr.h/fr.w);
+  const cx=(rO.x+lO.x)/2,cy=(rO.y+lO.y)/2;
+  const ang=Math.atan2(lO.y-rO.y,lO.x-rO.x);
+  ctx.save();ctx.translate(cx,cy+h*0.04);ctx.rotate(ang);ctx.drawImage(fr.canvas,-w/2,-h/2,w,h);ctx.restore();
+}
+
+const REASONS=["it suits a similar face shape","it's a quieter everyday option","it leans a touch bolder","members are loving this one","it's the same fit, different mood"];
+function refine(){
+  const m=models().filter(x=>modelKey(x)!==modelKey(current||{}));
+  if(!m.length){toast('That’s the whole house — switch filters');return;}
+  const pick=m[Math.floor(Math.random()*m.length)];
+  select(pick.h);
+  const th=[...$('rail').querySelectorAll('.thumb')].find(t=>t.dataset.h===pick.h);
+  if(th)th.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+  say("<b>Adrian:</b> try the <b>"+(pick.model||pick.n)+"</b> — "+REASONS[Math.floor(Math.random()*REASONS.length)]+".");
+}
+
+$('start').onclick=start;
+$('refine').onclick=refine;
+$('close').onclick=()=>{running=false;if(stream)stream.getTracks().forEach(t=>t.stop());location.href='shop.html';};
+$('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
+$('snap').onclick=()=>{try{const a=document.createElement('a');a.download='parasite-club-tryon.png';a.href=view.toDataURL('image/png');a.click();toast('Saved your look ★');}catch(e){toast('Could not save');}};
+$('bag').onclick=()=>{if(!current)return;toast('Opening secure checkout…');location.href=CHECKOUT(current.h);};
+$('home').onclick=()=>{
+  if(!current)return;
+  let t={};try{t=JSON.parse(localStorage.getItem('upc_trunk')||'{}');}catch(e){}
+  const items=new Set(t.items||[]),lim=tier()==='inner'?5:3;
+  if(items.has(current.h)){toast('Already in your trunk');return;}
+  if(items.size>=lim){toast('Trunk full ('+lim+') — review it');location.href='atelier.html';return;}
+  items.add(current.h);localStorage.setItem('upc_trunk',JSON.stringify({items:[...items],tier:tier(),ts:Date.now()}));
+  toast('Added to your home trunk ('+items.size+'/'+lim+')');
+};
 </script>
 </body></html>
