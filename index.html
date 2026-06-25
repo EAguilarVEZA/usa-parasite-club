@@ -1,242 +1,185 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PARASITE CLUB USA — Mockup</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Parasite Club USA — Pick your house</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script async src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=UyszVE"></script>
 <style>
-:root{
-  --ink:#0a0a0c; --bone:#F2EEE4; --lime:#C8FF00; --red:#E2402C;
-  --g1:#2a3bff; --g2:#7a2bff; --g3:#ff3ea5;
-  --mono:'Space Mono',monospace; --disp:'Anton',sans-serif; --serif:'Fraunces',Georgia,serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--ink);color:var(--bone);font-family:var(--mono);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
-.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:11px}
-
-/* ticker */
-.ticker{background:var(--lime);color:var(--ink);overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--ink)}
-.ticker .run{display:inline-block;padding:8px 0;animation:scroll 28s linear infinite;font-family:var(--mono);font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:12px}
-.ticker .run span{padding:0 22px}
-@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* nav */
-nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.78);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff18}
-.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{font-family:var(--disp);font-size:20px;letter-spacing:.04em;line-height:1}
-.logo b{color:var(--lime)}
-.nav-links{display:flex;gap:26px}
-.nav-links a{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85;transition:.2s}
-.nav-links a:hover{opacity:1;color:var(--lime)}
-.bag{border:1px solid #ffffff30;border-radius:40px;padding:7px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.1em}
-
-/* hero */
-.hero{position:relative;min-height:92vh;display:flex;align-items:flex-end;overflow:hidden;border-bottom:1px solid #ffffff14}
-.hero-img{position:absolute;inset:0;background:url('https://cdn.shopify.com/s/files/1/1924/6071/files/SYNTHESE1-LILIAN-FACE.jpg?width=1600') center 28%/cover no-repeat;filter:grayscale(.15) contrast(1.05)}
-.hero-img:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,12,.55) 0%,rgba(10,10,12,.15) 35%,rgba(10,10,12,.92) 100%)}
-.hero-glow{position:absolute;width:60vw;height:60vw;right:-12vw;top:-10vw;background:radial-gradient(circle,var(--g2),transparent 62%);opacity:.5;filter:blur(30px);animation:float 12s ease-in-out infinite}
-@keyframes float{50%{transform:translateY(40px) scale(1.08)}}
-.hero-content{position:relative;z-index:2;width:100%;padding-bottom:54px}
-.kicker{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:7px 16px;margin-bottom:22px}
-.kicker b{font-family:var(--mono);font-size:10.5px;letter-spacing:.2em}
-h1.hero-h{font-family:var(--disp);font-size:clamp(54px,10.5vw,150px);line-height:.88;letter-spacing:.01em;text-transform:uppercase}
-h1.hero-h .grad{background:linear-gradient(92deg,var(--g1),var(--g2),var(--g3));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero-sub{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:26px}
-.btn{font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:700;padding:15px 26px;border-radius:40px;transition:.2s;display:inline-block}
-.btn-lime{background:var(--lime);color:var(--ink)}
-.btn-lime:hover{transform:translateY(-2px)}
-.btn-ghost{border:1px solid #ffffff45}
-.btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
-.stat{font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.7;text-transform:uppercase}
-
-/* product marquee */
-.strip{border-bottom:1px solid #ffffff14;padding:18px 0;overflow:hidden;white-space:nowrap}
-.strip .row{display:inline-flex;gap:14px;animation:scroll 40s linear infinite}
-.strip img{height:120px;width:160px;object-fit:cover;border-radius:8px;background:#fff;filter:grayscale(.1)}
-
-/* section heads */
-.shead{display:flex;align-items:baseline;justify-content:space-between;gap:20px;padding:74px 0 26px}
-.shead h2{font-family:var(--disp);font-size:clamp(32px,5vw,68px);text-transform:uppercase;line-height:.92;letter-spacing:.01em}
-.shead .idx{font-family:var(--mono);font-size:11px;letter-spacing:.2em;opacity:.55}
-
-/* houses */
-.houses{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:30px}
-.house{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:3/4;border:1px solid #ffffff14;isolation:isolate}
-.house img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:.6s;filter:grayscale(.2)}
-.house:hover img{transform:scale(1.06);filter:grayscale(0)}
-.house:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(10,10,12,.9))}
-.house .body{position:absolute;z-index:2;bottom:0;padding:22px}
-.house .tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--lime);text-transform:uppercase}
-.house h3{font-family:var(--disp);font-size:34px;text-transform:uppercase;margin:6px 0 8px;line-height:.9}
-.house p{font-size:12.5px;line-height:1.55;opacity:.82;max-width:30ch}
-
-/* manifesto */
-.manifesto{padding:96px 0;text-align:center;position:relative}
-.manifesto .lead{font-family:var(--serif);font-style:italic;font-size:clamp(26px,4.2vw,52px);line-height:1.2;max-width:20ch;margin:0 auto 26px}
-.manifesto .lead em{color:var(--lime);font-style:italic}
-.manifesto p{max-width:60ch;margin:0 auto;font-size:13.5px;line-height:1.9;opacity:.78}
-.rule{height:1px;background:linear-gradient(90deg,transparent,var(--lime),transparent);margin:0 auto;max-width:200px}
-
-/* grid */
-.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:40px}
-.card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;transition:.25s}
-.card:hover{border-color:#ffffff40;transform:translateY(-3px)}
-.card .ph{aspect-ratio:1/1;background:#fff;overflow:hidden}
-.card .ph img{width:100%;height:100%;object-fit:cover}
-.card .meta{padding:13px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
-.card .nm{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:1.3}
-.card .br{font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--lime);margin-top:5px}
-.card .pr{font-family:var(--mono);font-size:11px;white-space:nowrap;opacity:.8}
-
-/* club CTA */
-.club{margin:30px 0 0;background:var(--lime);color:var(--ink);border-radius:18px;padding:64px 40px;text-align:center;position:relative;overflow:hidden}
-.club h2{font-family:var(--disp);font-size:clamp(40px,8vw,108px);text-transform:uppercase;line-height:.86}
-.club p{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin:14px auto 26px;max-width:50ch}
-.club .form{display:inline-flex;gap:8px;background:var(--ink);border-radius:40px;padding:6px 6px 6px 20px}
-.club input{background:transparent;border:0;color:var(--bone);font-family:var(--mono);font-size:12px;letter-spacing:.1em;width:240px;outline:none}
-.club .form .btn-lime{background:var(--lime)}
-.seal{position:absolute;right:-30px;top:-30px;width:180px;height:180px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:10px;letter-spacing:.2em;opacity:.25;transform:rotate(-12deg)}
-
-/* footer */
-footer{padding:70px 0 50px;border-top:1px solid #ffffff14;margin-top:64px}
-.fcols{display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px}
-.fcols .logo{font-size:30px}
-.fcol h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.55;margin-bottom:14px}
-.fcol a{display:block;font-size:12.5px;opacity:.85;margin-bottom:9px}
-.fcol a:hover{color:var(--lime)}
-.fbase{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:46px;padding-top:22px;border-top:1px solid #ffffff14;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;opacity:.6;text-transform:uppercase}
-.note{background:#101218;border:1px dashed #ffffff30;border-radius:10px;padding:10px 16px;margin:18px 0 0;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:#aab;text-transform:uppercase;text-align:center}
-.reveal{opacity:0;transform:translateY(24px);transition:.7s}
-.reveal.in{opacity:1;transform:none}
-@media(max-width:900px){.houses{grid-template-columns:1fr}.pgrid{grid-template-columns:repeat(2,1fr)}.nav-links{display:none}}
-</style>
-</head>
-<body>
-
-<div class="ticker"><div class="run" id="run">
-<span>★ PARASITE CLUB USA</span><span>MEMBERS ONLY</span><span>HANDMADE IN ITALY</span><span>ENGINEERED IN FRANCE</span><span>WORN IN AMERICA</span><span>574 FRAMES · 3 HOUSES</span>
-<span>★ PARASITE CLUB USA</span><span>MEMBERS ONLY</span><span>HANDMADE IN ITALY</span><span>ENGINEERED IN FRANCE</span><span>WORN IN AMERICA</span><span>574 FRAMES · 3 HOUSES</span>
-</div></div>
-
-<nav><div class="wrap nav-in">
-  <div class="logo">PARASITE<b>·</b>CLUB<b>·</b>USA</div>
+:root{--ink:#0a0a0c;--bone:#F2EEE4;--lime:#C8FF00;--mono:'Space Mono',monospace;--disp:'Anton',sans-serif;--serif:'Fraunces',Georgia,serif}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{background:var(--ink);color:var(--bone);font-family:var(--mono)}a{color:inherit;text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 26px}
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filter:blur(12px);border-bottom:1px solid #ffffff18}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:62px;max-width:1280px;margin:0 auto;padding:0 26px}
+.logo{font-family:var(--disp);font-size:19px;letter-spacing:.04em;cursor:pointer}.logo b{color:var(--lime)}
+.nav-links{display:flex;gap:22px;align-items:center}.nav-links a{text-transform:uppercase;letter-spacing:.14em;font-size:11px;opacity:.85;cursor:pointer}.nav-links a:hover{color:var(--lime)}
+.picksbtn{border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:7px 14px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-weight:700}
+.hero{text-align:center;padding:50px 0 6px}
+.ey{display:inline-block;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:6px 15px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:18px}
+h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-transform:uppercase}
+.lead{font-family:var(--serif);font-style:italic;font-size:17px;opacity:.82;margin:16px auto 0;max-width:50ch;line-height:1.5}
+.houses{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:36px 0 70px}
+.house{border:1px solid #ffffff1c;border-radius:18px;background:#101218;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column}
+.house:hover{transform:translateY(-4px);border-color:var(--lime)}
+.house .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#fff}
+.house .thumbs .t{aspect-ratio:1/1;background:#fff;overflow:hidden}.house .thumbs img{width:100%;height:100%;object-fit:contain;padding:6px}
+.house .b{padding:20px 22px 24px}
+.house .o{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
+.house h2{font-family:var(--disp);font-size:40px;text-transform:uppercase;line-height:.9;margin:5px 0 8px}
+.house p{font-size:12.5px;line-height:1.55;opacity:.82;min-height:54px}
+.house .go{margin-top:14px;display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);font-weight:700}
+.sview{display:none}
+.back{display:inline-flex;align-items:center;gap:8px;margin:26px 0 4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.8;cursor:pointer}.back:hover{color:var(--lime)}
+.shead{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:4px 0 14px}
+.shead h2{font-family:var(--disp);font-size:clamp(34px,6vw,68px);text-transform:uppercase;line-height:.9}
+.shead .o{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid #ffffff28;border-radius:40px;padding:8px 15px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.chip.on{background:var(--lime);color:var(--ink);border-color:var(--lime);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:16px 0 120px}
+.card{border:1px solid #ffffff14;border-radius:12px;overflow:hidden;background:#101218;position:relative;display:flex;flex-direction:column;transition:.2s}.card:hover{transform:translateY(-3px);border-color:#ffffff45}
+.card .ph{aspect-ratio:1/1;background:#fff;position:relative;cursor:pointer}.card .ph img{width:100%;height:100%;object-fit:contain;padding:8px;position:relative;z-index:1}
+.heart{position:absolute;right:9px;top:9px;z-index:5;width:40px;height:40px;border-radius:50%;background:rgba(10,10,12,.6);display:grid;place-items:center;font-size:18px;cursor:pointer;color:#fff;border:1px solid #ffffff25;transition:.15s}.heart:hover{transform:scale(1.08);background:rgba(10,10,12,.85)}.heart.on{color:var(--lime);border-color:var(--lime)}
+.meta{padding:12px 14px 14px}.br{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime)}.nm{font-family:var(--disp);font-size:16px;text-transform:uppercase;line-height:1;margin:3px 0}.pr{font-size:12px;opacity:.9}.cols{font-size:9.5px;opacity:.5;margin-top:3px;letter-spacing:.06em}
+.pbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#0c0d11;border-top:1px solid var(--lime);transform:translateY(110%);transition:.25s;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 20px}
+.pbar.show{transform:translateY(0)}
+.pbar .l{font-size:12px;letter-spacing:.06em}.pbar .l b{color:var(--lime);font-family:var(--disp);font-size:18px}
+.pbar .r{display:flex;gap:10px}
+.pbar .view{border:1px solid #ffffff35;color:var(--bone);border-radius:40px;padding:13px 18px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:none}
+.pbar .try{background:var(--lime);color:var(--ink);border:none;border-radius:40px;padding:13px 22px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;cursor:pointer}
+.tray{position:fixed;inset:0;z-index:80;background:rgba(8,8,10,.6);backdrop-filter:blur(4px);display:none}
+.tray.show{display:block}
+.tray-in{position:absolute;right:0;top:0;bottom:0;width:min(460px,92vw);background:#0e1015;border-left:1px solid #ffffff20;display:flex;flex-direction:column}
+.tray-h{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid #ffffff14}
+.tray-h h3{font-family:var(--disp);font-size:24px;text-transform:uppercase}.tray-h .x{cursor:pointer;font-size:18px;opacity:.8}
+.tray-list{flex:1;overflow:auto;padding:8px 0}
+.ti{display:flex;gap:12px;align-items:center;padding:12px 22px;border-bottom:1px solid #ffffff0d}
+.ti .tp{width:62px;height:48px;background:#fff;border-radius:8px;overflow:hidden;flex:none}.ti .tp img{width:100%;height:100%;object-fit:contain;padding:4px}
+.ti .td{flex:1;min-width:0}.ti .td .n{font-family:var(--disp);font-size:15px;text-transform:uppercase;line-height:1}.ti .td .s{font-size:11px;opacity:.6}.ti .td .pp{font-size:12px;color:var(--lime)}
+.ti .add{background:var(--lime);color:var(--ink);border:none;border-radius:30px;padding:8px 12px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;cursor:pointer}
+.ti .rm{cursor:pointer;opacity:.5;font-size:15px}.ti .rm:hover{opacity:1;color:#ff6b6b}
+.tray-f{padding:16px 22px;border-top:1px solid #ffffff14}
+.tray-f .tryall{display:block;width:100%;background:var(--lime);color:var(--ink);border:none;border-radius:40px;padding:16px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;cursor:pointer}
+.tray-empty{padding:50px 24px;text-align:center;opacity:.6;font-size:13px;line-height:1.6}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:130}.toast.show{opacity:1}
+@media(max-width:880px){.houses{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.nav-links a:not(.picksbtn){display:none}}
+</style></head><body>
+<nav><div class="nav-in">
+  <div class="logo" id="logo">PARASITE<b>·</b>CLUB<b>·</b>USA</div>
   <div class="nav-links">
-    <a href="shop.html">Shop</a><a href="index.html#houses">The Houses</a><a href="membership.html">The Club</a><a href="atelier.html">The Atelier</a>
+    <a href="shop.html">All frames</a>
+    <a href="atelier.html">The Atelier</a>
+    <a class="picksbtn" id="navpicks">♥ My picks <span id="navn">0</span></a>
   </div>
-  <a class="bag" href="#">BAG · 0</a>
 </div></nav>
 
-<header class="hero">
-  <div class="hero-img"></div><div class="hero-glow"></div>
-  <div class="wrap hero-content">
-    <div class="kicker"><b>EST. 2026 · NEW YORK · U.S.A.</b></div>
-    <h1 class="hero-h">European eyes,<br><span class="grad">American soul.</span></h1>
-    <div class="hero-sub">
-      <a class="btn btn-lime" href="shop.html">Shop the club</a>
-      <a class="btn btn-ghost" href="#houses">Meet the houses</a>
-      <span class="stat">3 European houses · 574 frames · 1 American club</span>
-    </div>
-    <p style="font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:15px;opacity:.85;margin-top:18px;max-width:54ch">Browse the houses, then try any frame <a href="getapp.html" style="color:var(--lime);font-style:normal;font-weight:700">virtually with Adrian</a> — or have your favorites <a href="membership.html" style="color:var(--lime);font-style:normal;font-weight:700">sent home to try on, free</a>, and keep only what you love.</p>
+<div id="splash">
+  <div class="wrap hero">
+    <div class="ey">★ Members' eyewear club · 3 European houses</div>
+    <h1>Pick your<br>house.</h1>
+    <p class="lead">Three independent eyewear houses, one club. Choose a house, heart the frames you love, then try them on right here — no app, no download.</p>
   </div>
-</header>
+  <div class="wrap"><div class="houses" id="houses"></div></div>
+</div>
 
-<div class="strip"><div class="row">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/ATO117-FACE.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/AUS104.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/VEG662-FACE.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/SONIC_BLACK_FRONT.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/PIX101.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/RENEE_GREEN_FRONT.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/ATO117-FACE.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/AUS104.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/VEG662-FACE.jpg?width=320" alt="">
-  <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/SONIC_BLACK_FRONT.jpg?width=320" alt="">
+<div id="styles" class="sview">
+  <div class="wrap">
+    <div class="back" id="back">← All houses</div>
+    <div class="shead">
+      <div><div class="o" id="sOrigin"></div><h2 id="sTitle"></h2></div>
+      <div class="chips" id="typeChips"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<div class="pbar" id="pbar">
+  <div class="l"><b id="barn">0</b> frames in your picks</div>
+  <div class="r">
+    <button class="view" id="barview">View list</button>
+    <button class="try" id="bartry">Try my picks virtually →</button>
+  </div>
+</div>
+
+<div class="tray" id="tray"><div class="tray-in">
+  <div class="tray-h"><h3>My picks</h3><span class="x" id="trayx">✕</span></div>
+  <div class="tray-list" id="trayList"></div>
+  <div class="tray-f"><button class="tryall" id="trayTry">Try my picks virtually →</button></div>
 </div></div>
 
-<section id="houses" class="wrap">
-  <div class="shead reveal"><h2>Three houses,<br>one membership.</h2><div class="idx">[ 01 / THE HOUSES ]</div></div>
-  <div class="houses">
-    <a class="house reveal" href="shop.html?b=Parasite">
-      <img src="https://cdn.shopify.com/s/files/1/1924/6071/files/SYSTEME1-FELICIE-FACE.jpg?width=800" alt="Parasite">
-      <div class="body"><div class="tag">France · Futurist</div><h3>Parasite</h3><p>Sci-fi sculptural frames engineered in France. The avant-garde edge of the club.</p></div>
-    </a>
-    <a class="house reveal" href="shop.html?b=Acid">
-      <img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/GEOMETRICS4-LILIAN-FACE.jpg?width=800" alt="Acid">
-      <div class="body"><div class="tag">France · Designer</div><h3>Acid</h3><p>Art and architecture, distilled. Designer frames that transcend the trend cycle.</p></div>
-    </a>
-    <a class="house reveal" href="shop.html?b=Portrait">
-      <img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ATOMIC-C13-1.jpg?width=800" alt="Portrait">
-      <div class="body"><div class="tag">Italy · Handmade</div><h3>Portrait</h3><p>Premium acetate handmade in Italy. Where romance meets rebellion.</p></div>
-    </a>
-  </div>
-</section>
-
-<section class="wrap manifesto reveal">
-  <div class="rule"></div>
-  <p class="lead" style="margin-top:34px">There's no braver image than the one you <em>choose</em> to be seen in.</p>
-  <p>We didn't invent these frames — three European houses did, one obsession at a time. We brought them home. Parasite's future, Acid's art, Portrait's hand, dialed in for America: priced in dollars, shipped from here, worn like a signature. Pick the face you want the world to meet.</p>
-</section>
-
-<section id="grid" class="wrap">
-  <div class="shead reveal"><h2>This week<br>at the club.</h2><div class="idx">[ 02 / NEW DROP ]</div></div>
-  <div class="pgrid">
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/NUMAN_c13_front.jpg?width=600"></div><div class="meta"><div><div class="nm">Numan</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/1924/6071/files/BIO122_e7befc95-fdab-4a99-bdb3-bd17489934ed.jpg?width=600"></div><div class="meta"><div><div class="nm">Biomorph 1</div><div class="br">Parasite</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/FUTURA_SILVER_front.jpg?width=600"></div><div class="meta"><div><div class="nm">Futura</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/CEL103_fbc29530-6c1f-4ac8-a06a-c49e1e5b98f5.jpg?width=600"></div><div class="meta"><div><div class="nm">Celeste 1</div><div class="br">Acid</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/ROLAND__red_front.jpg?width=600"></div><div class="meta"><div><div class="nm">Roland</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/1924/6071/files/CAM459-FACE.jpg?width=600"></div><div class="meta"><div><div class="nm">Camelia 4</div><div class="br">Parasite</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0065/5609/0423/files/AVALANCHE_GOLD_FRONT.jpg?width=600"></div><div class="meta"><div><div class="nm">Avalanche</div><div class="br">Portrait</div></div><div class="pr">$—</div></div></a>
-    <a class="card reveal" href="product.html"><div class="ph"><img src="https://cdn.shopify.com/s/files/1/0556/3446/0745/files/AUS104.jpg?width=600"></div><div class="meta"><div><div class="nm">Australe 1</div><div class="br">Acid</div></div><div class="pr">$—</div></div></a>
-  </div>
-  <div class="note">Prices show $— · placeholder pending your US price list</div>
-</section>
-
-<section id="club" class="wrap">
-  <div class="club reveal">
-    <div class="seal">★ FOUNDING · MEMBERS ★ EST · 2026 ★</div>
-    <h2>Join the club</h2>
-    <p>Founding members get member pricing, free first House Call home try-on, and first access to limited Lab drops. Your email is your key — drop it in and step inside.</p>
-    <form class="form" id="hjoin"><input id="hemail" type="email" placeholder="YOUR EMAIL ADDRESS" required><button class="btn btn-lime" type="submit">Enter the club</button></form>
-  </div>
-</section>
-
-<footer class="wrap">
-  <div class="fcols">
-    <div style="max-width:280px">
-      <div class="logo">PARASITE<b style="color:var(--lime)">·</b>CLUB<b style="color:var(--lime)">·</b>USA</div>
-      <p style="font-size:12.5px;opacity:.7;margin-top:14px;line-height:1.7">Designed in Europe. Dialed in for America. Eyewear from Parasite, Acid &amp; Portrait — under one roof.</p>
-    </div>
-    <div class="fcol"><h4>Shop</h4><a href="sun.html">Optical</a><a href="sun.html">Sun</a><a href="lookbook.html">Lookbook</a><a href="#">The Lab</a></div>
-    <div class="fcol"><h4>Houses</h4><a href="#">Parasite</a><a href="#">Acid</a><a href="#">Portrait</a></div>
-    <div class="fcol"><h4>Club</h4><a href="#">Membership</a><a href="#">Find your fit</a><a href="#">Shipping &amp; returns</a><a href="#">Contact</a></div>
-  </div>
-  <div class="fbase"><span>© 2026 Parasite Club USA</span><span>Handmade in Italy · Engineered in France · Worn in America</span></div>
-</footer>
+<div class="toast" id="toast"></div>
 
 <script>
-const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-const KLAVIYO_KEY='UyszVE', KLAVIYO_LIST='VvxDBR';
-function klaviyoTrack(email){
-  try{ if(window.klaviyo&&klaviyo.identify) klaviyo.identify({'$email':email}); }catch(e){}
-  try{ return fetch('https://a.klaviyo.com/client/subscriptions/?company_id='+KLAVIYO_KEY,{method:'POST',headers:{'Content-Type':'application/json','revision':'2024-10-15'},body:JSON.stringify({data:{type:'subscription',attributes:{custom_source:'Club gate',profile:{data:{type:'profile',attributes:{email:email}}}},relationships:{list:{data:{type:'list',id:KLAVIYO_LIST}}}}})}); }catch(e){}
+const $=id=>document.getElementById(id);
+const CHECKOUT=h=>'/api/shopify?action=checkout&handle='+encodeURIComponent(h);
+let DATA=[],brand=null,type='all';
+const HOUSES={
+  Portrait:{o:'Premium · Italy',p:'Quiet Italian luxury — refined acetate, fine metal and editorial shapes.'},
+  Acid:{o:'Designer · France',p:'A French design lab — bold acetate and sculpted metal, never boring.'},
+  Parasite:{o:'Futurist · France',p:'Avant-garde and sculptural, handcrafted in France for the fearless.'}
+};
+const favs=()=>JSON.parse(localStorage.getItem('upc_favs')||'[]');
+const setFavs=a=>{localStorage.setItem('upc_favs',JSON.stringify(a));syncCount();};
+const isFav=h=>favs().includes(h);
+function toggleFav(h){let a=favs();a.includes(h)?a=a.filter(x=>x!==h):a.push(h);setFavs(a);return a.includes(h);}
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1800);}
+const modelKey=p=>p.b+'|'+(p.model||p.n);
+function dedupe(list){const s=new Set(),o=[];list.forEach(p=>{const k=modelKey(p);if(!s.has(k)){s.add(k);o.push(p);}});return o;}
+function colorways(p){return DATA.filter(x=>modelKey(x)===modelKey(p)).length;}
+
+fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;renderHouses();syncCount();
+  const q=new URLSearchParams(location.search);if(q.get('b')&&HOUSES[q.get('b')])openBrand(q.get('b'));
+});
+
+function renderHouses(){
+  $('houses').innerHTML=Object.keys(HOUSES).map(b=>{
+    const sample=dedupe(DATA.filter(p=>p.b===b)).slice(0,3);
+    return `<div class="house" data-b="${b}">
+      <div class="thumbs">${sample.map(s=>`<div class="t"><img loading="lazy" src="${s.img}?width=200" alt=""></div>`).join('')}</div>
+      <div class="b"><div class="o">${HOUSES[b].o}</div><h2>${b}</h2><p>${HOUSES[b].p}</p>
+        <span class="go">Explore ${b} →</span></div>
+    </div>`;
+  }).join('');
+  $('houses').querySelectorAll('.house').forEach(h=>h.onclick=()=>openBrand(h.dataset.b));
 }
-const hj=document.getElementById('hjoin');
-if(hj)hj.addEventListener('submit',e=>{e.preventDefault();const em=document.getElementById('hemail').value.trim();if(!em)return;localStorage.setItem('upc_member',JSON.stringify({email:em,ts:Date.now()}));klaviyoTrack(em);setTimeout(()=>{location.href='shop.html';},250);});
+function openBrand(b){brand=b;type='all';$('splash').style.display='none';$('styles').style.display='block';
+  $('sOrigin').textContent=HOUSES[b].o;$('sTitle').textContent=b;
+  const ts=new Set(DATA.filter(p=>p.b===b).map(p=>p.t));
+  const chips=[['all','All']];if(ts.has('Eyeglasses'))chips.push(['Eyeglasses','Optical']);if(ts.has('Sunglasses'))chips.push(['Sunglasses','Sun']);
+  $('typeChips').innerHTML=chips.map(c=>`<div class="chip${c[0]==='all'?' on':''}" data-t="${c[0]}">${c[1]}</div>`).join('');
+  $('typeChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{type=c.dataset.t;$('typeChips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));renderGrid();});
+  renderGrid();window.scrollTo(0,0);
+}
+function backHome(){$('styles').style.display='none';$('splash').style.display='block';syncCount();window.scrollTo(0,0);}
+function renderGrid(){
+  let list=dedupe(DATA.filter(p=>p.b===brand&&(type==='all'||p.t===type)));
+  $('grid').innerHTML=list.map(p=>{const nc=colorways(p);
+    return `<div class="card" data-h="${p.h}">
+      <div class="ph" data-go="${p.h}"><img loading="lazy" src="${p.img}?width=360" alt="${p.n}">
+        <div class="heart${isFav(p.h)?' on':''}" data-fav="${p.h}">${isFav(p.h)?'♥':'♡'}</div></div>
+      <div class="meta"><div class="br">${p.b}${p.t==='Sunglasses'?' · Sun':''}</div><div class="nm">${p.model||p.n}</div>
+        <div class="pr">$${p.p}</div>${nc>1?`<div class="cols">${nc} colors</div>`:''}</div>
+    </div>`;}).join('');
+  $('grid').querySelectorAll('[data-fav]').forEach(h=>h.onclick=e=>{e.stopPropagation();const on=toggleFav(h.dataset.fav);h.classList.toggle('on',on);h.textContent=on?'♥':'♡';toast(on?'Added to your picks ♥':'Removed');});
+  $('grid').querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>location.href='p.html?h='+encodeURIComponent(c.dataset.go));
+}
+function syncCount(){const n=favs().length;$('navn').textContent=n;$('barn').textContent=n;
+  $('pbar').classList.toggle('show',n>0&&$('styles').style.display==='block');}
+function renderTray(){
+  const list=favs().map(h=>DATA.find(p=>p.h===h)).filter(Boolean);
+  if(!list.length){$('trayList').innerHTML='<div class="tray-empty">No picks yet. Heart the frames you love and they’ll gather here to try on.</div>';$('trayTry').style.display='none';return;}
+  $('trayTry').style.display='block';
+  $('trayList').innerHTML=list.map(p=>`<div class="ti" data-h="${p.h}">
+    <div class="tp"><img src="${p.img}?width=140"></div>
+    <div class="td"><div class="n">${p.model||p.n}</div><div class="s">${p.b}${p.t==='Sunglasses'?' · Sun':''}</div><div class="pp">$${p.p}</div></div>
+    <button class="add" data-add="${p.h}">Bag</button><span class="rm" data-rm="${p.h}">✕</span></div>`).join('');
+  $('trayList').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{toast('Opening secure checkout…');location.href=CHECKOUT(b.dataset.add);});
+  $('trayList').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{toggleFav(b.dataset.rm);renderTray();if($('styles').style.display==='block')renderGrid();});
+}
+function openTray(){renderTray();$('tray').classList.add('show');}
+function tryPicks(){if(!favs().length){toast('Heart a few frames first');return;}location.href='tryon.html?picks=1';}
+
+$('logo').onclick=backHome;$('back').onclick=backHome;
+$('navpicks').onclick=openTray;$('barview').onclick=openTray;$('trayx').onclick=()=>$('tray').classList.remove('show');
+$('tray').onclick=e=>{if(e.target===$('tray'))$('tray').classList.remove('show');};
+$('bartry').onclick=tryPicks;$('trayTry').onclick=tryPicks;
 </script>
-</body>
-</html>
+</body></html>

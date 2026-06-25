@@ -133,7 +133,8 @@ const $=id=>document.getElementById(id);
 const CHECKOUT=h=>'/api/shopify?action=checkout&handle='+encodeURIComponent(h);
 let DATA=[],view=$('view'),ctx=view.getContext('2d'),video=$('video');
 let landmarker=null,stream=null,facing='user',running=false;
-let house='Portrait',type='all',current=null;
+let house='Portrait',type='all',current=null,picksMode=false;
+const favs=()=>JSON.parse(localStorage.getItem('upc_favs')||'[]');
 const keyCache={};
 const modelKey=p=>p.b+'|'+(p.model||p.n);
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
@@ -142,6 +143,9 @@ function tier(){try{return localStorage.getItem('upc_tier')==='inner'?'inner':'s
 
 function applyParams(){
   const q=new URLSearchParams(location.search);
+  if(q.get('picks')==='1'&&favs().length){
+    picksMode=true;const f=DATA.find(p=>p.h===favs()[0]);if(f)house=f.b;window._wantH=favs()[0];return;
+  }
   const h=q.get('h'),b=q.get('b');
   const fr=h&&DATA.find(p=>p.h===h);
   if(fr)house=fr.b; else if(b&&['Portrait','Acid','Parasite'].includes(b))house=b;
@@ -154,13 +158,17 @@ fetch('products.json').then(r=>r.json()).then(d=>{
 
 function buildTabs(){
   const houses=['Portrait','Acid','Parasite'];
-  $('tabs').innerHTML=houses.map(h=>`<div class="tab${h===house?' on':''}" data-h="${h}">${h}</div>`).join('')
-    +`<div class="tab${type==='all'?' on':''}" data-t="all" style="margin-left:6px">All</div>`
-    +`<div class="tab${type==='Eyeglasses'?' on':''}" data-t="Eyeglasses">Optical</div>`
-    +`<div class="tab${type==='Sunglasses'?' on':''}" data-t="Sunglasses">Sun</div>`;
+  let html='';
+  if(favs().length)html+=`<div class="tab${picksMode?' on':''}" data-picks="1">♥ My picks</div>`;
+  html+=houses.map(h=>`<div class="tab${!picksMode&&h===house?' on':''}" data-h="${h}">${h}</div>`).join('')
+    +`<div class="tab${!picksMode&&type==='all'?' on':''}" data-t="all" style="margin-left:6px">All</div>`
+    +`<div class="tab${!picksMode&&type==='Eyeglasses'?' on':''}" data-t="Eyeglasses">Optical</div>`
+    +`<div class="tab${!picksMode&&type==='Sunglasses'?' on':''}" data-t="Sunglasses">Sun</div>`;
+  $('tabs').innerHTML=html;
   $('tabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
-    if(t.dataset.h){house=t.dataset.h;current=null;}
-    if(t.dataset.t){type=t.dataset.t;current=null;}
+    if(t.dataset.picks){picksMode=true;current=null;}
+    if(t.dataset.h){picksMode=false;house=t.dataset.h;current=null;}
+    if(t.dataset.t){picksMode=false;type=t.dataset.t;current=null;}
     buildTabs();buildRail();
   });
   buildRail();
@@ -173,8 +181,12 @@ function models(){
   return out;
 }
 function colorways(p){return DATA.filter(x=>modelKey(x)===modelKey(p));}
+function railList(){
+  if(picksMode)return favs().map(h=>DATA.find(p=>p.h===h)).filter(Boolean);
+  return models();
+}
 function buildRail(){
-  const list=models();
+  const list=railList();
   $('rail').innerHTML=list.slice(0,80).map(p=>`
     <div class="thumb${current&&modelKey(current)===modelKey(p)?' on':''}" data-h="${p.h}">
       <div class="pic"><img loading="lazy" crossorigin="anonymous" src="${p.img}?width=180" alt="${p.n}"></div>
