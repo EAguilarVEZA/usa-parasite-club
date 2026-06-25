@@ -100,12 +100,13 @@ fetch('products.json').then(r=>r.json()).then(D=>{
       <div class="thumbs">${p.imgs.map((s,i)=>`<img class="${i===0?'on':''}" src="${s}?width=160" onclick="document.getElementById('main').src='${s}?width=900';document.querySelectorAll('.thumbs img').forEach(t=>t.classList.remove('on'));this.classList.add('on')">`).join('')}</div></div>
     <div class="info">
       <div class="house">${p.b}</div><h1>${p.n}</h1><div class="kind">${p.t==='Sunglasses'?'Sunglasses':'Optical frame'}</div>
-      <div class="price">${isMember()?('$'+p.p+(off?`<span class="was">$${p.c}</span><span class="off">−${off}%</span>`:'')):'<span class="lock">🔒 Member price — join to reveal</span>'}</div>
+      <div class="price">$${p.p}${off?`<span class="was">$${p.c}</span><span class="off">−${off}%</span>`:''}</div>
+      <div style="font-size:11px;opacity:.7;margin:6px 0 2px;letter-spacing:.02em">or 4 interest-free payments of <b style="color:var(--lime)">$${(p.p/4).toFixed(2)}</b> with Shop&nbsp;Pay</div>
       <div class="desc">${p.desc||''}</div>
       <div class="acts">
         <div class="btn out" onclick="localStorage.setItem('upc_atelier_brand','${p.b}');location.href='tryon.html?h='+encodeURIComponent('${p.h}')+'&b='+encodeURIComponent('${p.b}')">◉ Try it on — instant, no app</div>
-        <div class="btn lime" onclick="if(!isMember()){openJoin();return}toast('Opening secure checkout…');location.href='/api/shopify?action=checkout&handle='+encodeURIComponent('${p.h}')">${isMember()?'Buy now':'Join to buy'}</div>
-        <div class="btn ${isFav(p.h)?'faved':'ghost'}" id="favbtn" onclick="if(!isMember()){openJoin();return}const on=toggleFav('${p.h}','${p.b}');this.className='btn '+(on?'faved':'ghost');this.textContent=on?'♥ In your favorites':'♡ Add to favorites';toast(on?'Saved to favorites':'Removed')">${isFav(p.h)?'♥ In your favorites':'♡ Add to favorites'}</div>
+        <div class="btn lime" onclick="toast('Opening secure checkout…');location.href='/api/shopify?action=checkout&handle='+encodeURIComponent('${p.h}')">Buy now</div>
+        <div class="btn ${isFav(p.h)?'faved':'ghost'}" id="favbtn" onclick="const on=toggleFav('${p.h}','${p.b}');this.className='btn '+(on?'faved':'ghost');this.textContent=on?'♥ In your favorites':'♡ Add to favorites';toast(on?'Saved to favorites':'Removed')">${isFav(p.h)?'♥ In your favorites':'♡ Add to favorites'}</div>
       </div>
       <div class="spec">House · ${p.b}<br>Type · ${p.t}<br>Made in ${p.b==='Portrait'?'Italy':'France'} · True-to-size in the Atelier</div>
     </div>`;

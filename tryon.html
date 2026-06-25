@@ -119,7 +119,7 @@ a{color:inherit;text-decoration:none}
     <div class="rail" id="rail"></div>
     <div class="colors" id="colors"><span class="cl">Colors</span></div>
     <div class="act">
-      <div class="price"><div class="pl">Price · USD</div><div class="pv" id="pv">$—</div></div>
+      <div class="price"><div class="pl" id="finbar">Price · USD</div><div class="pv" id="pv">$—</div></div>
       <button class="bag" id="bag">Add to bag</button>
       <button class="home" id="home">Try at <b>home</b></button>
     </div>
@@ -217,6 +217,7 @@ function setColor(h){
 function paint(){
   $('fb').textContent=current.b;$('fn').textContent=current.n;
   $('pv').textContent='$'+current.p;
+  $('finbar').textContent='or 4× $'+(current.p/4).toFixed(2)+' · Shop Pay';
   prepFrame(current);
 }
 function prepFrame(p){

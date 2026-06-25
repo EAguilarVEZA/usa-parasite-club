@@ -17,6 +17,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(10,10,12,.85);backdrop-filt
 .ey{display:inline-block;border:1px solid var(--lime);color:var(--lime);border-radius:40px;padding:6px 15px;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:18px}
 h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-transform:uppercase}
 .lead{font-family:var(--serif);font-style:italic;font-size:17px;opacity:.82;margin:16px auto 0;max-width:50ch;line-height:1.5}
+.trust{margin:18px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.7}.trust i{opacity:.4;font-style:normal}.trust span{white-space:nowrap}
+.sctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.sortsel{background:#101218;border:1px solid #ffffff28;color:var(--bone);border-radius:40px;padding:8px 14px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.tryhouse{border:1px solid var(--lime);color:var(--lime);background:none;border-radius:40px;padding:9px 16px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-weight:700}.tryhouse:hover{background:var(--lime);color:var(--ink)}
+.was{opacity:.45;text-decoration:line-through;margin-left:7px;font-size:11px}.save{color:var(--lime);font-size:10px;letter-spacing:.06em;margin-left:6px}
+.finline{font-size:10px;opacity:.6;margin-top:4px;letter-spacing:.02em}.finline b{color:var(--lime);opacity:1}
 .houses{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:36px 0 70px}
 .house{border:1px solid #ffffff1c;border-radius:18px;background:#101218;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column}
 .house:hover{transform:translateY(-4px);border-color:var(--lime)}
@@ -76,6 +82,9 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
     <div class="ey">★ Members' eyewear club · 3 European houses</div>
     <h1>Pick your<br>house.</h1>
     <p class="lead">Three independent eyewear houses, one club. Choose a house, heart the frames you love, then try them on right here — no app, no download.</p>
+    <div class="trust">
+      <span>◉ No-app try-on</span><i>·</i><span>⌁ Pay over time, interest-free</span><i>·</i><span>⌂ Free home try-on</span><i>·</i><span>↩ Easy returns</span>
+    </div>
   </div>
   <div class="wrap"><div class="houses" id="houses"></div></div>
 </div>
@@ -85,7 +94,16 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
     <div class="back" id="back">← All houses</div>
     <div class="shead">
       <div><div class="o" id="sOrigin"></div><h2 id="sTitle"></h2></div>
-      <div class="chips" id="typeChips"></div>
+      <div class="sctl">
+        <div class="chips" id="typeChips"></div>
+        <select class="sortsel" id="sortsel">
+          <option value="featured">Sort · Featured</option>
+          <option value="lo">Price ↑</option>
+          <option value="hi">Price ↓</option>
+          <option value="az">Name A–Z</option>
+        </select>
+        <button class="tryhouse" id="tryhouse">◉ Try this house on</button>
+      </div>
     </div>
     <div class="grid" id="grid"></div>
   </div>
@@ -110,7 +128,8 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
 <script>
 const $=id=>document.getElementById(id);
 const CHECKOUT=h=>'/api/shopify?action=checkout&handle='+encodeURIComponent(h);
-let DATA=[],brand=null,type='all';
+let DATA=[],brand=null,type='all',sortBy='featured';
+const fin=p=>'or 4 interest-free payments of $'+(p.p/4).toFixed(2);
 const HOUSES={
   Portrait:{o:'Premium · Italy',p:'Quiet Italian luxury — refined acetate, fine metal and editorial shapes.'},
   Acid:{o:'Designer · France',p:'A French design lab — bold acetate and sculpted metal, never boring.'},
@@ -149,14 +168,22 @@ function openBrand(b){brand=b;type='all';$('splash').style.display='none';$('sty
   renderGrid();syncCount();window.scrollTo(0,0);
 }
 function backHome(){$('styles').style.display='none';$('splash').style.display='block';syncCount();window.scrollTo(0,0);}
+function sortList(list){
+  if(sortBy==='lo')return list.slice().sort((a,b)=>a.p-b.p);
+  if(sortBy==='hi')return list.slice().sort((a,b)=>b.p-a.p);
+  if(sortBy==='az')return list.slice().sort((a,b)=>(a.model||a.n).localeCompare(b.model||b.n));
+  return list;
+}
 function renderGrid(){
-  let list=dedupe(DATA.filter(p=>p.b===brand&&(type==='all'||p.t===type)));
-  $('grid').innerHTML=list.map(p=>{const nc=colorways(p);
+  let list=sortList(dedupe(DATA.filter(p=>p.b===brand&&(type==='all'||p.t===type))));
+  $('grid').innerHTML=list.map(p=>{const nc=colorways(p);const off=p.c&&+p.c>+p.p?Math.round((1-p.p/p.c)*100):0;
     return `<div class="card" data-h="${p.h}">
       <div class="ph" data-go="${p.h}"><img loading="lazy" src="${p.img}?width=360" alt="${p.n}">
         <div class="heart${isFav(p.h)?' on':''}" data-fav="${p.h}">${isFav(p.h)?'♥':'♡'}</div></div>
       <div class="meta"><div class="br">${p.b}${p.t==='Sunglasses'?' · Sun':''}</div><div class="nm">${p.model||p.n}</div>
-        <div class="pr">$${p.p}</div>${nc>1?`<div class="cols">${nc} colors</div>`:''}</div>
+        <div class="pr">$${p.p}${off?`<span class="was">$${p.c}</span><span class="save">−${off}%</span>`:''}</div>
+        <div class="finline">${fin(p)} · <b>Shop&nbsp;Pay</b></div>
+        ${nc>1?`<div class="cols">${nc} colors</div>`:''}</div>
     </div>`;}).join('');
   $('grid').querySelectorAll('[data-fav]').forEach(h=>h.onclick=e=>{e.stopPropagation();const on=toggleFav(h.dataset.fav);h.classList.toggle('on',on);h.textContent=on?'♥':'♡';toast(on?'Added to your picks ♥':'Removed');});
   $('grid').querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>location.href='p.html?h='+encodeURIComponent(c.dataset.go));
@@ -181,5 +208,7 @@ $('logo').onclick=backHome;$('back').onclick=backHome;
 $('navpicks').onclick=openTray;$('barview').onclick=openTray;$('trayx').onclick=()=>$('tray').classList.remove('show');
 $('tray').onclick=e=>{if(e.target===$('tray'))$('tray').classList.remove('show');};
 $('bartry').onclick=tryPicks;$('trayTry').onclick=tryPicks;
+$('sortsel').onchange=()=>{sortBy=$('sortsel').value;renderGrid();};
+$('tryhouse').onclick=()=>{if(brand)location.href='tryon.html?b='+encodeURIComponent(brand);};
 </script>
 </body></html>
