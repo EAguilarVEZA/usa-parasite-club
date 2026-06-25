@@ -146,7 +146,7 @@ function openBrand(b){brand=b;type='all';$('splash').style.display='none';$('sty
   const chips=[['all','All']];if(ts.has('Eyeglasses'))chips.push(['Eyeglasses','Optical']);if(ts.has('Sunglasses'))chips.push(['Sunglasses','Sun']);
   $('typeChips').innerHTML=chips.map(c=>`<div class="chip${c[0]==='all'?' on':''}" data-t="${c[0]}">${c[1]}</div>`).join('');
   $('typeChips').querySelectorAll('.chip').forEach(c=>c.onclick=()=>{type=c.dataset.t;$('typeChips').querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));renderGrid();});
-  renderGrid();window.scrollTo(0,0);
+  renderGrid();syncCount();window.scrollTo(0,0);
 }
 function backHome(){$('styles').style.display='none';$('splash').style.display='block';syncCount();window.scrollTo(0,0);}
 function renderGrid(){
