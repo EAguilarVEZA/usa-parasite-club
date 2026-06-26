@@ -105,7 +105,7 @@ fetch('products.json').then(r=>r.json()).then(D=>{
       <div class="desc">${p.desc||''}</div>
       <div class="acts">
         <div class="btn out" onclick="localStorage.setItem('upc_atelier_brand','${p.b}');location.href='tryon.html?h='+encodeURIComponent('${p.h}')+'&b='+encodeURIComponent('${p.b}')">◉ Try it on — instant, no app</div>
-        <div class="btn lime" onclick="toast('Opening secure checkout…');location.href='/api/shopify?action=checkout&handle='+encodeURIComponent('${p.h}')">Buy now</div>
+        <div class="btn lime" onclick="toast('Opening secure checkout…');try{window.MK&&MK.track('InitiateCheckout',{handle:'${p.h}',value:${p.p}});}catch(e){}location.href='/api/shopify?action=checkout&handle='+encodeURIComponent('${p.h}')">Buy now</div>
         <div class="btn ${isFav(p.h)?'faved':'ghost'}" id="favbtn" onclick="const on=toggleFav('${p.h}','${p.b}');this.className='btn '+(on?'faved':'ghost');this.textContent=on?'♥ In your favorites':'♡ Add to favorites';toast(on?'Saved to favorites':'Removed')">${isFav(p.h)?'♥ In your favorites':'♡ Add to favorites'}</div>
       </div>
       <div class="spec">House · ${p.b}<br>Type · ${p.t}<br>Made in ${p.b==='Portrait'?'Italy':'France'} · True-to-size in the Atelier</div>
@@ -117,4 +117,5 @@ fetch('products.json').then(r=>r.json()).then(D=>{
   document.title=p.n+' — Parasite Club USA';
 });
 </script>
+<script src="/mk.js"></script>
 </body></html>

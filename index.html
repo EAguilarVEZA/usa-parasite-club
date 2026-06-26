@@ -68,7 +68,17 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
 .tray-empty{padding:50px 24px;text-align:center;opacity:.6;font-size:13px;line-height:1.6}
 .toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--lime);color:var(--ink);font-weight:700;font-size:12px;padding:12px 20px;border-radius:40px;opacity:0;transition:.25s;pointer-events:none;z-index:130}.toast.show{opacity:1}
 @media(max-width:880px){.houses{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.nav-links a:not(.picksbtn){display:none}}
-</style></head><body>
+/* --- motion / glamour layer --- */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.house{transition:transform .16s ease,border-color .2s ease;transform-style:preserve-3d}
+#glow{position:fixed;left:0;top:0;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(200,255,0,.16),transparent 62%);pointer-events:none;z-index:1;filter:blur(10px);opacity:0;transition:opacity .35s;mix-blend-mode:screen}
+body:hover #glow{opacity:1}
+.hero .ey{animation:rise .7s .05s both}.hero h1{animation:rise .85s .12s both}.hero .lead{animation:rise .85s .22s both}.hero .trust{animation:rise .85s .32s both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}.hero .ey,.hero h1,.hero .lead,.hero .trust{animation:none}#glow{display:none}}
+</style><script src="/mk.js"></script></head><body>
+<div id="glow" aria-hidden="true"></div>
 <nav><div class="nav-in">
   <div class="logo" id="logo">PARASITE<b>·</b>CLUB<b>·</b>USA</div>
   <div class="nav-links">
@@ -155,14 +165,14 @@ function renderHouses(){
   Object.keys(HOUSES).forEach(b=>{POOLS[b]=dedupe(DATA.filter(p=>p.b===b)).map(p=>p.img);});
   $('houses').innerHTML=Object.keys(HOUSES).map(b=>{
     const pool=POOLS[b];
-    return `<div class="house" data-b="${b}">
+    return `<div class="house reveal" data-b="${b}">
       <div class="thumbs">${[0,1,2].map(i=>`<div class="t"><img class="rimg" data-h="${b}" data-s="${i}" loading="lazy" src="${pool[i%pool.length]}?width=200" alt=""></div>`).join('')}</div>
       <div class="b"><div class="o">${HOUSES[b].o}</div><h2>${b}</h2><p>${HOUSES[b].p}</p>
         <span class="go">Explore ${b} →</span></div>
     </div>`;
   }).join('');
   $('houses').querySelectorAll('.house').forEach(h=>h.onclick=()=>openBrand(h.dataset.b));
-  startRotate();
+  startRotate();obsReveal();
 }
 function startRotate(){
   if(rotTimer)clearInterval(rotTimer);
@@ -195,7 +205,7 @@ function sortList(list){
 function renderGrid(){
   let list=sortList(dedupe(DATA.filter(p=>p.b===brand&&(type==='all'||p.t===type))));
   $('grid').innerHTML=list.map(p=>{const nc=colorways(p);const off=p.c&&+p.c>+p.p?Math.round((1-p.p/p.c)*100):0;
-    return `<div class="card" data-h="${p.h}">
+    return `<div class="card reveal" data-h="${p.h}">
       <div class="ph" data-go="${p.h}"><img loading="lazy" src="${p.img}?width=360" alt="${p.n}">
         ${p.new?'<div class="newflag">New</div>':''}
         <div class="heart${isFav(p.h)?' on':''}" data-fav="${p.h}">${isFav(p.h)?'♥':'♡'}</div></div>
@@ -206,6 +216,7 @@ function renderGrid(){
     </div>`;}).join('');
   $('grid').querySelectorAll('[data-fav]').forEach(h=>h.onclick=e=>{e.stopPropagation();const on=toggleFav(h.dataset.fav);h.classList.toggle('on',on);h.textContent=on?'♥':'♡';toast(on?'Added to your picks ♥':'Removed');});
   $('grid').querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>location.href='p.html?h='+encodeURIComponent(c.dataset.go));
+  obsReveal();
 }
 function syncCount(){const n=favs().length;$('navn').textContent=n;$('barn').textContent=n;
   $('pbar').classList.toggle('show',n>0&&$('styles').style.display==='block');}
@@ -217,7 +228,7 @@ function renderTray(){
     <div class="tp"><img src="${p.img}?width=140"></div>
     <div class="td"><div class="n">${p.model||p.n}</div><div class="s">${p.b}${p.t==='Sunglasses'?' · Sun':''}</div><div class="pp">$${p.p}</div></div>
     <button class="add" data-add="${p.h}">Bag</button><span class="rm" data-rm="${p.h}">✕</span></div>`).join('');
-  $('trayList').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{toast('Opening secure checkout…');location.href=CHECKOUT(b.dataset.add);});
+  $('trayList').querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>{toast('Opening secure checkout…');try{window.MK&&MK.track('InitiateCheckout',{handle:b.dataset.add});}catch(e){}location.href=CHECKOUT(b.dataset.add);});
   $('trayList').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{toggleFav(b.dataset.rm);renderTray();if($('styles').style.display==='block')renderGrid();});
 }
 function openTray(){renderTray();$('tray').classList.add('show');}
@@ -229,5 +240,26 @@ $('tray').onclick=e=>{if(e.target===$('tray'))$('tray').classList.remove('show')
 $('bartry').onclick=tryPicks;$('trayTry').onclick=tryPicks;
 $('sortsel').onchange=()=>{sortBy=$('sortsel').value;renderGrid();};
 $('tryhouse').onclick=()=>{if(brand)location.href='tryon.html?b='+encodeURIComponent(brand);};
+
+/* ---- motion / glamour FX ---- */
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const fine=matchMedia('(pointer:fine)').matches;
+let _io=null;
+function obsReveal(){
+  if(reduce){document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in'));return;}
+  if(!_io)_io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');_io.unobserve(e.target);}}),{threshold:.12,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>_io.observe(el));
+}
+if(fine&&!reduce){
+  const glow=$('glow');
+  addEventListener('mousemove',e=>{glow.style.transform='translate('+(e.clientX-160)+'px,'+(e.clientY-160)+'px)';},{passive:true});
+  // 3D tilt on house cards (delegated)
+  document.addEventListener('mousemove',e=>{
+    const c=e.target.closest&&e.target.closest('.house');if(!c)return;
+    const r=c.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;
+    c.style.transform='perspective(820px) rotateX('+(-py*5).toFixed(2)+'deg) rotateY('+(px*6).toFixed(2)+'deg) translateY(-5px)';
+  },{passive:true});
+  document.addEventListener('mouseout',e=>{const c=e.target.closest&&e.target.closest('.house');if(c&&!c.contains(e.relatedTarget))c.style.transform='';},{passive:true});
+}
 </script>
 </body></html>

@@ -341,7 +341,7 @@ $('refit').onclick=refineFit;
 $('close').onclick=()=>{running=false;if(stream)stream.getTracks().forEach(t=>t.stop());location.href='shop.html';};
 $('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
 $('snap').onclick=()=>{try{const a=document.createElement('a');a.download='parasite-club-tryon.png';a.href=view.toDataURL('image/png');a.click();toast('Saved your look ★');}catch(e){toast('Could not save');}};
-$('bag').onclick=()=>{if(!current)return;toast('Opening secure checkout…');location.href=CHECKOUT(current.h);};
+$('bag').onclick=()=>{if(!current)return;toast('Opening secure checkout…');try{window.MK&&MK.track('InitiateCheckout',{handle:current.h,value:current.p});}catch(e){}location.href=CHECKOUT(current.h);};
 $('home').onclick=()=>{
   if(!current)return;
   let t={};try{t=JSON.parse(localStorage.getItem('upc_trunk')||'{}');}catch(e){}
@@ -352,4 +352,5 @@ $('home').onclick=()=>{
   toast('Added to your home trunk ('+items.size+'/'+lim+')');
 };
 </script>
+<script src="/mk.js"></script>
 </body></html>
