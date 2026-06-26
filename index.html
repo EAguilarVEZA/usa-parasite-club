@@ -27,7 +27,8 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
 .house{border:1px solid #ffffff1c;border-radius:18px;background:#101218;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column}
 .house:hover{transform:translateY(-4px);border-color:var(--lime)}
 .house .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:#fff}
-.house .thumbs .t{aspect-ratio:1/1;background:#fff;overflow:hidden}.house .thumbs img{width:100%;height:100%;object-fit:contain;padding:6px}
+.house .thumbs .t{aspect-ratio:1/1;background:#fff;overflow:hidden}.house .thumbs img{width:100%;height:100%;object-fit:contain;padding:6px;transition:opacity .26s ease}
+.newflag{position:absolute;left:9px;top:9px;z-index:4;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--lime);color:var(--ink);padding:4px 9px;border-radius:30px;font-weight:700;pointer-events:none}
 .house .b{padding:20px 22px 24px}
 .house .o{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--lime)}
 .house h2{font-family:var(--disp);font-size:40px;text-transform:uppercase;line-height:.9;margin:5px 0 8px}
@@ -98,6 +99,7 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
         <div class="chips" id="typeChips"></div>
         <select class="sortsel" id="sortsel">
           <option value="featured">Sort · Featured</option>
+          <option value="new">New first</option>
           <option value="lo">Price ↑</option>
           <option value="hi">Price ↓</option>
           <option value="az">Name A–Z</option>
@@ -129,6 +131,7 @@ h1{font-family:var(--disp);font-size:clamp(40px,8vw,84px);line-height:.9;text-tr
 const $=id=>document.getElementById(id);
 const CHECKOUT=h=>'/api/shopify?action=checkout&handle='+encodeURIComponent(h);
 let DATA=[],brand=null,type='all',sortBy='featured';
+let POOLS={},rotIdx=0,rotTimer=null;
 const fin=p=>'or 4 interest-free payments of $'+(p.p/4).toFixed(2);
 const HOUSES={
   Portrait:{o:'Premium · Italy',p:'Quiet Italian luxury — refined acetate, fine metal and editorial shapes.'},
@@ -149,15 +152,29 @@ fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;renderHouses();syncCoun
 });
 
 function renderHouses(){
+  Object.keys(HOUSES).forEach(b=>{POOLS[b]=dedupe(DATA.filter(p=>p.b===b)).map(p=>p.img);});
   $('houses').innerHTML=Object.keys(HOUSES).map(b=>{
-    const sample=dedupe(DATA.filter(p=>p.b===b)).slice(0,3);
+    const pool=POOLS[b];
     return `<div class="house" data-b="${b}">
-      <div class="thumbs">${sample.map(s=>`<div class="t"><img loading="lazy" src="${s.img}?width=200" alt=""></div>`).join('')}</div>
+      <div class="thumbs">${[0,1,2].map(i=>`<div class="t"><img class="rimg" data-h="${b}" data-s="${i}" loading="lazy" src="${pool[i%pool.length]}?width=200" alt=""></div>`).join('')}</div>
       <div class="b"><div class="o">${HOUSES[b].o}</div><h2>${b}</h2><p>${HOUSES[b].p}</p>
         <span class="go">Explore ${b} →</span></div>
     </div>`;
   }).join('');
   $('houses').querySelectorAll('.house').forEach(h=>h.onclick=()=>openBrand(h.dataset.b));
+  startRotate();
+}
+function startRotate(){
+  if(rotTimer)clearInterval(rotTimer);
+  rotTimer=setInterval(()=>{
+    if($('splash').style.display==='none')return;        // pause while browsing a house
+    rotIdx++;
+    document.querySelectorAll('.house .rimg').forEach(img=>{
+      const pool=POOLS[img.dataset.h];if(!pool||pool.length<4)return;
+      const next=pool[(rotIdx*3+ +img.dataset.s)%pool.length]+'?width=200';
+      const pre=new Image();pre.onload=()=>{img.style.opacity='0';setTimeout(()=>{img.src=next;img.style.opacity='1';},230);};pre.src=next;
+    });
+  },2900);
 }
 function openBrand(b){brand=b;type='all';$('splash').style.display='none';$('styles').style.display='block';
   $('sOrigin').textContent=HOUSES[b].o;$('sTitle').textContent=b;
@@ -169,6 +186,7 @@ function openBrand(b){brand=b;type='all';$('splash').style.display='none';$('sty
 }
 function backHome(){$('styles').style.display='none';$('splash').style.display='block';syncCount();window.scrollTo(0,0);}
 function sortList(list){
+  if(sortBy==='new')return list.slice().sort((a,b)=>(b.new?1:0)-(a.new?1:0));
   if(sortBy==='lo')return list.slice().sort((a,b)=>a.p-b.p);
   if(sortBy==='hi')return list.slice().sort((a,b)=>b.p-a.p);
   if(sortBy==='az')return list.slice().sort((a,b)=>(a.model||a.n).localeCompare(b.model||b.n));
@@ -179,6 +197,7 @@ function renderGrid(){
   $('grid').innerHTML=list.map(p=>{const nc=colorways(p);const off=p.c&&+p.c>+p.p?Math.round((1-p.p/p.c)*100):0;
     return `<div class="card" data-h="${p.h}">
       <div class="ph" data-go="${p.h}"><img loading="lazy" src="${p.img}?width=360" alt="${p.n}">
+        ${p.new?'<div class="newflag">New</div>':''}
         <div class="heart${isFav(p.h)?' on':''}" data-fav="${p.h}">${isFav(p.h)?'♥':'♡'}</div></div>
       <div class="meta"><div class="br">${p.b}${p.t==='Sunglasses'?' · Sun':''}</div><div class="nm">${p.model||p.n}</div>
         <div class="pr">$${p.p}${off?`<span class="was">$${p.c}</span><span class="save">−${off}%</span>`:''}</div>

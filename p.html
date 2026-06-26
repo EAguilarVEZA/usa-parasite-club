@@ -99,7 +99,7 @@ fetch('products.json').then(r=>r.json()).then(D=>{
     <div class="gal"><div class="main"><img id="main" src="${p.imgs[0]}?width=900"></div>
       <div class="thumbs">${p.imgs.map((s,i)=>`<img class="${i===0?'on':''}" src="${s}?width=160" onclick="document.getElementById('main').src='${s}?width=900';document.querySelectorAll('.thumbs img').forEach(t=>t.classList.remove('on'));this.classList.add('on')">`).join('')}</div></div>
     <div class="info">
-      <div class="house">${p.b}</div><h1>${p.n}</h1><div class="kind">${p.t==='Sunglasses'?'Sunglasses':'Optical frame'}</div>
+      <div class="house">${p.b}${p.new?' · <span style="color:var(--lime);font-weight:700">New</span>':''}</div><h1>${p.n}</h1><div class="kind">${p.t==='Sunglasses'?'Sunglasses':'Optical frame'}</div>
       <div class="price">$${p.p}${off?`<span class="was">$${p.c}</span><span class="off">−${off}%</span>`:''}</div>
       <div style="font-size:11px;opacity:.7;margin:6px 0 2px;letter-spacing:.02em">or 4 interest-free payments of <b style="color:var(--lime)">$${(p.p/4).toFixed(2)}</b> with Shop&nbsp;Pay</div>
       <div class="desc">${p.desc||''}</div>
