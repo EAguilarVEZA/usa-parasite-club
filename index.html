@@ -81,8 +81,10 @@ section{padding:54px 0}
 .step h4{font-size:16.5px;font-weight:800}
 .step p{font-size:13px;color:var(--muted);margin-top:6px}
 .step .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.step .acts span{font-size:11px;font-weight:700;padding:5px 11px;border-radius:20px;background:#f3fbd6;border:1px solid #d6ef9a;color:#2c3a00;white-space:nowrap}
+.step .acts span,.step .acts a{font-size:11px;font-weight:700;padding:6px 12px;border-radius:20px;background:#f3fbd6;border:1px solid #d6ef9a;color:#2c3a00;white-space:nowrap;cursor:pointer;transition:.14s;text-decoration:none}
+.step .acts a:hover{background:var(--lime);border-color:var(--lime);transform:translateY(-1px)}
 .step .acts .buy{background:var(--lime);border-color:var(--lime);color:var(--limeink)}
+.step .acts .buy:hover{filter:brightness(.96)}
 @media(max-width:820px){.steps{grid-template-columns:1fr 1fr}}
 /* drops / membership */
 .drops{background:linear-gradient(120% 120% at 0% 0%,#171a10,#0c0c0e);color:#fff;border-radius:26px;padding:40px;position:relative;overflow:hidden}
@@ -131,10 +133,10 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
 <section style="padding-top:14px"><div class="wrap">
   <div class="shead" style="margin-bottom:18px"><div><div class="kick">How it works</div><h2>Four steps, no friction</h2></div></div>
   <div class="steps reveal">
-    <div class="step"><div class="no">1</div><h4>Pick a house</h4><p>Portrait, Acid or Parasite — or let Adrian choose for you.</p></div>
+    <div class="step"><div class="no">1</div><h4>Pick your house</h4><p>Portrait, Acid or Parasite — or let <b>Adrian</b>, our Atelier assistant, help you choose.</p><div class="acts"><a href="browse.html?b=Portrait&adrian=1">✦ Ask Adrian</a></div></div>
     <div class="step"><div class="no">2</div><h4>Heart your favorites</h4><p>Swipe the collection, tap the heart on the ones you love.</p></div>
-    <div class="step"><div class="no">3</div><h4>Try them on</h4><p>Live 3D in your browser — nothing to install:</p><div class="acts"><span>Try virtually</span><span>Try at home</span></div></div>
-    <div class="step"><div class="no">4</div><h4>Buy</h4><p>Checkout with Shop Pay — or pay in 4.</p><div class="acts"><span class="buy">Buy</span></div></div>
+    <div class="step"><div class="no">3</div><h4>Try them on</h4><p>Live 3D in your browser — nothing to install:</p><div class="acts"><a href="tryon3d.html">Try virtually</a><a href="trunk.html">Try at home</a></div></div>
+    <div class="step"><div class="no">4</div><h4>Buy</h4><p>Checkout with Shop Pay — or pay in 4.</p><div class="acts"><a class="buy" href="browse.html?b=Portrait">Start shopping</a></div></div>
   </div>
 </div></section>
 
