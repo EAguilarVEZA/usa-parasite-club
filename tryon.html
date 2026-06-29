@@ -61,6 +61,12 @@ a{color:inherit;text-decoration:none}
 .sw.on{border-color:var(--lime)}
 .sw img{width:100%;height:100%;object-fit:cover}
 /* action */
+.fitadj{display:flex;align-items:center;gap:6px;padding:0 14px 8px;font-size:10px;letter-spacing:.06em;text-transform:uppercase;opacity:.9;flex-wrap:wrap}
+.fitadj>span{opacity:.55;margin-right:2px}
+.fitadj em{opacity:.4;font-style:normal;font-size:9px;flex-basis:100%;margin-top:2px}
+.fitadj button{background:#10131a;border:1px solid #fff3;color:var(--bone);border-radius:30px;min-width:34px;height:30px;font-size:15px;cursor:pointer;font-family:inherit}
+.fitadj button.rst{font-size:9px;letter-spacing:.06em;padding:0 12px}
+.fitadj button:active{transform:scale(.92)}
 .act{display:flex;align-items:center;gap:10px;padding:2px 14px 0}
 .price{flex:none}.price .pl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;opacity:.55}.price .pv{font-family:var(--disp);font-size:22px;line-height:1}
 .bag{flex:1;background:var(--lime);color:var(--ink);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:15px;border-radius:40px;border:none;text-align:center;cursor:pointer}
@@ -118,6 +124,12 @@ a{color:inherit;text-decoration:none}
     <div class="tabs" id="tabs"></div>
     <div class="rail" id="rail"></div>
     <div class="colors" id="colors"><span class="cl">Colors</span></div>
+    <div class="fitadj" id="fitadj"><span>Adjust fit</span>
+      <button data-a="up" title="Move up">↑</button><button data-a="down" title="Move down">↓</button>
+      <button data-a="small" title="Smaller">–</button><button data-a="big" title="Bigger">+</button>
+      <button data-a="reset" class="rst">reset</button>
+      <em>drag on your face to move · scroll to size</em>
+    </div>
     <div class="act">
       <div class="price"><div class="pl" id="finbar">Price · USD</div><div class="pv" id="pv">$—</div></div>
       <button class="bag" id="bag">Add to bag</button>
@@ -252,7 +264,7 @@ async function start(){
   }catch(e){return fail("Couldn't load the try-on engine. Check your connection and retry.");}
   await openCam();
   $('gate').style.display='none';$('panel').style.display='flex';$('tools').style.display='flex';$('refine').style.display='block';
-  say("<b>Adrian:</b> tap any frame — I'll fit it to your face. Hit ✦ Refine for a suggestion.");
+  say("<b>Adrian:</b> sit upright, face the camera. Tap a frame, then <b>drag</b> it onto your nose or use <b>Adjust fit</b> ↑↓ +–.");
   running=true;requestAnimationFrame(loop);
 }
 async function openCam(){
@@ -263,9 +275,13 @@ async function openCam(){
 }
 function fail(m){$('spin').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
 const _Q=new URLSearchParams(location.search);
-const P_SCALE=parseFloat(_Q.get('scale'))||1.02;   // frame width vs face width (tunable: ?scale=)
-const P_VOFF=_Q.get('voff')!=null?parseFloat(_Q.get('voff')):0.05; // down-seat fraction (tunable: ?voff=)
+const P_SCALE=parseFloat(_Q.get('scale'))||1.0;    // frame width vs face width (tunable: ?scale=)
+const P_VOFF=_Q.get('voff')!=null?parseFloat(_Q.get('voff')):0.09; // down-seat fraction (tunable: ?voff=)
+const P_BF=_Q.get('bf')!=null?parseFloat(_Q.get('bf')):0.17;        // bridge position from top of frame image
 let SM=null;                                        // smoothing state, keeps the frame locked while you move
+let ADJ={dx:0,dy:0,scale:1};                        // manual fine-tune (remembered), layered on auto-fit
+try{ADJ=Object.assign(ADJ,JSON.parse(localStorage.getItem('upc_fitadj')||'{}'));}catch(e){}
+function setAdj(p){ADJ=Object.assign(ADJ,p);try{localStorage.setItem('upc_fitadj',JSON.stringify(ADJ));}catch(e){}}
 function loop(){
   if(!running)return;
   const vw=video.videoWidth,vh=video.videoHeight;
@@ -285,18 +301,22 @@ function loop(){
 function drawFrame(lm,vw,vh){
   const fr=current&&keyCache[current.h];if(!fr)return;
   const X=p=>(1-lm[p].x)*vw, Y=p=>lm[p].y*vh;       // mirrored display coords (match the mirrored video)
-  const cx=(X(33)+X(263)+X(133)+X(362))/4;          // horizontal centre, between the eyes
-  const cy=(Y(33)+Y(263)+Y(133)+Y(362))/4;          // pupil line
+  const eyeMidX=(X(33)+X(263)+X(133)+X(362))/4;
+  const nbx=X(168), nby=Y(168);                     // nose bridge = exactly where glasses rest
+  const cx=(nbx+eyeMidX)/2;                          // horizontal centre on the nose, stabilized by eyes
   const faceW=Math.hypot(X(454)-X(234),Y(454)-Y(234));
   const ang=Math.atan2(Y(33)-Y(263),X(33)-X(263));  // roll: level head → ~0, never 180°
-  const fit=window._fit, scaleK=fit?fit.scaleK:P_SCALE, vOffR=fit?fit.vOffR:P_VOFF;
-  if(!SM)SM={cx,cy,faceW,ang};
+  const fit=window._fit, scaleK=fit?fit.scaleK:P_SCALE;
+  if(!SM)SM={cx,cy:nby,faceW,ang};
   const k=0.5;
-  SM.cx+=(cx-SM.cx)*k;SM.cy+=(cy-SM.cy)*k;SM.faceW+=(faceW-SM.faceW)*k;
+  SM.cx+=(cx-SM.cx)*k;SM.cy+=(nby-SM.cy)*k;SM.faceW+=(faceW-SM.faceW)*k;
   let da=ang-SM.ang;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;SM.ang+=da*k;
-  const W=SM.faceW*scaleK,H=W*(fr.h/fr.w);
+  const W=SM.faceW*scaleK*ADJ.scale, H=W*(fr.h/fr.w);
+  // anchor: put the frame's BRIDGE (≈P_BF down from its top) ON the nose-bridge point, + manual nudge
+  const cX=SM.cx + SM.faceW*ADJ.dx;
+  const cY=SM.cy + (0.5-P_BF)*H + SM.faceW*ADJ.dy;
   ctx.save();
-  ctx.translate(SM.cx, SM.cy + SM.faceW*vOffR);     // seat just below the pupil line, on the nose
+  ctx.translate(cX, cY);
   ctx.rotate(SM.ang);
   ctx.drawImage(fr.canvas,-W/2,-H/2,W,H);           // NORMAL ctx → upright, not flipped
   ctx.restore();
@@ -338,6 +358,19 @@ function refine(){
 $('start').onclick=start;
 $('refine').onclick=refine;
 $('refit').onclick=refineFit;
+// manual fit nudge — buttons + drag + scroll
+document.querySelectorAll('#fitadj button').forEach(b=>b.onclick=()=>{const a=b.dataset.a;
+  if(a==='up')setAdj({dy:ADJ.dy-0.02});
+  else if(a==='down')setAdj({dy:ADJ.dy+0.02});
+  else if(a==='small')setAdj({scale:Math.max(.55,ADJ.scale*0.95)});
+  else if(a==='big')setAdj({scale:Math.min(1.9,ADJ.scale*1.05)});
+  else if(a==='reset')setAdj({dx:0,dy:0,scale:1});
+});
+let _dragY=null,_dragX=null;
+view.addEventListener('pointerdown',e=>{_dragY=e.clientY;_dragX=e.clientX;},{passive:true});
+window.addEventListener('pointermove',e=>{if(_dragY==null)return;const dy=e.clientY-_dragY,dx=e.clientX-_dragX;_dragY=e.clientY;_dragX=e.clientX;setAdj({dy:ADJ.dy+dy*0.0016,dx:ADJ.dx+dx*0.0016});},{passive:true});
+window.addEventListener('pointerup',()=>{_dragY=null;});
+view.addEventListener('wheel',e=>{e.preventDefault();setAdj({scale:Math.max(.55,Math.min(1.9,ADJ.scale*(e.deltaY<0?1.05:0.95)))});},{passive:false});
 $('close').onclick=()=>{running=false;if(stream)stream.getTracks().forEach(t=>t.stop());location.href='shop.html';};
 $('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
 $('snap').onclick=()=>{try{const a=document.createElement('a');a.download='parasite-club-tryon.png';a.href=view.toDataURL('image/png');a.click();toast('Saved your look ★');}catch(e){toast('Could not save');}};
