@@ -183,6 +183,23 @@ module.exports = async (req, res) => {
       return res.end();
     }
 
+    // Multi-item bag checkout: 302 to a cart permalink containing every bag item.
+    // params: handles=h1,h2:2,h3 (optional :qty per handle)
+    if (action === 'cart') {
+      const items = String(q.handles || '').split(',').map(s => s.trim()).filter(Boolean);
+      if (!items.length) return res.status(400).json({ error: 'handles required' });
+      const parts = [];
+      for (const it of items) {
+        const [h, qq] = it.split(':');
+        const vgid = await variantForHandle(h);
+        if (vgid) parts.push(numId(vgid) + ':' + (parseInt(qq || '1', 10) || 1));
+      }
+      if (!parts.length) return res.status(404).json({ error: 'no variants found', items });
+      const url = `https://${STORE}.myshopify.com/cart/${parts.join(',')}`;
+      res.writeHead(302, { Location: url });
+      return res.end();
+    }
+
     // Trunk hold: create a draft order (a quote/hold) for the selected frames.
     // params: handles=h1,h2,... email=... tier=standard|inner
     if (action === 'trunk') {
@@ -215,7 +232,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true, tier, limit, draft: r.draftOrder, missing });
     }
 
-    return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'summary', 'sync', 'variants', 'checkout', 'trunk'] });
+    return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'summary', 'sync', 'variants', 'checkout', 'cart', 'trunk'] });
   } catch (e) {
     return res.status(500).json({ error: String(e) });
   }
