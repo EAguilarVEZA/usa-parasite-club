@@ -432,12 +432,8 @@ $('snap').onclick=()=>{try{
 }catch(e){toast('Could not save')}};
 $('bag').onclick=()=>{if(!current)return;toast('Opening secure checkout…');try{window.MK&&MK.track('InitiateCheckout',{handle:current.h,value:current.p});}catch(e){}location.href=CHECKOUT(current.h);};
 $('home').onclick=()=>{
-  if(!current)return;let t={};try{t=JSON.parse(localStorage.getItem('upc_trunk')||'{}');}catch(e){}
-  const items=new Set(t.items||[]),lim=tier()==='inner'?5:3;
-  if(items.has(current.h)){toast('Already in your trunk');return;}
-  if(items.size>=lim){toast('Trunk full ('+lim+') — review it');location.href='atelier.html';return;}
-  items.add(current.h);localStorage.setItem('upc_trunk',JSON.stringify({items:[...items],tier:tier(),ts:Date.now()}));
-  toast('Added to your home trunk ('+items.size+'/'+lim+')');
+  if(current){let f=favs();if(!f.includes(current.h)){f.push(current.h);localStorage.setItem('upc_favs',JSON.stringify(f));}}
+  location.href='trunk.html';
 };
 /* auto-start — no intermediate screen */
 start();
