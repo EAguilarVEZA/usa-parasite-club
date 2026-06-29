@@ -92,6 +92,7 @@ a{color:inherit;text-decoration:none}
     <div class="top">
       <a class="logo" href="index.html">PARASITE<b>·</b>CLUB<b>·</b>USA</a>
       <div class="tr">
+        <div class="ic" id="fav" title="Save / remove from picks">♡</div>
         <div class="ic" id="flip" title="Flip camera">⟲</div>
         <div class="ic" id="close">✕</div>
       </div>
@@ -157,7 +158,8 @@ let landmarker=null,stream=null,facing='user',running=false;
 let house='Portrait',type='all',current=null,picksMode=false;
 const favs=()=>JSON.parse(localStorage.getItem('upc_favs')||'[]');
 const keyCache={};
-const modelKey=p=>p.b+'|'+(p.model||p.n);
+const stripNum=s=>(s||'').replace(/\s*\d+\s*$/,'').trim();
+const modelKey=p=>p.b+'|'+(stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase();
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
 function say(html){const e=$('say');e.innerHTML=html;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),4600);}
 function tier(){try{return localStorage.getItem('upc_tier')==='inner'?'inner':'standard';}catch(e){return 'standard';}}
@@ -247,12 +249,20 @@ function setColor(h){current=DATA.find(p=>p.h===h);if(!current)return;paint();bu
 function paint(){
   $('fb').textContent=current.b;$('fn').textContent=current.n;
   $('pz').textContent='$'+current.p;$('fin').textContent='or 4× $'+(current.p/4).toFixed(2)+' · Shop Pay';
-  prepFrame(current);
+  updateFav();prepFrame(current);
+}
+function updateFav(){const b=$('fav');if(!b||!current)return;const on=favs().includes(current.h);b.textContent=on?'♥':'♡';b.style.color=on?'#ff3b6b':'';b.style.borderColor=on?'#ff3b6b':'';}
+function cornerWhite(im){try{const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;const w=c.width,h=c.height;const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([px,py])=>{const i=(py*w+px)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}catch(e){return 0;}}
+function loadImg3(u){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=rej;im.src=u+'?width=600';});}
+async function bestFrameImg(p){               // pick the whitest-background shot (real frame photo, not lifestyle)
+  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,4);
+  let best=cands[0],bestScore=-1,bestImg=null;
+  for(const u of cands){try{const im=await loadImg3(u);const sc=cornerWhite(im);if(sc>bestScore){bestScore=sc;best=u;bestImg=im;}}catch(e){}}
+  return bestImg||await loadImg3(best).catch(()=>null);
 }
 function prepFrame(p){
   if(keyCache[p.h]!==undefined&&keyCache[p.h]!==null)return;
-  const img=new Image();img.crossOrigin='anonymous';
-  img.onload=()=>{try{
+  bestFrameImg(p).then(img=>{ if(!img){keyCache[p.h]=null;return;} try{
     const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
     const cc=c.getContext('2d');cc.drawImage(img,0,0);
     const d=cc.getImageData(0,0,c.width,c.height),a=d.data;
@@ -270,9 +280,7 @@ function prepFrame(p){
     const tex=new THREE.CanvasTexture(t);tex.colorSpace=THREE.SRGBColorSpace;
     keyCache[p.h]={canvas:t,w:bw,h:bh,tex};
     if(current&&current.h===p.h)applyTex(p.h);
-  }catch(e){keyCache[p.h]=null;}};
-  img.onerror=()=>{keyCache[p.h]=null;};
-  img.src=p.img+'?width=600';
+  }catch(e){keyCache[p.h]=null;} }).catch(()=>{keyCache[p.h]=null;});
 }
 function applyTex(h){const fr=keyCache[h];if(!fr||!mesh)return;mesh.material.map=fr.tex;mesh.material.needsUpdate=true;texW=fr.w;texH=fr.h;}
 
@@ -302,6 +310,7 @@ function fail(m){$('spin').style.display='none';const e=$('err');e.textContent=m
 let SM=null;                              // smoothing state
 let ADJ={dx:0,dy:0,scale:1};
 try{ADJ=Object.assign(ADJ,JSON.parse(localStorage.getItem('upc_fitadj')||'{}'));}catch(e){}
+ADJ.scale=Math.max(.85,Math.min(1.2,ADJ.scale||1));   // realistic frame-size range only
 function setAdj(p){ADJ=Object.assign(ADJ,p);try{localStorage.setItem('upc_fitadj',JSON.stringify(ADJ));}catch(e){}}
 const _euler=new THREE.Euler(),_q=new THREE.Quaternion(),_p=new THREE.Vector3(),_s=new THREE.Vector3(),_m=new THREE.Matrix4();
 function headPose(res){
@@ -390,7 +399,8 @@ $('gl').style.pointerEvents='none';
 $('view').addEventListener('pointerdown',e=>{_dragY=e.clientY;_dragX=e.clientX;},{passive:true});
 window.addEventListener('pointermove',e=>{if(_dragY==null)return;const dy=e.clientY-_dragY,dx=e.clientX-_dragX;_dragY=e.clientY;_dragX=e.clientX;setAdj({dy:ADJ.dy+dy*0.0016,dx:ADJ.dx+dx*0.0016});},{passive:true});
 window.addEventListener('pointerup',()=>{_dragY=null;});
-$('view').addEventListener('wheel',e=>{e.preventDefault();setAdj({scale:Math.max(.55,Math.min(1.9,ADJ.scale*(e.deltaY<0?1.05:0.95)))});},{passive:false});
+$('view').addEventListener('wheel',e=>{e.preventDefault();setAdj({scale:Math.max(.85,Math.min(1.2,ADJ.scale*(e.deltaY<0?1.03:0.97)))});},{passive:false});
+$('fav').onclick=()=>{if(!current)return;let f=favs();if(f.includes(current.h)){f=f.filter(x=>x!==current.h);toast('Removed from picks');}else{f.push(current.h);toast('Saved to picks ♥');}localStorage.setItem('upc_favs',JSON.stringify(f));updateFav();if(picksMode)buildRail();};
 $('close').onclick=()=>{running=false;if(stream)stream.getTracks().forEach(t=>t.stop());location.href='index.html';};
 $('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
 $('snap').onclick=()=>{try{

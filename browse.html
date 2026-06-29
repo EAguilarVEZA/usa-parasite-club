@@ -69,8 +69,17 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 @media(max-width:680px){.arw{position:absolute;top:140px;z-index:5;background:#ffffffd8}.arw.prev{left:0}.arw.next{right:0}.card{max-width:none}.card .imgwrap{height:240px}.card .imgwrap img{max-height:220px}}
 /* sticky pick bar */
 .pickbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fffffff2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom))}
+.pickbar .wrap{position:relative}
 .pickbar .row{display:flex;align-items:center;gap:14px}
 .pickbar .lbl{font-weight:600;font-size:14px}.pickbar .lbl b{color:var(--heart)}
+.pickpanel{position:absolute;left:0;right:0;bottom:calc(100% + 12px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 -12px 34px -16px #0005;max-height:54vh;overflow:auto;padding:8px;display:none}
+.pickpanel.show{display:block}
+.pickpanel .ph{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9a9a9a;padding:8px 10px}
+.prow{display:flex;align-items:center;gap:12px;padding:8px 10px;border-top:1px solid var(--line)}
+.prow img{width:52px;height:40px;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:8px;flex:none}
+.prow .pn{flex:1;font-size:13px;font-weight:600}.prow .pn small{display:block;color:var(--muted);font-weight:400}
+.prow .rm{border:1px solid var(--line);background:#fff;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;color:var(--heart);flex:none}
+.prow .rm:active{transform:scale(.95)}
 .pickbar .mini{display:flex;gap:6px;margin-left:4px}
 .pickbar .mini img{width:34px;height:30px;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:7px;border:1px solid var(--line)}
 .pickbar .go{margin-left:auto;background:var(--lime);color:var(--limeink);font-weight:700;font-size:14px;padding:14px 22px;border-radius:30px;cursor:pointer;border:none;display:inline-flex;gap:8px;align-items:center}
@@ -132,7 +141,8 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 </div>
 
 <div class="pickbar"><div class="wrap row">
-  <div class="lbl"><b id="pickn">0</b> saved</div>
+  <div class="pickpanel" id="pickpanel"></div>
+  <div class="lbl" id="picklbl" style="cursor:pointer"><b id="pickn">0</b> saved <span id="pickcar" style="opacity:.45;font-size:11px">▴ manage</span></div>
   <div class="mini" id="pickmini"></div>
   <button class="go dim" id="tryon">Try them on →</button>
 </div></div>
@@ -146,7 +156,38 @@ const Q=new URLSearchParams(location.search);
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
 const getFavs=()=>{try{return JSON.parse(localStorage.getItem('upc_favs')||'[]')}catch(e){return[]}};
 const setFavs=a=>{localStorage.setItem('upc_favs',JSON.stringify(a));};
-const modelKey=p=>p.b+'|'+(p.model||p.n);
+const stripNum=s=>(s||'').replace(/\s*\d+\s*$/,'').trim();
+const modelKey=p=>p.b+'|'+(stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase();
+const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
+/* ---- image normalizer: pick whitest-bg frame shot, crop to the frame, cache ---- */
+const _imgCache={};
+function whiteScore(a,w,h){const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([x,y])=>{const i=(y*w+x)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}
+function loadImg(u){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=rej;im.src=u+'?width=600';});}
+async function normalizedFrame(p){
+  if(_imgCache[p.h])return _imgCache[p.h];
+  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,4);
+  let best=null,bestScore=-1,bestData=null;
+  for(const u of cands){
+    try{const im=await loadImg(u);const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
+      const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;
+      const sc=whiteScore(a,c.width,c.height);
+      if(sc>bestScore){bestScore=sc;best={c,a,w:c.width,h:c.height};bestData=u;}
+    }catch(e){}
+  }
+  if(!best){_imgCache[p.h]=p.img;return p.img;}
+  // if it is a real white-bg shot, crop to the frame; otherwise return as-is
+  let url=bestData+'?width=600';
+  if(bestScore>225){
+    const {a,w,h}=best;let minx=w,miny=h,maxx=0,maxy=0;
+    for(let y=0;y<h;y+=2)for(let xx=0;xx<w;xx+=2){const i=(y*w+xx)*4;if(a[i]>234&&a[i+1]>234&&a[i+2]>234)continue;if(xx<minx)minx=xx;if(xx>maxx)maxx=xx;if(y<miny)miny=y;if(y>maxy)maxy=y;}
+    let bw=maxx-minx,bh=maxy-miny;
+    if(bw>10&&bh>6){const padX=bw*0.10,padY=bh*0.18;minx=Math.max(0,minx-padX);miny=Math.max(0,miny-padY);bw=Math.min(w-minx,bw+padX*2);bh=Math.min(h-miny,bh+padY*2);
+      const o=document.createElement('canvas');o.width=Math.round(bw);o.height=Math.round(bh);
+      o.getContext('2d').drawImage(best.c,minx,miny,bw,bh,0,0,o.width,o.height);
+      url=o.toDataURL('image/png');}
+  }
+  _imgCache[p.h]=url;return url;
+}
 
 const HMETA={Portrait:'Premium · Handmade in Italy',Acid:'Designer · France · by Hugo Martin',Parasite:'Futurist · France · handcrafted'};
 const COLS={
@@ -209,10 +250,10 @@ function show(){
   $('card').innerHTML=`
     ${cur.new?'<span class="new">New</span>':''}
     <button class="heart${fav?' on':''}" id="heart">${fav?'♥':'♡'}</button>
-    <div class="imgwrap"><img src="${cur.img}?width=720" alt="${cur.n}"></div>
+    <div class="imgwrap"><img id="cardimg" src="${cur.img}?width=720" alt="${cur.n}"></div>
     <div class="cinfo">
       <div><div class="col">${house}${col!=='all'?' · '+(COLS[house].find(c=>c[0]===col)||[])[1]:''}</div>
-        <h2>${cur.model||cur.n}</h2><div class="sub">${cur.n} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
+        <h2>${displayModel(cur)}</h2><div class="sub">${cur.n} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
       <div class="price"><div class="pv">$${cur.p}</div><div class="fin">or 4× $${fin} · Shop Pay</div></div>
     </div>
     <div class="cactions">
@@ -227,6 +268,7 @@ function show(){
   $('swatchrow').querySelectorAll('.swatch').forEach(s=>s.onclick=()=>{cur=DATA.find(p=>p.h===s.dataset.h);list[i]=cur;show();});
   $('counter').innerHTML=`<b>${i+1}</b> / ${list.length} · ${list.length} styles`;
   $('progbar').style.width=((i+1)/list.length*100)+'%';
+  const want=cur.h;normalizedFrame(cur).then(u=>{if(cur&&cur.h===want){const im=document.getElementById('cardimg');if(im&&u)im.src=u;}}).catch(()=>{});
 }
 function toggleFav(){doFav(cur.h,!getFavs().includes(cur.h));show();renderPick();}
 function doFav(h,on){let f=getFavs();if(on){if(!f.includes(h))f.push(h);toast('Saved to your picks ♥');}else{f=f.filter(x=>x!==h);}setFavs(f);}
@@ -242,10 +284,16 @@ function renderPick(){
   $('bagn').style.display=f.length?'inline-block':'none';$('bagn').textContent=f.length;
   const mini=f.slice(-5).map(h=>{const p=DATA.find(x=>x.h===h);return p?`<img src="${p.img}?width=80">`:'';}).join('');
   $('pickmini').innerHTML=mini;
+  $('pickcar').style.display=f.length?'inline':'none';
   const go=$('tryon');
   if(f.length){go.classList.remove('dim');go.textContent='Try '+f.length+' on →';go.onclick=()=>location.href='tryon3d.html?picks=1';}
-  else{go.classList.add('dim');go.textContent='Heart some first';go.onclick=()=>toast('Tap the heart on frames you like');}
+  else{go.classList.add('dim');go.textContent='Heart some first';go.onclick=()=>toast('Tap the heart on frames you like');$('pickpanel').classList.remove('show');}
+  // build manage panel
+  const pp=$('pickpanel');
+  if(f.length){pp.innerHTML='<div class="ph">Your picks — tap remove to delete</div>'+f.map(h=>{const p=DATA.find(x=>x.h===h);if(!p)return '';return `<div class="prow"><img src="${p.img}?width=110"><div class="pn">${displayModel(p)}<small>${p.n} · $${p.p}</small></div><button class="rm" data-h="${h}">Remove ✕</button></div>`;}).join('');
+    pp.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{doFav(b.dataset.h,false);toast('Removed from picks');renderPick();if(cur)show();});}
 }
+$('picklbl').onclick=()=>{if(getFavs().length)$('pickpanel').classList.toggle('show');};
 
 /* ---------- Adrian quiz ---------- */
 const QUIZ=[
