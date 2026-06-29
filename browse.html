@@ -43,6 +43,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .card{flex:1;max-width:640px;background:var(--soft);border:1px solid var(--line);border-radius:26px;padding:26px;position:relative;overflow:hidden}
 .card .imgwrap{height:300px;display:flex;align-items:center;justify-content:center}
 .card .imgwrap img{max-height:280px;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 16px 28px #0002)}
+.noimg{font-size:13px;color:#b3b1a6;text-align:center;padding:0 20px}
 .card .new{position:absolute;top:20px;left:20px;background:var(--yellow);color:#3a3300;font-weight:800;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:20px}
 .heart{position:absolute;top:18px;right:18px;width:50px;height:50px;border-radius:50%;background:#fff;border:1px solid var(--line);font-size:22px;cursor:pointer;display:grid;place-items:center;transition:.15s;color:#c9c7be}
 .heart:hover{transform:scale(1.08)}.heart.on{color:var(--heart);border-color:var(--heart);background:#fff0f4}
@@ -161,32 +162,39 @@ const modelKey=p=>p.b+'|'+(stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase()
 const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
 /* ---- image normalizer: pick whitest-bg frame shot, crop to the frame, cache ---- */
 const _imgCache={};
-function whiteScore(a,w,h){const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([x,y])=>{const i=(y*w+x)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}
 function loadImg(u){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=rej;im.src=u+'?width=600';});}
+function cornerW(a,w,h){const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([x,y])=>{const i=(y*w+x)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}
+/* Is this a flat, straight-on FRONT shot? (symmetric silhouette + frame-shaped aspect) */
+function frontEval(a,w,h){
+  let minx=w,miny=h,maxx=0,maxy=0;
+  for(let y=0;y<h;y+=2)for(let px=0;px<w;px+=2){const i=(y*w+px)*4;if(a[i]>232&&a[i+1]>232&&a[i+2]>232)continue;if(px<minx)minx=px;if(px>maxx)maxx=px;if(y<miny)miny=y;if(y>maxy)maxy=y;}
+  const bw=maxx-minx,bh=maxy-miny;if(bw<8||bh<6)return{ok:false};
+  const GW=32,GH=24;let match=0,tot=0;
+  const m=(gx,gy)=>{const sx=Math.round(minx+bw*gx/(GW-1)),sy=Math.round(miny+bh*gy/(GH-1));const i=(sy*w+sx)*4;return (a[i]>232&&a[i+1]>232&&a[i+2]>232)?0:1;};
+  for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){tot++;if(m(gx,gy)===m(GW-1-gx,gy))match++;}
+  const sym=match/tot,asp=bw/bh;
+  return{ok:true,front:(sym>=0.86&&asp>=2.2&&asp<=4.3),sym,asp,minx,miny,bw,bh};
+}
+/* pick the best straight-on white-bg shot; null if the model has none */
+async function chooseFront(p){
+  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,5);
+  let best=null,bestSym=-1;
+  for(const u of cands){try{const im=await loadImg(u);const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
+    const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;
+    const white=cornerW(a,c.width,c.height),ev=frontEval(a,c.width,c.height);
+    if(ev.ok&&ev.front&&white>=215&&ev.sym>bestSym){bestSym=ev.sym;best={c,ev};}
+  }catch(e){}}
+  return best;
+}
 async function normalizedFrame(p){
-  if(_imgCache[p.h])return _imgCache[p.h];
-  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,4);
-  let best=null,bestScore=-1,bestData=null;
-  for(const u of cands){
-    try{const im=await loadImg(u);const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
-      const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;
-      const sc=whiteScore(a,c.width,c.height);
-      if(sc>bestScore){bestScore=sc;best={c,a,w:c.width,h:c.height};bestData=u;}
-    }catch(e){}
-  }
-  if(!best){_imgCache[p.h]=p.img;return p.img;}
-  // if it is a real white-bg shot, crop to the frame; otherwise return as-is
-  let url=bestData+'?width=600';
-  if(bestScore>225){
-    const {a,w,h}=best;let minx=w,miny=h,maxx=0,maxy=0;
-    for(let y=0;y<h;y+=2)for(let xx=0;xx<w;xx+=2){const i=(y*w+xx)*4;if(a[i]>234&&a[i+1]>234&&a[i+2]>234)continue;if(xx<minx)minx=xx;if(xx>maxx)maxx=xx;if(y<miny)miny=y;if(y>maxy)maxy=y;}
-    let bw=maxx-minx,bh=maxy-miny;
-    if(bw>10&&bh>6){const padX=bw*0.10,padY=bh*0.18;minx=Math.max(0,minx-padX);miny=Math.max(0,miny-padY);bw=Math.min(w-minx,bw+padX*2);bh=Math.min(h-miny,bh+padY*2);
-      const o=document.createElement('canvas');o.width=Math.round(bw);o.height=Math.round(bh);
-      o.getContext('2d').drawImage(best.c,minx,miny,bw,bh,0,0,o.width,o.height);
-      url=o.toDataURL('image/png');}
-  }
-  _imgCache[p.h]=url;return url;
+  if(_imgCache[p.h]!==undefined)return _imgCache[p.h];
+  const b=await chooseFront(p);
+  if(!b){_imgCache[p.h]=null;return null;}            // no straight-on photo → show none
+  let {minx,miny,bw,bh}=b.ev;const padX=bw*0.10,padY=bh*0.18;
+  minx=Math.max(0,minx-padX);miny=Math.max(0,miny-padY);bw=Math.min(b.c.width-minx,bw+padX*2);bh=Math.min(b.c.height-miny,bh+padY*2);
+  const o=document.createElement('canvas');o.width=Math.round(bw);o.height=Math.round(bh);
+  o.getContext('2d').drawImage(b.c,minx,miny,bw,bh,0,0,o.width,o.height);
+  const url=o.toDataURL('image/png');_imgCache[p.h]=url;return url;
 }
 
 const HMETA={Portrait:'Premium · Handmade in Italy',Acid:'Designer · France · by Hugo Martin',Parasite:'Futurist · France · handcrafted'};
@@ -250,7 +258,7 @@ function show(){
   $('card').innerHTML=`
     ${cur.new?'<span class="new">New</span>':''}
     <button class="heart${fav?' on':''}" id="heart">${fav?'♥':'♡'}</button>
-    <div class="imgwrap"><img id="cardimg" src="${cur.img}?width=720" alt="${cur.n}"></div>
+    <div class="imgwrap"><img id="cardimg" alt="${cur.n}" style="display:none"><div class="noimg" id="noimg">Finding a straight-on photo…</div></div>
     <div class="cinfo">
       <div><div class="col">${house}${col!=='all'?' · '+(COLS[house].find(c=>c[0]===col)||[])[1]:''}</div>
         <h2>${displayModel(cur)}</h2><div class="sub">${cur.n} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
@@ -268,7 +276,7 @@ function show(){
   $('swatchrow').querySelectorAll('.swatch').forEach(s=>s.onclick=()=>{cur=DATA.find(p=>p.h===s.dataset.h);list[i]=cur;show();});
   $('counter').innerHTML=`<b>${i+1}</b> / ${list.length} · ${list.length} styles`;
   $('progbar').style.width=((i+1)/list.length*100)+'%';
-  const want=cur.h;normalizedFrame(cur).then(u=>{if(cur&&cur.h===want){const im=document.getElementById('cardimg');if(im&&u)im.src=u;}}).catch(()=>{});
+  const want=cur.h;normalizedFrame(cur).then(u=>{if(!(cur&&cur.h===want))return;const im=$('cardimg'),ni=$('noimg');if(u){im.src=u;im.style.display='';if(ni)ni.style.display='none';}else{im.style.display='none';if(ni){ni.textContent='No straight-on photo yet';ni.style.display='';}}}).catch(()=>{});
 }
 function toggleFav(){doFav(cur.h,!getFavs().includes(cur.h));show();renderPick();}
 function doFav(h,on){let f=getFavs();if(on){if(!f.includes(h))f.push(h);toast('Saved to your picks ♥');}else{f=f.filter(x=>x!==h);}setFavs(f);}

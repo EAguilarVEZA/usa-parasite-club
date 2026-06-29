@@ -56,6 +56,7 @@ a{color:inherit;text-decoration:none}
 .thumb .pic{width:86px;height:64px;border-radius:12px;background:var(--soft);border:2px solid transparent;overflow:hidden;display:grid;place-items:center}
 .thumb.on .pic{border-color:var(--lime);background:#fbffe8}
 .thumb .pic img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;padding:6px}
+.thumb .pic .np{font-size:9px;line-height:1.25;color:#a8a6a0;text-align:center}
 .thumb .lab{font-size:9px;margin-top:4px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .buy{display:flex;gap:10px;padding-top:10px}
 .bag{flex:1;background:var(--lime);color:var(--limeink);font-weight:700;font-size:14px;padding:15px;border-radius:34px;border:none;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:12px}
@@ -224,20 +225,32 @@ function railList(){return picksMode?favs().map(h=>DATA.find(p=>p.h===h)).filter
 /* thumbnail normalizer (whitest shot + crop to frame), lazy + cached */
 const _thumbCache={};
 function loadImg3(u){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=rej;im.src=u+'?width=600';});}
-function cornerWhite(im){try{const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;const w=c.width,h=c.height;const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([px,py])=>{const i=(py*w+px)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}catch(e){return 0;}}
+function cornerWpx(a,w,h){const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([px,py])=>{const i=(py*w+px)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}
+/* flat straight-on FRONT shot? symmetric silhouette + frame-shaped aspect */
+function frontEval(a,w,h){
+  let minx=w,miny=h,maxx=0,maxy=0;
+  for(let y=0;y<h;y+=2)for(let px=0;px<w;px+=2){const i=(y*w+px)*4;if(a[i]>232&&a[i+1]>232&&a[i+2]>232)continue;if(px<minx)minx=px;if(px>maxx)maxx=px;if(y<miny)miny=y;if(y>maxy)maxy=y;}
+  const bw=maxx-minx,bh=maxy-miny;if(bw<8||bh<6)return{ok:false};
+  const GW=32,GH=24;let match=0,tot=0;
+  const m=(gx,gy)=>{const sx=Math.round(minx+bw*gx/(GW-1)),sy=Math.round(miny+bh*gy/(GH-1));const i=(sy*w+sx)*4;return (a[i]>232&&a[i+1]>232&&a[i+2]>232)?0:1;};
+  for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){tot++;if(m(gx,gy)===m(GW-1-gx,gy))match++;}
+  const sym=match/tot,asp=bw/bh;
+  return{ok:true,front:(sym>=0.86&&asp>=2.2&&asp<=4.3),minx,miny,bw,bh};
+}
+async function chooseFront3(p){
+  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,5);
+  let best=null,bestSym=-1;
+  for(const u of cands){try{const im=await loadImg3(u);const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;const white=cornerWpx(a,c.width,c.height);const ev=frontEval(a,c.width,c.height);const sym=ev.ok?( ()=>{let mm=0,tt=0;const GW=24,GH=18,bw=ev.bw,bh=ev.bh;const mp=(gx,gy)=>{const sx=Math.round(ev.minx+bw*gx/(GW-1)),sy=Math.round(ev.miny+bh*gy/(GH-1));const i=(sy*c.width+sx)*4;return (a[i]>232&&a[i+1]>232&&a[i+2]>232)?0:1;};for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){tt++;if(mp(gx,gy)===mp(GW-1-gx,gy))mm++;}return mm/tt;})():0;
+    if(ev.ok&&ev.front&&white>=215&&sym>bestSym){bestSym=sym;best={c,ev};}
+  }catch(e){}}
+  return best;
+}
+function cropFront(b,pad){const pp=pad||0.14;let {minx,miny,bw,bh}=b.ev;const px=bw*0.10,py=bh*pp;minx=Math.max(0,minx-px);miny=Math.max(0,miny-py);bw=Math.min(b.c.width-minx,bw+px*2);bh=Math.min(b.c.height-miny,bh+py*2);const o=document.createElement('canvas');o.width=Math.round(bw);o.height=Math.round(bh);o.getContext('2d').drawImage(b.c,minx,miny,bw,bh,0,0,o.width,o.height);return o;}
 async function normalizedThumb(p){
-  if(_thumbCache[p.h])return _thumbCache[p.h];
-  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,4);
-  let best=null,bestScore=-1;
-  for(const u of cands){try{const im=await loadImg3(u);const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;const w=c.width,h=c.height;const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([px,py])=>{const i=(py*w+px)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});const sc=s/4;if(sc>bestScore){bestScore=sc;best={c,a,w,h};}}catch(e){}}
-  if(!best){_thumbCache[p.h]=p.img+'?width=240';return _thumbCache[p.h];}
-  let url=p.img+'?width=240';
-  if(bestScore>225){const {a,w,h}=best;let minx=w,miny=h,maxx=0,maxy=0;
-    for(let y=0;y<h;y+=2)for(let xx=0;xx<w;xx+=2){const i=(y*w+xx)*4;if(a[i]>234&&a[i+1]>234&&a[i+2]>234)continue;if(xx<minx)minx=xx;if(xx>maxx)maxx=xx;if(y<miny)miny=y;if(y>maxy)maxy=y;}
-    let bw=maxx-minx,bh=maxy-miny;
-    if(bw>10&&bh>6){const px=bw*0.10,py=bh*0.16;minx=Math.max(0,minx-px);miny=Math.max(0,miny-py);bw=Math.min(w-minx,bw+px*2);bh=Math.min(h-miny,bh+py*2);
-      const o=document.createElement('canvas');o.width=Math.round(bw);o.height=Math.round(bh);o.getContext('2d').drawImage(best.c,minx,miny,bw,bh,0,0,o.width,o.height);url=o.toDataURL('image/png');}}
-  _thumbCache[p.h]=url;return url;
+  if(_thumbCache[p.h]!==undefined)return _thumbCache[p.h];
+  const b=await chooseFront3(p);
+  if(!b){_thumbCache[p.h]=null;return null;}
+  const url=cropFront(b,0.16).toDataURL('image/png');_thumbCache[p.h]=url;return url;
 }
 let _thumbIO=null;
 function buildRail(){
@@ -248,7 +261,7 @@ function buildRail(){
       <div class="lab">${displayModel(p)}</div></div>`).join('')||`<div style="padding:12px;font-size:12px;color:#999">No frames here.</div>`;
   $('rail').querySelectorAll('.thumb').forEach(t=>t.onclick=()=>select(t.dataset.h));
   if(_thumbIO)_thumbIO.disconnect();
-  _thumbIO=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const img=en.target,h=img.dataset.h,p=DATA.find(x=>x.h===h);_thumbIO.unobserve(img);if(p)normalizedThumb(p).then(u=>{img.src=u;}).catch(()=>{img.src=p.img+'?width=240';});}}),{root:$('rail'),rootMargin:'250px'});
+  _thumbIO=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const img=en.target,h=img.dataset.h,p=DATA.find(x=>x.h===h);_thumbIO.unobserve(img);if(p)normalizedThumb(p).then(u=>{if(u){img.src=u;}else{const pic=img.parentElement;if(pic)pic.innerHTML='<span class="np">No front<br>photo yet</span>';}}).catch(()=>{});}}),{root:$('rail'),rootMargin:'250px'});
   $('rail').querySelectorAll('.pic img').forEach(img=>_thumbIO.observe(img));
   if(!current&&list.length)select(list[0].h);
 }
@@ -277,16 +290,11 @@ function paint(){
   updateFav();prepFrame(current);
 }
 function updateFav(){const b=$('fav');if(!b||!current)return;const on=favs().includes(current.h);b.textContent=on?'♥':'♡';b.style.color=on?'#ff3b6b':'';b.style.borderColor=on?'#ff3b6b':'';}
-async function bestFrameImg(p){
-  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,4);
-  let best=cands[0],bestScore=-1,bestImg=null;
-  for(const u of cands){try{const im=await loadImg3(u);const sc=cornerWhite(im);if(sc>bestScore){bestScore=sc;best=u;bestImg=im;}}catch(e){}}
-  return bestImg||await loadImg3(best).catch(()=>null);
-}
 function prepFrame(p){
   if(keyCache[p.h]!==undefined&&keyCache[p.h]!==null)return;
-  bestFrameImg(p).then(img=>{ if(!img){keyCache[p.h]=null;return;} try{
-    const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+  chooseFront3(p).then(b=>{ if(!b){keyCache[p.h]={none:true};if(current&&current.h===p.h)say("<b>Adrian:</b> no straight-on photo for this one yet — can't place it on your face. Try another.");return;} try{
+    const img=b.c;
+    const c=document.createElement('canvas');c.width=img.width;c.height=img.height;
     const cc=c.getContext('2d');cc.drawImage(img,0,0);
     const d=cc.getImageData(0,0,c.width,c.height),a=d.data;
     let minx=c.width,miny=c.height,maxx=0,maxy=0;
@@ -365,7 +373,7 @@ function loop(){
   requestAnimationFrame(loop);
 }
 function drawFrame(lm,vw,vh,pose){
-  const fr=current&&keyCache[current.h];if(!fr||!mesh)return;
+  const fr=current&&keyCache[current.h];if(!fr||!fr.tex||!mesh){if(mesh)mesh.visible=false;return;}
   if(mesh.material.map!==fr.tex)applyTex(current.h);
   const X=p=>(1-lm[p].x)*vw, Y=p=>lm[p].y*vh;
   const eyeMidX=(X(33)+X(263)+X(133)+X(362))/4;
