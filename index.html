@@ -121,7 +121,16 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
     <button class="btn lime" id="heroAdrian">✦ Help me choose</button>
     <a class="btn ghost" href="tryon3d.html">Jump to try-on</a>
   </div>
-  <div class="heroframes" id="heroframes"></div>
+</div></section>
+
+<section><div class="wrap">
+  <div class="shead"><div><div class="kick">How it works</div><h2>Four steps, no friction</h2></div></div>
+  <div class="steps reveal">
+    <div class="step"><div class="no">1</div><h4>Pick a house</h4><p>Portrait, Acid or Parasite — or let Adrian choose for you.</p></div>
+    <div class="step"><div class="no">2</div><h4>Heart your favorites</h4><p>Swipe the collection, tap the heart on the ones you love.</p></div>
+    <div class="step"><div class="no">3</div><h4>Try them on</h4><p>Live 3D in your browser — phone or computer, nothing to install.</p></div>
+    <div class="step"><div class="no">4</div><h4>Buy or try at home</h4><p>Check out with Shop Pay, or get the free home trunk.</p></div>
+  </div>
 </div></section>
 
 <section id="houses"><div class="wrap">
@@ -140,16 +149,6 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
       <p>Adrian asks you four quick questions — what you're after, your vibe, your face — and lines up a shortlist to try on. No browsing required.</p>
     </div>
     <button class="btn lime" id="bandAdrian">✦ Help me choose</button>
-  </div>
-</div></section>
-
-<section><div class="wrap">
-  <div class="shead"><div><div class="kick">How it works</div><h2>Four steps, no friction</h2></div></div>
-  <div class="steps reveal">
-    <div class="step"><div class="no">1</div><h4>Pick a house</h4><p>Portrait, Acid or Parasite — or let Adrian choose for you.</p></div>
-    <div class="step"><div class="no">2</div><h4>Heart your favorites</h4><p>Swipe the collection, tap the heart on the ones you love.</p></div>
-    <div class="step"><div class="no">3</div><h4>Try them on</h4><p>Live 3D in your browser — phone or computer, nothing to install.</p></div>
-    <div class="step"><div class="no">4</div><h4>Buy or try at home</h4><p>Check out with Shop Pay, or get the free home trunk.</p></div>
   </div>
 </div></section>
 
@@ -194,13 +193,9 @@ const HOUSES=[
   {b:'Parasite',meta:'Futurist · France',blurb:'Avant-garde, sculptural, handcrafted.'},
 ];
 let DATA=[];
-fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;buildHero();buildHouses();});
+fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;buildHouses();});
 function sampleFor(b){const l=DATA.filter(p=>p.b===b&&p.t==='Eyeglasses');return l[Math.floor(Math.random()*Math.min(l.length,40))]||DATA.find(p=>p.b===b);}
 function countFor(b){const s=new Set(DATA.filter(p=>p.b===b).map(p=>p.model||p.n));return s.size;}
-function buildHero(){
-  $('heroframes').innerHTML=HOUSES.map(h=>{const p=sampleFor(h.b);return `
-    <a class="hf" href="browse.html?b=${h.b}"><span class="tag">${h.b}</span><img src="${p.img}?width=360" alt="${h.b}"></a>`;}).join('');
-}
 function buildHouses(){
   $('houses-grid').innerHTML=HOUSES.map(h=>{const p=sampleFor(h.b);return `
     <a class="house" href="browse.html?b=${h.b}">
