@@ -164,6 +164,7 @@ const setFavs=a=>{localStorage.setItem('upc_favs',JSON.stringify(a));};
 const stripNum=s=>(s||'').replace(/\s*\d+\s*$/,'').trim();
 const modelKey=p=>p.b+'|'+(stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase();
 const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
+const colorName=p=>{const b=displayModel(p);let c=(p.n||'').trim();if(c.toUpperCase().startsWith(b.toUpperCase()))c=c.slice(b.length).trim();return c||(p.n||'');};
 /* ---- image normalizer: pick whitest-bg frame shot, crop to the frame, cache ---- */
 const _imgCache={};
 function loadImg(u){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=rej;im.src=u+'?width=600';});}
@@ -259,13 +260,14 @@ function refresh(){
 function show(){
   cur=list[i];const fav=getFavs().includes(cur.h);
   const fin=(cur.p/4).toFixed(2);
+  const cw=colorways(cur),cwIdx=cw.findIndex(x=>x.h===cur.h),cwN=cw.length,cname=colorName(cur);
   $('card').innerHTML=`
     ${cur.new?'<span class="new">New</span>':''}
     <button class="heart${fav?' on':''}" id="heart">${fav?'♥':'♡'}</button>
     <div class="imgwrap"><img id="cardimg" alt="${cur.n}" style="display:none"><div class="noimg" id="noimg">Finding a straight-on photo…</div></div>
     <div class="cinfo">
       <div><div class="col">${house}${col!=='all'?' · '+(COLS[house].find(c=>c[0]===col)||[])[1]:''}</div>
-        <h2>${displayModel(cur)}</h2><div class="sub">${cur.n} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
+        <h2>${displayModel(cur)}</h2><div class="sub">${cwN>1?`<b style="color:#0c0c0e">Color:</b> ${cname} <span style="opacity:.6">· ${cwIdx+1} of ${cwN}</span>`:cname} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
       <div class="price"><div class="pv">$${cur.p}</div><div class="fin">or 4× $${fin} · Shop Pay</div></div>
     </div>
     <div class="cactions">

@@ -75,7 +75,7 @@ section{padding:30px 0}
 
 <main class="wrap">
   <section class="hero">
-    <span class="eyebrow">📦 Free home trunk · keep what you love</span>
+    <span class="eyebrow">📦 Members' home trunk · free · keep what you love</span>
     <h1>Try them at home.<br><span class="hl">Free.</span></h1>
     <p>Not ready to commit to a $500 frame you've only seen on screen? We'll ship you a box of your favorites to live with for a few days. Keep the ones you love, send the rest back — you're only charged for what you keep.</p>
   </section>
@@ -83,9 +83,9 @@ section{padding:30px 0}
   <section>
     <div class="kick">How the trunk works</div>
     <div class="steps">
-      <div class="step"><div class="no">1</div><h3>Build your box</h3><p>Pick up to <b id="lim1">3</b> frames from your saved favorites. Members get 5.</p></div>
+      <div class="step"><div class="no">1</div><h3>Build your box</h3><p>Pick <b>1–<span id="lim1">5</span></b> frames from your saved favorites. Members only — free to join.</p></div>
       <div class="step"><div class="no">2</div><h3>We ship it free</h3><p>Your trunk arrives in a few days with a prepaid return label inside. Shipping both ways is on us.</p></div>
-      <div class="step"><div class="no">3</div><h3>Keep what you love</h3><p>Try them at home for 5 days. Keep your favorites, send the rest back — you're only charged for what you keep.</p></div>
+      <div class="step"><div class="no">3</div><h3>Keep what you love</h3><p>Try them at home for 7 days. Keep your favorites, send the rest back — you're only charged for what you keep.</p></div>
     </div>
   </section>
 
@@ -99,7 +99,7 @@ section{padding:30px 0}
         <li><span class="chk">✓</span><span><b>Free both ways.</b> We pay shipping to you and back.</span></li>
         <li><span class="chk">✓</span><span><b>A hold, not a charge.</b> When your trunk ships we place a temporary authorization on your card — it's released, not captured.</span></li>
         <li><span class="chk">✓</span><span><b>Pay only for keepers.</b> Tell us what you're keeping; we charge for those frames only and void the rest.</span></li>
-        <li><span class="chk">✓</span><span><b>5 days to decide.</b> Members get longer windows and a 5-frame box.</span></li>
+        <li><span class="chk">✓</span><span><b>7 days to decide.</b> Up to 5 frames per box. Members only — your account holds the authorization.</span></li>
       </ul>
     </div>
   </section>
@@ -137,7 +137,7 @@ const setFavs=a=>localStorage.setItem('upc_favs',JSON.stringify(a));
 const stripNum=s=>(s||'').replace(/\s*\d+\s*$/,'').trim();
 const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
 function tier(){try{return localStorage.getItem('upc_tier')==='inner'?'inner':'standard';}catch(e){return'standard';}}
-const LIM=tier()==='inner'?5:3;
+const LIM=5;   // 1–5 frames max per box
 $('lim1').textContent=LIM;$('lim2').textContent=LIM;
 try{const m=localStorage.getItem('upc_member');if(m)$('email').value=m;}catch(e){}
 

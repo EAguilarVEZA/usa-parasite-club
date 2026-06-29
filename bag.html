@@ -31,7 +31,10 @@ h1.title{font-family:var(--disp);font-weight:400;font-size:clamp(28px,5vw,42px);
 .qty button{border:none;background:#fff;width:34px;height:34px;font-size:16px;cursor:pointer;font-family:inherit}
 .qty span{min-width:30px;text-align:center;font-weight:700;font-size:14px}
 .rmv{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;text-decoration:underline}
-.item .price{font-family:var(--disp);font-size:20px;flex:none;text-align:right}
+.item .price{flex:none;text-align:right}
+.item .price .fin4{font-size:11px;color:#5a31f4;font-weight:700;margin-bottom:3px;white-space:nowrap}
+.item .price .fin4 b{color:#5a31f4}
+.item .price .pv{font-family:var(--disp);font-size:20px;line-height:1}
 .empty{border:1px dashed var(--line);border-radius:18px;padding:50px 30px;text-align:center;color:var(--muted)}
 .empty a{color:var(--ink);font-weight:700;text-decoration:underline}
 /* summary */
@@ -118,7 +121,7 @@ function render(){
           <button class="rmv" data-rm="${p.h}">Remove</button>
         </div>
       </div>
-      <div class="price">$${p.p*q}</div>
+      <div class="price"><div class="fin4">or 4 × $${(p.p/4).toFixed(2)}</div><div class="pv">$${p.p*q}</div></div>
     </div>`).join('');
   // images
   items.forEach(({p})=>frontURL(p).then(u=>{const im=$('img_'+p.h),np=$('np_'+p.h);if(u){im.src=u;im.style.display='';if(np)np.style.display='none';}else if(np){np.textContent='No front photo';}}).catch(()=>{}));
@@ -135,7 +138,7 @@ function render(){
     <div class="srow"><span>Shipping</span><span>Free</span></div>
     <div class="srow"><span>Taxes</span><span class="mut">Calculated at checkout</span></div>
     <div class="srow total"><span>Total</span><span>$${sub.toFixed(2)}</span></div>
-    <div class="pay">Pay in full, or pay monthly from <b>$${mo}/mo</b> with <span class="shop">shop</span> Pay — as low as 0% APR over 6, 12 or 24 months.</div>
+    <div class="pay"><b>Pay over time.</b> 4 interest-free payments of <b>$${(sub/4).toFixed(2)}</b> — or monthly from <b>$${mo}/mo</b> with <span class="shop">shop</span> Pay (0% APR options).</div>
     <button class="checkout" id="checkout">Checkout · $${sub.toFixed(2)}</button>
     <div class="trust"><span>🚚 Free delivery</span><span>↩ Free returns</span><span>✓ Authentic</span></div>
     <div class="alt">Not sure yet? <a href="trunk.html">Try them at home, free →</a></div>
