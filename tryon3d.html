@@ -438,7 +438,7 @@ $('snap').onclick=()=>{try{
   const o=out.getContext('2d');o.drawImage(view,0,0);o.drawImage($('gl'),0,0,out.width,out.height);
   const a=document.createElement('a');a.download='parasite-club-tryon.png';a.href=out.toDataURL('image/png');a.click();toast('Saved your look ★');
 }catch(e){toast('Could not save')}};
-$('bag').onclick=()=>{if(!current)return;toast('Opening secure checkout…');try{window.MK&&MK.track('InitiateCheckout',{handle:current.h,value:current.p});}catch(e){}location.href=CHECKOUT(current.h);};
+$('bag').onclick=()=>{if(!current)return;let bag=[];try{bag=JSON.parse(localStorage.getItem('upc_bag')||'[]');}catch(e){}const it=bag.find(x=>x.h===current.h);if(it){it.q=Math.min(9,(it.q||1)+1);}else{bag.push({h:current.h,q:1});}localStorage.setItem('upc_bag',JSON.stringify(bag));try{window.MK&&MK.track('AddToCart',{handle:current.h,value:current.p});}catch(e){}toast('Added to bag ✓');setTimeout(()=>location.href='bag.html',420);};
 $('home').onclick=()=>{
   if(current){let f=favs();if(!f.includes(current.h)){f.push(current.h);localStorage.setItem('upc_favs',JSON.stringify(f));}}
   location.href='trunk.html';
