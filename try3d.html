@@ -1,0 +1,182 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>3D Frame Tester — Parasite Club USA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<style>
+:root{--ink:#0c0c0e;--bg:#fff;--soft:#f4f3ee;--line:#e7e5dd;--muted:#6c6c74;--lime:#C2F500;--limeink:#1d2400;--sans:'Inter',system-ui,sans-serif;--disp:'Anton',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-tap-highlight-color:transparent}
+.cam{position:fixed;inset:0;overflow:hidden;background:#0a0a0c}
+#view,#gl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#gl{pointer-events:none}#video{display:none}
+.top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+.logo{font-family:var(--disp);font-size:15px;color:#fff;text-shadow:0 1px 8px #0009}.logo b{color:var(--lime)}
+.ic{width:38px;height:38px;border-radius:50%;background:#ffffffe8;border:1px solid #00000012;display:grid;place-items:center;font-size:15px;cursor:pointer}
+.tr{display:flex;gap:9px}
+.hint{position:absolute;left:16px;right:16px;top:62px;text-align:center;color:#fff;font-size:12.5px;text-shadow:0 2px 10px #000;z-index:15;pointer-events:none}
+/* control dock */
+.dock{position:absolute;left:0;right:0;bottom:0;z-index:20;background:#fffffff2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+.row+.row{margin-top:8px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn:active{transform:scale(.95)}
+.btn.k{background:var(--lime);border-color:var(--lime);color:var(--limeink)}
+.lbl{font-size:11px;color:var(--muted);font-weight:700;margin-right:2px}
+.up{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:none;border-radius:30px;padding:12px 18px;font-size:13px;font-weight:700;cursor:pointer}
+.name{font-size:12px;color:var(--muted);text-align:center;margin-top:6px;min-height:14px}
+.gate{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:#fff}
+.gate h1{font-family:var(--disp);font-weight:400;font-size:clamp(26px,7vw,40px);text-transform:uppercase}
+.gate p{font-size:13px;color:var(--muted);margin:12px 0 0;max-width:42ch}
+.gate .go{margin-top:22px;background:var(--lime);color:var(--limeink);border:none;font-weight:700;font-size:14px;padding:15px 30px;border-radius:34px;cursor:pointer}
+.gate .sp{width:40px;height:40px;border-radius:50%;border:3px solid var(--soft);border-top-color:var(--lime);animation:s 1s linear infinite;display:none;margin:18px auto 0}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{position:absolute;left:50%;top:60%;transform:translateX(-50%);z-index:45;background:#fff;border:1px solid #f3b1a1;color:#a23;font-size:13px;padding:12px 16px;border-radius:12px;max-width:80%;text-align:center;display:none;box-shadow:0 12px 30px -14px #0004}
+.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%);background:var(--ink);color:#fff;font-weight:600;font-size:12px;padding:10px 16px;border-radius:30px;opacity:0;transition:.25s;z-index:90}.toast.show{opacity:1}
+</style></head><body>
+<div class="cam">
+  <video id="video" playsinline muted autoplay></video>
+  <canvas id="view"></canvas><canvas id="gl"></canvas>
+  <div class="top"><div class="logo">PARASITE<b>·</b>CLUB · <span style="opacity:.8">3D tester</span></div>
+    <div class="tr"><div class="ic" id="flip" title="Flip camera">⟲</div><a class="ic" href="index.html" title="Home">✕</a></div></div>
+  <div class="hint" id="hint">Upload a .glb / .gltf frame, then use the controls to align it on your nose.</div>
+  <div class="err" id="err"></div>
+
+  <div class="gate" id="gate">
+    <h1>3D Frame Tester</h1>
+    <p>See a real 3D model on your face. Upload a <b>.glb</b> or <b>.gltf</b> frame (USDZ is iOS-only — use glb here). Allow the camera when asked.</p>
+    <button class="go" id="start">Start camera</button>
+    <div class="sp" id="sp"></div>
+  </div>
+
+  <div class="dock" id="dock" style="display:none">
+    <div class="row">
+      <label class="up">⬆ Upload .glb / .gltf<input id="file" type="file" accept=".glb,.gltf,model/gltf-binary,model/gltf+json" hidden></label>
+      <button class="btn" id="reset">Reset fit</button>
+      <button class="btn" id="snap">📷 Photo</button>
+    </div>
+    <div class="row">
+      <span class="lbl">Size</span><button class="btn" data-a="big">＋</button><button class="btn" data-a="small">－</button>
+      <span class="lbl">Up/Down</span><button class="btn" data-a="up">↑</button><button class="btn" data-a="down">↓</button>
+      <span class="lbl">Depth</span><button class="btn" data-a="fwd">⊕</button><button class="btn" data-a="back">⊖</button>
+    </div>
+    <div class="row">
+      <span class="lbl">Rotate</span>
+      <button class="btn" data-a="rx">tilt ⟳</button><button class="btn" data-a="ry">turn ⟳</button><button class="btn" data-a="rz">roll ⟳</button>
+      <button class="btn k" data-a="face">Auto-face me</button>
+    </div>
+    <div class="name" id="name">No model loaded</div>
+  </div>
+</div>
+
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+const $=id=>document.getElementById(id);
+const _Q=new URLSearchParams(location.search);
+const YS=_Q.get('ys')!=null?+_Q.get('ys'):1, PS=_Q.get('ps')!=null?+_Q.get('ps'):1, RS=_Q.get('rs')!=null?+_Q.get('rs'):1, POSE=+(_Q.get('pose')||1);
+let view=$('view'),ctx=view.getContext('2d'),video=$('video'),landmarker=null,stream=null,facing='user',running=false;
+function toast(t){const e=$('toast')||(()=>{const d=document.createElement('div');d.id='toast';d.className='toast';document.body.appendChild(d);return d;})();e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
+function fail(m){$('sp').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
+
+let renderer,scene,cam3,anchor,holder,model=null;
+function initGL(){
+  renderer=new THREE.WebGLRenderer({canvas:$('gl'),alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.0;
+  scene=new THREE.Scene();
+  const pmrem=new THREE.PMREMGenerator(renderer);
+  scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;   // reflections for acetate/gloss
+  cam3=new THREE.OrthographicCamera(0,2,2,0,-5000,5000);cam3.position.z=1000;
+  scene.add(new THREE.AmbientLight(0xffffff,0.6));
+  const d=new THREE.DirectionalLight(0xffffff,1.1);d.position.set(0.4,1,1);scene.add(d);
+  anchor=new THREE.Group();holder=new THREE.Group();anchor.add(holder);scene.add(anchor);
+}
+function setGLSize(vw,vh){if(renderer._w===vw&&renderer._h===vh)return;renderer._w=vw;renderer._h=vh;renderer.setSize(vw,vh,false);cam3.left=0;cam3.right=vw;cam3.top=vh;cam3.bottom=0;cam3.updateProjectionMatrix();}
+
+/* manual fit (remembered) */
+let ADJ={scale:1,dy:0,dz:0,rx:0,ry:0,roll:0};
+function loadModelFromURL(url,label){
+  const loader=new GLTFLoader();
+  loader.load(url,(g)=>{
+    if(model)holder.remove(model);
+    model=g.scene;
+    // normalize: center at origin, width = 1 unit
+    const box=new THREE.Box3().setFromObject(model);const size=new THREE.Vector3();box.getSize(size);const c=box.getCenter(new THREE.Vector3());
+    model.position.sub(c);
+    const w=Math.max(size.x,0.0001);model.scale.setScalar(1/w);
+    holder.add(model);
+    $('name').textContent=label||'model loaded';$('hint').style.display='none';
+    toast('Model loaded — align it with the controls');
+  },undefined,(e)=>{fail('Could not load that model. Use a .glb or .gltf file.');});
+}
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f);loadModelFromURL(url,f.name);};
+
+/* camera + engine */
+async function start(){
+  $('sp').style.display='block';
+  try{const vision=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
+    landmarker=await FaceLandmarker.createFromOptions(vision,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"},runningMode:"VIDEO",numFaces:1,outputFacialTransformationMatrixes:true});
+  }catch(e){return fail("Couldn't load the tracking engine. Check your connection.");}
+  initGL();await openCam();if(!stream)return;
+  $('gate').style.display='none';$('dock').style.display='block';
+  running=true;requestAnimationFrame(loop);
+}
+async function openCam(){if(stream)stream.getTracks().forEach(t=>t.stop());
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:960}},audio:false});}
+  catch(e){return fail("Allow camera access to test the frame.");}
+  video.srcObject=stream;await video.play().catch(()=>{});}
+
+const _q=new THREE.Quaternion(),_p=new THREE.Vector3(),_s=new THREE.Vector3(),_m=new THREE.Matrix4(),_e=new THREE.Euler();
+function headPose(res){const M=res.facialTransformationMatrixes&&res.facialTransformationMatrixes[0];if(!M)return{yaw:0,pitch:0};_m.fromArray(M.data);_m.decompose(_p,_q,_s);_e.setFromQuaternion(_q,'YXZ');return{yaw:_e.y,pitch:_e.x};}
+let SM=null;
+function loop(){
+  if(!running)return;const vw=video.videoWidth,vh=video.videoHeight;
+  if(vw&&vh){if(view.width!==vw){view.width=vw;view.height=vh;}setGLSize(vw,vh);
+    ctx.clearRect(0,0,vw,vh);ctx.save();ctx.translate(vw,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,vw,vh);ctx.restore();
+    let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
+    if(res&&res.faceLandmarks&&res.faceLandmarks[0]&&model){
+      const lm=res.faceLandmarks[0];const X=p=>(1-lm[p].x)*vw,Y=p=>lm[p].y*vh;
+      const eyeMidX=(X(33)+X(263)+X(133)+X(362))/4,nbx=X(168),nby=Y(168),cx=(nbx+eyeMidX)/2;
+      const faceW=Math.hypot(X(454)-X(234),Y(454)-Y(234));
+      const ang=Math.atan2(Y(33)-Y(263),X(33)-X(263));const pose=headPose(res);
+      let yaw=Math.max(-0.7,Math.min(0.7,-pose.yaw*POSE*YS)),pitch=Math.max(-0.6,Math.min(0.6,pose.pitch*POSE*PS));
+      if(!SM)SM={cx,cy:nby,faceW,ang,yaw,pitch};const k=0.5;
+      SM.cx+=(cx-SM.cx)*k;SM.cy+=(nby-SM.cy)*k;SM.faceW+=(faceW-SM.faceW)*k;
+      let da=ang-SM.ang;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;SM.ang+=da*k;
+      SM.yaw+=(yaw-SM.yaw)*.4;SM.pitch+=(pitch-SM.pitch)*.4;
+      anchor.position.set(SM.cx,(vh-SM.cy)+SM.faceW*ADJ.dy,0);
+      anchor.scale.setScalar(SM.faceW*1.05*ADJ.scale);
+      anchor.rotation.set(SM.pitch,SM.yaw,-SM.ang*RS);
+      holder.rotation.set(ADJ.rx,ADJ.ry,ADJ.roll);
+      holder.position.set(0,0,ADJ.dz);
+      model.visible=true;
+    } else if(model){ model.visible=false; SM=null; }
+  }
+  if(renderer)renderer.render(scene,cam3);requestAnimationFrame(loop);
+}
+
+/* controls */
+$('start').onclick=start;
+$('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
+document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=b.dataset.a;
+  if(a==='big')ADJ.scale=Math.min(2.2,ADJ.scale*1.06);
+  else if(a==='small')ADJ.scale=Math.max(.4,ADJ.scale*0.94);
+  else if(a==='up')ADJ.dy-=0.03;else if(a==='down')ADJ.dy+=0.03;
+  else if(a==='fwd')ADJ.dz+=0.05;else if(a==='back')ADJ.dz-=0.05;
+  else if(a==='rx')ADJ.rx+=Math.PI/2;else if(a==='ry')ADJ.ry+=Math.PI/2;else if(a==='rz')ADJ.roll+=Math.PI/2;
+  else if(a==='face'){ADJ.rx=0;ADJ.ry=0;ADJ.roll=0;}
+});
+$('reset').onclick=()=>{ADJ={scale:1,dy:0,dz:0,rx:0,ry:0,roll:0};toast('Fit reset');};
+$('snap').onclick=()=>{try{const out=document.createElement('canvas');out.width=view.width;out.height=view.height;const o=out.getContext('2d');o.drawImage(view,0,0);o.drawImage($('gl'),0,0,out.width,out.height);const a=document.createElement('a');a.download='3d-frame-test.png';a.href=out.toDataURL('image/png');a.click();}catch(e){toast('Could not save');}};
+// optional ?model=<glb url>
+const mu=_Q.get('model');if(mu){$('start').addEventListener('click',()=>setTimeout(()=>loadModelFromURL(mu,'remote model'),1500));}
+</script>
+</body></html>
