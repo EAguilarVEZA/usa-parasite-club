@@ -276,8 +276,7 @@ function show(){
     </div>`;
   $('heart').onclick=$('save').onclick=toggleFav;
   $('trythis').onclick=()=>{ if(!getFavs().includes(cur.h))doFav(cur.h,true); location.href='tryon3d.html?h='+encodeURIComponent(cur.h); };
-  // colorways
-  const cw=colorways(cur);
+  // colorways (cw computed above)
   $('swatchrow').innerHTML=cw.length>1?cw.slice(0,8).map(c=>`<div class="swatch${c.h===cur.h?' on':''}" data-h="${c.h}"><img src="${c.img}?width=90"></div>`).join(''):'';
   $('swatchrow').querySelectorAll('.swatch').forEach(s=>s.onclick=()=>{cur=DATA.find(p=>p.h===s.dataset.h);list[i]=cur;show();});
   $('counter').innerHTML=`<b>${i+1}</b> / ${list.length} · ${list.length} styles`;
