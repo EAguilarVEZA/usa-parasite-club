@@ -69,6 +69,7 @@ body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-w
     </div>
     <div class="row">
       <button class="btn k" data-a="track">Head-turn: ON/OFF</button>
+      <button class="btn" data-a="occ">Hide behind face</button>
       <button class="btn" data-a="fy">flip turn ⇄</button>
       <button class="btn" data-a="fp">flip tilt ⇅</button>
     </div>
@@ -88,7 +89,7 @@ let view=$('view'),ctx=view.getContext('2d'),video=$('video'),landmarker=null,st
 function toast(t){const e=$('toast')||(()=>{const d=document.createElement('div');d.id='toast';d.className='toast';document.body.appendChild(d);return d;})();e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
 function fail(m){$('sp').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
 
-let renderer,scene,cam3,anchor,holder,model=null;
+let renderer,scene,cam3,anchor,holder,model=null,OCC=null;
 function initGL(){
   renderer=new THREE.WebGLRenderer({canvas:$('gl'),alpha:true,antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -100,11 +101,16 @@ function initGL(){
   scene.add(new THREE.AmbientLight(0xffffff,0.6));
   const d=new THREE.DirectionalLight(0xffffff,1.1);d.position.set(0.4,1,1);scene.add(d);
   anchor=new THREE.Group();holder=new THREE.Group();anchor.add(holder);scene.add(anchor);
+  // invisible head proxy: writes depth only, so it HIDES the parts of the frame behind your face (stops the "floating in front" look + hides the far temple on turn)
+  OCC=new THREE.Mesh(new THREE.SphereGeometry(0.5,28,20),new THREE.MeshBasicMaterial());
+  OCC.material.colorWrite=false;OCC.renderOrder=-10;
+  OCC.scale.set(1.55,1.95,1.5);OCC.position.set(0,-0.22,-0.72);
+  anchor.add(OCC);
 }
 function setGLSize(vw,vh){if(renderer._w===vw&&renderer._h===vh)return;renderer._w=vw;renderer._h=vh;renderer.setSize(vw,vh,false);cam3.left=0;cam3.right=vw;cam3.top=vh;cam3.bottom=0;cam3.updateProjectionMatrix();}
 
 /* manual fit (remembered) */
-let ADJ={scale:1,px:0,py:0,dz:0.5,rx:0,ry:0,roll:0,track:true,rk:0.8,fy:1,fp:1};  // dz = seat depth: pushes pivot into the head so temples wrap
+let ADJ={scale:1,px:0,py:0,dz:0.5,rx:0,ry:0,roll:0,track:true,rk:0.8,fy:1,fp:1,occ:true};  // dz = seat depth; occ = hide behind face
 function loadModelFromURL(url,label){
   const loader=new GLTFLoader();
   loader.load(url,(g)=>{
@@ -162,8 +168,8 @@ function loop(){
       else anchor.rotation.set(0,0,0);
       holder.rotation.set(ADJ.rx,ADJ.ry,ADJ.roll);
       holder.position.set(0,0,ADJ.dz);
-      model.visible=true;
-    } else if(model){ model.visible=false; SM=null; }
+      model.visible=true;if(OCC)OCC.visible=ADJ.occ;
+    } else { if(model)model.visible=false; if(OCC)OCC.visible=false; SM=null; }
   }
   if(renderer)renderer.render(scene,cam3);requestAnimationFrame(loop);
 }
@@ -182,6 +188,7 @@ document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=b.datase
   else if(a==='track'){ADJ.track=!ADJ.track;toast('Head-turn tracking '+(ADJ.track?'ON':'OFF'));}
   else if(a==='fy'){ADJ.fy*=-1;toast('Turn direction flipped');}
   else if(a==='fp'){ADJ.fp*=-1;toast('Tilt direction flipped');}
+  else if(a==='occ'){ADJ.occ=!ADJ.occ;toast('Hide-behind-face '+(ADJ.occ?'ON':'OFF'));}
 });
 $('reset').onclick=()=>{ADJ.scale=1;ADJ.px=0;ADJ.py=0;ADJ.dz=0;ADJ.rx=0;ADJ.ry=0;ADJ.roll=0;toast('Fit reset');};
 /* mouse control — drag to move, scroll to resize, Shift-drag (or right-drag) to rotate */
