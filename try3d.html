@@ -61,6 +61,7 @@ body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-w
       <button class="btn" id="snap">📷 Photo</button>
     </div>
     <div class="row"><span class="lbl" style="opacity:.85">🖱️ Drag = move &nbsp;·&nbsp; scroll = resize &nbsp;·&nbsp; Shift-drag = rotate</span></div>
+    <div class="row"><span class="lbl">Seat depth (wrap)</span><button class="btn" data-a="back">◀ shallower</button><button class="btn" data-a="fwd">deeper ▶</button></div>
     <div class="row">
       <span class="lbl">Rotate</span>
       <button class="btn" data-a="rx">tilt ⟳</button><button class="btn" data-a="ry">turn ⟳</button><button class="btn" data-a="rz">roll ⟳</button>
@@ -103,7 +104,7 @@ function initGL(){
 function setGLSize(vw,vh){if(renderer._w===vw&&renderer._h===vh)return;renderer._w=vw;renderer._h=vh;renderer.setSize(vw,vh,false);cam3.left=0;cam3.right=vw;cam3.top=vh;cam3.bottom=0;cam3.updateProjectionMatrix();}
 
 /* manual fit (remembered) */
-let ADJ={scale:1,px:0,py:0,dz:0,rx:0,ry:0,roll:0,track:true,rk:0.8,fy:1,fp:1};
+let ADJ={scale:1,px:0,py:0,dz:0.5,rx:0,ry:0,roll:0,track:true,rk:0.8,fy:1,fp:1};  // dz = seat depth: pushes pivot into the head so temples wrap
 function loadModelFromURL(url,label){
   const loader=new GLTFLoader();
   loader.load(url,(g)=>{
