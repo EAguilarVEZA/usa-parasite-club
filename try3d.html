@@ -44,7 +44,7 @@ body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-w
   <canvas id="view"></canvas><canvas id="gl"></canvas>
   <div class="top"><div class="logo">PARASITE<b>·</b>CLUB · <span style="opacity:.8">3D tester</span></div>
     <div class="tr"><div class="ic" id="flip" title="Flip camera">⟲</div><a class="ic" href="index.html" title="Home">✕</a></div></div>
-  <div class="hint" id="hint">Load a model → tap <b>Head-turn: OFF</b>, seat the bridge on your nose with Size / Up-Down / Rotate → then <b>Head-turn: ON</b> to track and reveal the temples.</div>
+  <div class="hint" id="hint">Load a model → tap <b>Head-turn: OFF</b>, then <b>drag</b> to move · <b>scroll</b> to size · <b>Shift-drag</b> to rotate it onto your nose → then <b>Head-turn: ON</b> to track and reveal the temples.</div>
   <div class="err" id="err"></div>
 
   <div class="gate" id="gate">
@@ -60,11 +60,7 @@ body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-w
       <button class="btn" id="reset">Reset fit</button>
       <button class="btn" id="snap">📷 Photo</button>
     </div>
-    <div class="row">
-      <span class="lbl">Size</span><button class="btn" data-a="big">＋</button><button class="btn" data-a="small">－</button>
-      <span class="lbl">Up/Down</span><button class="btn" data-a="up">↑</button><button class="btn" data-a="down">↓</button>
-      <span class="lbl">Depth</span><button class="btn" data-a="fwd">⊕</button><button class="btn" data-a="back">⊖</button>
-    </div>
+    <div class="row"><span class="lbl" style="opacity:.85">🖱️ Drag = move &nbsp;·&nbsp; scroll = resize &nbsp;·&nbsp; Shift-drag = rotate</span></div>
     <div class="row">
       <span class="lbl">Rotate</span>
       <button class="btn" data-a="rx">tilt ⟳</button><button class="btn" data-a="ry">turn ⟳</button><button class="btn" data-a="rz">roll ⟳</button>
@@ -107,7 +103,7 @@ function initGL(){
 function setGLSize(vw,vh){if(renderer._w===vw&&renderer._h===vh)return;renderer._w=vw;renderer._h=vh;renderer.setSize(vw,vh,false);cam3.left=0;cam3.right=vw;cam3.top=vh;cam3.bottom=0;cam3.updateProjectionMatrix();}
 
 /* manual fit (remembered) */
-let ADJ={scale:1,dy:0,dz:0,rx:0,ry:0,roll:0,track:true,rk:0.8,fy:1,fp:1};
+let ADJ={scale:1,px:0,py:0,dz:0,rx:0,ry:0,roll:0,track:true,rk:0.8,fy:1,fp:1};
 function loadModelFromURL(url,label){
   const loader=new GLTFLoader();
   loader.load(url,(g)=>{
@@ -159,7 +155,7 @@ function loop(){
       SM.cx+=(cx-SM.cx)*k;SM.cy+=(nby-SM.cy)*k;SM.faceW+=(faceW-SM.faceW)*k;
       let da=ang-SM.ang;if(da>Math.PI)da-=2*Math.PI;if(da<-Math.PI)da+=2*Math.PI;SM.ang+=da*k;
       SM.yaw+=(yaw-SM.yaw)*.4;SM.pitch+=(pitch-SM.pitch)*.4;
-      anchor.position.set(SM.cx,(vh-SM.cy)+SM.faceW*ADJ.dy,0);
+      anchor.position.set(SM.cx+ADJ.px,(vh-SM.cy)-ADJ.py,0);
       anchor.scale.setScalar(SM.faceW*1.05*ADJ.scale);
       if(ADJ.track)anchor.rotation.set(SM.pitch*ADJ.rk*ADJ.fp,SM.yaw*ADJ.rk*ADJ.fy,-SM.ang*RS);
       else anchor.rotation.set(0,0,0);
@@ -186,7 +182,16 @@ document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=b.datase
   else if(a==='fy'){ADJ.fy*=-1;toast('Turn direction flipped');}
   else if(a==='fp'){ADJ.fp*=-1;toast('Tilt direction flipped');}
 });
-$('reset').onclick=()=>{ADJ={scale:1,dy:0,dz:0,rx:0,ry:0,roll:0};toast('Fit reset');};
+$('reset').onclick=()=>{ADJ.scale=1;ADJ.px=0;ADJ.py=0;ADJ.dz=0;ADJ.rx=0;ADJ.ry=0;ADJ.roll=0;toast('Fit reset');};
+/* mouse control — drag to move, scroll to resize, Shift-drag (or right-drag) to rotate */
+const _v=$('view');let _drag=null;
+_v.style.cursor='grab';
+_v.addEventListener('pointerdown',e=>{_drag={x:e.clientX,y:e.clientY,rot:(e.shiftKey||e.button===2)};_v.style.cursor='grabbing';});
+window.addEventListener('pointermove',e=>{if(!_drag)return;const mx=e.clientX-_drag.x,my=e.clientY-_drag.y;_drag.x=e.clientX;_drag.y=e.clientY;
+  if(_drag.rot){ADJ.ry+=mx*0.012;ADJ.rx+=my*0.012;}else{ADJ.px+=mx;ADJ.py+=my;}},{passive:true});
+window.addEventListener('pointerup',()=>{_drag=null;_v.style.cursor='grab';});
+_v.addEventListener('wheel',e=>{e.preventDefault();ADJ.scale=Math.max(.3,Math.min(2.6,ADJ.scale*(e.deltaY<0?1.05:0.95)));},{passive:false});
+_v.addEventListener('contextmenu',e=>e.preventDefault());
 $('snap').onclick=()=>{try{const out=document.createElement('canvas');out.width=view.width;out.height=view.height;const o=out.getContext('2d');o.drawImage(view,0,0);o.drawImage($('gl'),0,0,out.width,out.height);const a=document.createElement('a');a.download='3d-frame-test.png';a.href=out.toDataURL('image/png');a.click();}catch(e){toast('Could not save');}};
 // optional ?model=<glb url>
 const mu=_Q.get('model');if(mu){$('start').addEventListener('click',()=>setTimeout(()=>loadModelFromURL(mu,'remote model'),1500));}
