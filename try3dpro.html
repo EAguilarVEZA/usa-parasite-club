@@ -76,7 +76,7 @@ function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='
 function fail(m){$('sp').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
 
 let renderer,scene,cam3,anchor,holder,model=null,OCC=null;
-let ADJ={px:0,py:0,scaleMul:1,dz:0,rx:0,ry:0,roll:0,occ:true,mir:1,ff:1};
+let ADJ={px:0,py:0,scaleMul:1,dz:0,rx:0,ry:0,roll:0,occ:true,mir:-1,ff:1};  // mir:-1 = mirrored by default
 function initGL(){
   renderer=new THREE.WebGLRenderer({canvas:$('gl'),alpha:true,antialias:true});
   renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -101,8 +101,10 @@ function loadModel(url,label){
     holder.clear();model=g.scene;
     const box=new THREE.Box3().setFromObject(model),size=new THREE.Vector3(),c=new THREE.Vector3();box.getSize(size);box.getCenter(c);
     model.position.sub(c);
-    const w=Math.max(size.x,1e-4),hN=size.y/w;
-    const wrap=new THREE.Group();wrap.add(model);wrap.scale.setScalar(1/w);wrap.position.y=-hN*0.42;
+    const w=Math.max(size.x,1e-4),hN=size.y/w,dN=size.z/w;
+    const wrap=new THREE.Group();wrap.add(model);wrap.scale.setScalar(1/w);
+    wrap.position.y=-hN*0.42;                 // bridge (top-centre) → onto the nose
+    wrap.position.z=-dN*0.5;                  // FRONT rim → onto the nose plane, so it doesn't float forward
     holder.add(wrap);$('name').textContent=label||'model';$('hint').style.display='none';toast('Loaded — should auto-fit');
   },undefined,()=>fail('Could not load that model (.glb/.gltf).'));
 }
