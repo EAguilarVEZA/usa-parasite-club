@@ -1,0 +1,170 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>3D Try-On (Pro) — Parasite Club USA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<style>
+:root{--ink:#0c0c0e;--bg:#fff;--soft:#f4f3ee;--line:#e7e5dd;--muted:#6c6c74;--lime:#C2F500;--limeink:#1d2400;--sans:'Inter',system-ui,sans-serif;--disp:'Anton',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-tap-highlight-color:transparent}
+.cam{position:fixed;inset:0;overflow:hidden;background:#0a0a0c}
+#view,#gl{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#gl{pointer-events:none}#video{display:none}
+.top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+.logo{font-family:var(--disp);font-size:15px;color:#fff;text-shadow:0 1px 8px #0009}.logo b{color:var(--lime)}
+.ic{width:38px;height:38px;border-radius:50%;background:#ffffffe8;border:1px solid #00000012;display:grid;place-items:center;font-size:15px;cursor:pointer}
+.tr{display:flex;gap:9px}
+.hint{position:absolute;left:16px;right:16px;top:60px;text-align:center;color:#fff;font-size:12.5px;text-shadow:0 2px 10px #000;z-index:15;pointer-events:none}
+.dock{position:absolute;left:0;right:0;bottom:0;z-index:20;background:#fffffff2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 14px calc(12px + env(safe-area-inset-bottom))}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}.row+.row{margin-top:8px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn:active{transform:scale(.95)}.btn.k{background:var(--lime);border-color:var(--lime);color:var(--limeink)}
+.lbl{font-size:11px;color:var(--muted);font-weight:700}
+.up{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border:none;border-radius:30px;padding:12px 18px;font-size:13px;font-weight:700;cursor:pointer}
+.name{font-size:12px;color:var(--muted);text-align:center;margin-top:6px;min-height:14px}
+.gate{position:absolute;inset:0;z-index:40;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:#fff}
+.gate h1{font-family:var(--disp);font-weight:400;font-size:clamp(26px,7vw,40px);text-transform:uppercase}
+.gate p{font-size:13px;color:var(--muted);margin:12px 0 0;max-width:44ch}
+.gate .go{margin-top:22px;background:var(--lime);color:var(--limeink);border:none;font-weight:700;font-size:14px;padding:15px 30px;border-radius:34px;cursor:pointer}
+.gate .sp{width:40px;height:40px;border-radius:50%;border:3px solid var(--soft);border-top-color:var(--lime);animation:s 1s linear infinite;display:none;margin:18px auto 0}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{position:absolute;left:50%;top:60%;transform:translateX(-50%);z-index:45;background:#fff;border:1px solid #f3b1a1;color:#a23;font-size:13px;padding:12px 16px;border-radius:12px;max-width:80%;text-align:center;display:none;box-shadow:0 12px 30px -14px #0004}
+.toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--ink);color:#fff;font-weight:600;font-size:12px;padding:10px 16px;border-radius:30px;opacity:0;transition:.25s;z-index:90}.toast.show{opacity:1}
+</style></head><body>
+<div class="cam">
+  <video id="video" playsinline muted autoplay></video>
+  <canvas id="view"></canvas><canvas id="gl"></canvas>
+  <div class="top"><div class="logo">PARASITE<b>·</b>CLUB · <span style="opacity:.8">3D Pro</span></div>
+    <div class="tr"><div class="ic" id="flip" title="Flip camera">⟲</div><a class="ic" href="index.html" title="Home">✕</a></div></div>
+  <div class="hint" id="hint">Auto-fit: the frame anchors to your nose and tracks your head. Upload a .glb and it should just sit on.</div>
+  <div class="err" id="err"></div>
+  <div class="gate" id="gate">
+    <h1>3D Try-On · Pro</h1>
+    <p>Perspective 3D with automatic bridge-to-nose fit and face occlusion. Upload a <b>.glb</b> frame (built front-facing, bridge at center for auto-fit). Allow the camera when asked.</p>
+    <button class="go" id="start">Start camera</button><div class="sp" id="sp"></div>
+  </div>
+  <div class="dock" id="dock" style="display:none">
+    <div class="row">
+      <label class="up">⬆ Upload .glb<input id="file" type="file" accept=".glb,.gltf" hidden></label>
+      <button class="btn" id="reset">Reset</button><button class="btn" id="snap">📷</button>
+    </div>
+    <div class="row"><span class="lbl">🖱️ Drag = nudge · scroll = size · Shift-drag = rotate model</span></div>
+    <div class="row">
+      <button class="btn" data-a="in">seat in ◀</button><button class="btn" data-a="out">out ▶</button>
+      <button class="btn k" data-a="occ">Face occlusion</button>
+      <button class="btn" data-a="mir">mirror ⇄</button><button class="btn" data-a="ff">flip forward</button>
+    </div>
+    <div class="name" id="name">No model loaded</div>
+  </div>
+</div>
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+const $=id=>document.getElementById(id);
+const _Q=new URLSearchParams(location.search);
+const ZK=_Q.get('zk')!=null?+_Q.get('zk'):1.0;      // depth scale for landmark z
+const FW=_Q.get('fw')!=null?+_Q.get('fw'):1.35;     // frame width / eye-corner distance
+let view=$('view'),ctx=view.getContext('2d'),video=$('video'),landmarker=null,stream=null,facing='user',running=false;
+function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='toast';e.className='toast';document.body.appendChild(e);}e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
+function fail(m){$('sp').style.display='none';const e=$('err');e.textContent=m;e.style.display='block';}
+
+let renderer,scene,cam3,anchor,holder,model=null,OCC=null;
+let ADJ={px:0,py:0,scaleMul:1,dz:0,rx:0,ry:0,roll:0,occ:true,mir:1,ff:1};
+function initGL(){
+  renderer=new THREE.WebGLRenderer({canvas:$('gl'),alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  scene=new THREE.Scene();
+  const pm=new THREE.PMREMGenerator(renderer);scene.environment=pm.fromScene(new RoomEnvironment(),0.04).texture;
+  scene.add(new THREE.AmbientLight(0xffffff,0.55));
+  const d=new THREE.DirectionalLight(0xffffff,1.1);d.position.set(0.3,1,1.2);scene.add(d);
+  cam3=new THREE.PerspectiveCamera(50,1,1,20000);
+  anchor=new THREE.Group();holder=new THREE.Group();anchor.add(holder);scene.add(anchor);
+  OCC=new THREE.Mesh(new THREE.SphereGeometry(0.5,28,20),new THREE.MeshBasicMaterial());
+  OCC.material.colorWrite=false;OCC.renderOrder=-10;OCC.scale.set(1.7,2.1,1.7);OCC.position.set(0,-0.15,-0.55);
+  anchor.add(OCC);
+}
+function setCam(vw,vh){
+  if(renderer._w===vw&&renderer._h===vh)return;renderer._w=vw;renderer._h=vh;renderer.setSize(vw,vh,false);
+  const D=vh;cam3.fov=2*Math.atan((vh/2)/D)*180/Math.PI;cam3.aspect=vw/vh;cam3.position.set(vw/2,vh/2,D);cam3.lookAt(vw/2,vh/2,0);cam3.updateProjectionMatrix();
+}
+/* load + normalize model to width 1, bridge at top-centre (origin), front +Z */
+function loadModel(url,label){
+  new GLTFLoader().load(url,(g)=>{
+    holder.clear();model=g.scene;
+    const box=new THREE.Box3().setFromObject(model),size=new THREE.Vector3(),c=new THREE.Vector3();box.getSize(size);box.getCenter(c);
+    model.position.sub(c);
+    const w=Math.max(size.x,1e-4),hN=size.y/w;
+    const wrap=new THREE.Group();wrap.add(model);wrap.scale.setScalar(1/w);wrap.position.y=-hN*0.42;
+    holder.add(wrap);$('name').textContent=label||'model';$('hint').style.display='none';toast('Loaded — should auto-fit');
+  },undefined,()=>fail('Could not load that model (.glb/.gltf).'));
+}
+$('file').onchange=e=>{const f=e.target.files[0];if(!f)return;loadModel(URL.createObjectURL(f),f.name);};
+
+async function start(){
+  $('sp').style.display='block';
+  try{const v=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
+    landmarker=await FaceLandmarker.createFromOptions(v,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"},runningMode:"VIDEO",numFaces:1});
+  }catch(e){return fail("Couldn't load the tracking engine.");}
+  initGL();await openCam();if(!stream)return;$('gate').style.display='none';$('dock').style.display='block';running=true;requestAnimationFrame(loop);
+}
+async function openCam(){if(stream)stream.getTracks().forEach(t=>t.stop());
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:960}},audio:false});}catch(e){return fail("Allow camera access.");}
+  video.srcObject=stream;await video.play().catch(()=>{});}
+
+const _R=new THREE.Vector3(),_U=new THREE.Vector3(),_F=new THREE.Vector3(),_U0=new THREE.Vector3(),_m=new THREE.Matrix4();
+let SMpos=null,SMq=new THREE.Quaternion(),SMs=0;const _tq=new THREE.Quaternion();
+function loop(){
+  if(!running)return;const vw=video.videoWidth,vh=video.videoHeight;
+  if(vw&&vh){
+    if(view.width!==vw){view.width=vw;view.height=vh;}setCam(vw,vh);
+    ctx.clearRect(0,0,vw,vh);ctx.save();ctx.translate(vw,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,vw,vh);ctx.restore();
+    let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
+    if(res&&res.faceLandmarks&&res.faceLandmarks[0]&&model){
+      const lm=res.faceLandmarks[0];
+      const P=i=>new THREE.Vector3((1-lm[i].x)*vw, vh-lm[i].y*vh, (-lm[i].z)*vw*ZK);
+      const p168=P(168),p234=P(234),p454=P(454),p10=P(10),p152=P(152),p33=P(33),p263=P(263);
+      _R.copy(p454).sub(p234).normalize().multiplyScalar(ADJ.mir);
+      _U0.copy(p10).sub(p152).normalize();
+      _F.crossVectors(_R,_U0).normalize().multiplyScalar(ADJ.ff);
+      if(_F.z<0)_F.negate();                              // keep forward toward camera
+      _U.crossVectors(_F,_R).normalize();
+      _R.crossVectors(_U,_F).normalize();
+      _m.makeBasis(_R,_U,_F);_tq.setFromRotationMatrix(_m);
+      const eye=p33.distanceTo(p263),sVal=eye*FW*ADJ.scaleMul;
+      if(!SMpos){SMpos=p168.clone();SMq.copy(_tq);SMs=sVal;}
+      SMpos.lerp(p168,0.5);SMq.slerp(_tq,0.5);SMs+=(sVal-SMs)*0.5;
+      anchor.position.set(SMpos.x+ADJ.px, SMpos.y-ADJ.py, SMpos.z);
+      anchor.quaternion.copy(SMq);anchor.scale.setScalar(SMs);
+      holder.rotation.set(ADJ.rx,ADJ.ry,ADJ.roll);holder.position.set(0,0,ADJ.dz);
+      model.visible=true;if(OCC)OCC.visible=ADJ.occ;
+    } else { if(model)model.visible=false; if(OCC)OCC.visible=false; SMpos=null; }
+  }
+  if(renderer)renderer.render(scene,cam3);requestAnimationFrame(loop);
+}
+/* controls */
+$('start').onclick=start;
+$('flip').onclick=async()=>{facing=facing==='user'?'environment':'user';await openCam();};
+document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{const a=b.dataset.a;
+  if(a==='in')ADJ.dz-=0.05;else if(a==='out')ADJ.dz+=0.05;
+  else if(a==='occ'){ADJ.occ=!ADJ.occ;toast('Face occlusion '+(ADJ.occ?'ON':'OFF'));}
+  else if(a==='mir'){ADJ.mir*=-1;toast('Mirrored');}
+  else if(a==='ff'){ADJ.ff*=-1;toast('Forward flipped');}
+});
+$('reset').onclick=()=>{ADJ.px=0;ADJ.py=0;ADJ.scaleMul=1;ADJ.dz=0;ADJ.rx=0;ADJ.ry=0;ADJ.roll=0;toast('Reset');};
+$('snap').onclick=()=>{try{const o=document.createElement('canvas');o.width=view.width;o.height=view.height;const x=o.getContext('2d');x.drawImage(view,0,0);x.drawImage($('gl'),0,0,o.width,o.height);const a=document.createElement('a');a.download='parasite-3d-tryon.png';a.href=o.toDataURL('image/png');a.click();}catch(e){toast('Could not save');}};
+const _v=$('view');let _drag=null;_v.style.cursor='grab';
+_v.addEventListener('pointerdown',e=>{_drag={x:e.clientX,y:e.clientY,rot:(e.shiftKey||e.button===2)};_v.style.cursor='grabbing';});
+window.addEventListener('pointermove',e=>{if(!_drag)return;const mx=e.clientX-_drag.x,my=e.clientY-_drag.y;_drag.x=e.clientX;_drag.y=e.clientY;if(_drag.rot){ADJ.ry+=mx*0.012;ADJ.rx+=my*0.012;}else{ADJ.px+=mx;ADJ.py+=my;}},{passive:true});
+window.addEventListener('pointerup',()=>{_drag=null;_v.style.cursor='grab';});
+_v.addEventListener('wheel',e=>{e.preventDefault();ADJ.scaleMul=Math.max(.5,Math.min(2,ADJ.scaleMul*(e.deltaY<0?1.04:0.96)));},{passive:false});
+_v.addEventListener('contextmenu',e=>e.preventDefault());
+</script>
+</body></html>
