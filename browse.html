@@ -58,6 +58,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .cactions .save{flex:1;border:1px solid var(--ink);background:#fff;color:var(--ink);font-weight:700;font-size:14px;padding:14px;border-radius:30px;cursor:pointer}
 .cactions .save.on{background:var(--heart);border-color:var(--heart);color:#fff}
 .cactions .try{flex:1;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:14px;border-radius:30px;cursor:pointer;border:none}
+.rxadd{display:block;text-align:center;margin-top:10px;font-size:12.5px;font-weight:700;color:#5a31f4;text-decoration:underline}
 .counter{text-align:center;font-size:13px;color:var(--muted);margin-top:16px}
 .counter b{color:var(--ink)}
 .prog{height:4px;background:var(--soft2);border-radius:4px;overflow:hidden;max-width:320px;margin:8px auto 0}
@@ -273,7 +274,8 @@ function show(){
     <div class="cactions">
       <button class="save${fav?' on':''}" id="save">${fav?'♥ Saved':'♡ Save to picks'}</button>
       <button class="try" id="trythis">Try this on</button>
-    </div>`;
+    </div>
+    ${cur.t!=='Sunglasses'?`<a class="rxadd" href="rx.html?h=${cur.h}">+ Add prescription lenses</a>`:''}`;
   $('heart').onclick=$('save').onclick=toggleFav;
   $('trythis').onclick=()=>{ if(!getFavs().includes(cur.h))doFav(cur.h,true); location.href='tryon3d.html?h='+encodeURIComponent(cur.h); };
   // colorways (cw computed above)

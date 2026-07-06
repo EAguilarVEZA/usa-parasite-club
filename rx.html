@@ -1,0 +1,196 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prescription Lenses — Parasite Club USA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--ink:#0c0c0e;--soft:#f5f4ef;--soft2:#eceae3;--muted:#6c6c74;--line:#e7e5dd;--lime:#C2F500;--limeink:#1d2400;--sans:'Inter',system-ui,sans-serif;--disp:'Anton',sans-serif;--wrap:900px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:96px}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px}
+.nav{position:sticky;top:0;z-index:50;background:#ffffffe8;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{font-family:var(--disp);font-size:18px}.brand .dot{color:#9a9a9a}
+.navbtn{background:var(--ink);color:#fff;font-weight:600;font-size:13px;padding:9px 15px;border-radius:30px}
+.head{display:flex;gap:16px;align-items:center;padding:24px 0 10px}
+.head .pic{width:110px;height:80px;flex:none;background:var(--soft);border-radius:12px;display:grid;place-items:center;overflow:hidden}
+.head .pic img{max-width:88%;max-height:84%;object-fit:contain;mix-blend-mode:multiply}
+.head h1{font-family:var(--disp);font-weight:400;font-size:clamp(22px,4vw,30px);text-transform:uppercase;line-height:1}
+.head .sub{font-size:13px;color:var(--muted);margin-top:3px}
+.sec{border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:16px}
+.sec h2{font-size:16px;font-weight:800;display:flex;align-items:center;gap:9px}
+.sec h2 .n{width:26px;height:26px;border-radius:50%;background:var(--lime);color:var(--limeink);display:grid;place-items:center;font-family:var(--disp);font-size:14px}
+.sec .hintl{font-size:12.5px;color:var(--muted);margin:4px 0 14px 35px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.opts{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);background:#fff;border-radius:14px;padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;transition:.12s}
+.opt:hover{border-color:#bbb}
+.opt.on{border-color:var(--lime);background:#fbffe8;box-shadow:0 0 0 1px var(--lime) inset}
+.opt b{font-size:14px;font-weight:700}.opt .d{font-size:12px;color:var(--muted);margin-top:2px}
+.opt .pr{font-size:13px;font-weight:700;white-space:nowrap}
+.tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:#fff;border-radius:30px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;color:#444}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pane{display:none}.pane.on{display:block}
+table.rx{width:100%;border-collapse:collapse;margin-top:4px}
+table.rx th,table.rx td{padding:6px;text-align:center;font-size:13px}
+table.rx th{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+table.rx td.lab{font-weight:800;text-align:left}
+table.rx input,table.rx select{width:100%;min-width:64px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px;font-family:inherit;text-align:center}
+.pdrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.pdrow label{font-size:13px;font-weight:700}
+.pdrow input{width:90px;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:14px;text-align:center}
+.pdnote{font-size:12px;color:var(--muted)}
+.drop{border:1.5px dashed var(--line);border-radius:14px;padding:26px;text-align:center;color:var(--muted);cursor:pointer}
+.drop b{color:var(--ink)}
+.drop.has{border-color:var(--lime);color:var(--ink)}
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.checks{grid-template-columns:1fr}}
+.chk{border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.chk.on{border-color:var(--lime);background:#fbffe8}
+.chk .box{width:20px;height:20px;border-radius:5px;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:12px;color:#fff}
+.chk.on .box{background:var(--lime);border-color:var(--lime);color:var(--limeink)}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fffffff2;backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom))}
+.bar .row{display:flex;align-items:center;gap:14px}
+.bar .tot{font-size:13px;color:var(--muted)}.bar .tot b{font-family:var(--disp);font-size:24px;color:var(--ink);display:block;line-height:1}
+.bar .fin{font-size:11px;color:#5a31f4;font-weight:700}
+.bar .add{margin-left:auto;background:var(--lime);color:var(--limeink);border:none;font-weight:800;font-size:15px;padding:15px 26px;border-radius:34px;cursor:pointer}
+.bar .add:active{transform:scale(.99)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:#fff;font-weight:600;font-size:13px;padding:12px 18px;border-radius:30px;opacity:0;transition:.25s;pointer-events:none;z-index:90}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.muted{color:var(--muted);font-size:12.5px;margin-top:10px}
+</style></head><body>
+<header class="nav"><div class="wrap row">
+  <a class="brand" href="index.html">PARASITE<span class="dot">·</span>CLUB<span class="dot">·</span>USA</a>
+  <a class="navbtn" href="bag.html">Bag</a>
+</div></header>
+
+<main class="wrap">
+  <div class="head">
+    <div class="pic"><img id="fimg" alt=""></div>
+    <div><h1 id="fname">Add prescription lenses</h1><div class="sub" id="fsub">Configure your lenses, add your script, and we'll make them to your Rx.</div></div>
+  </div>
+
+  <!-- 1. Lens use -->
+  <div class="sec">
+    <h2><span class="n">1</span> Choose your lenses</h2>
+    <div class="hintl">What are these glasses for?</div>
+    <div class="opts" id="useOpts"></div>
+  </div>
+
+  <!-- 2. Prescription -->
+  <div class="sec" id="rxSec">
+    <h2><span class="n">2</span> Your prescription</h2>
+    <div class="hintl">Type it in, upload a photo, or send it later.</div>
+    <div class="tabs" id="rxTabs">
+      <div class="tab on" data-p="type">Type it in</div>
+      <div class="tab" data-p="upload">Upload photo / PDF</div>
+      <div class="tab" data-p="later">Send it later</div>
+    </div>
+    <div class="pane on" id="pane-type">
+      <table class="rx">
+        <thead><tr><th></th><th>Sphere (SPH)</th><th>Cylinder (CYL)</th><th>Axis</th><th class="addcol">Add</th></tr></thead>
+        <tbody>
+          <tr><td class="lab">OD (Right)</td>
+            <td><input id="od_sph" type="number" step="0.25" placeholder="0.00"></td>
+            <td><input id="od_cyl" type="number" step="0.25" placeholder="0.00"></td>
+            <td><input id="od_axis" type="number" min="1" max="180" placeholder="—"></td>
+            <td class="addcol"><input id="od_add" type="number" step="0.25" placeholder="—"></td></tr>
+          <tr><td class="lab">OS (Left)</td>
+            <td><input id="os_sph" type="number" step="0.25" placeholder="0.00"></td>
+            <td><input id="os_cyl" type="number" step="0.25" placeholder="0.00"></td>
+            <td><input id="os_axis" type="number" min="1" max="180" placeholder="—"></td>
+            <td class="addcol"><input id="os_add" type="number" step="0.25" placeholder="—"></td></tr>
+        </tbody>
+      </table>
+      <div class="muted">Values usually run from −20.00 to +20.00 in 0.25 steps. Leave a field blank if your Rx doesn't list it.</div>
+    </div>
+    <div class="pane" id="pane-upload">
+      <label class="drop" id="drop"><b>Click to upload</b> a photo or PDF of your prescription<input id="rxfile" type="file" accept="image/*,.pdf" hidden></label>
+      <div class="muted">We'll read your Rx from the file and confirm it before we make your lenses.</div>
+    </div>
+    <div class="pane" id="pane-later">
+      <div class="muted" style="font-size:14px;color:var(--ink)">No problem — reserve your frame + lenses now and we'll email you a secure link to send your prescription. We won't make the lenses until we have it.</div>
+    </div>
+    <div class="pdrow">
+      <label>PD (pupillary distance)</label>
+      <input id="pd" type="number" step="0.5" placeholder="e.g. 63">
+      <span class="pdnote">One number in mm. Don't know it? Leave blank — we'll help you measure it.</span>
+    </div>
+  </div>
+
+  <!-- 3. Lens material -->
+  <div class="sec">
+    <h2><span class="n">3</span> Lens material</h2>
+    <div class="hintl">Higher index = thinner &amp; lighter (better for stronger prescriptions).</div>
+    <div class="opts" id="idxOpts"></div>
+  </div>
+
+  <!-- 4. Upgrades -->
+  <div class="sec">
+    <h2><span class="n">4</span> Coatings &amp; upgrades</h2>
+    <div class="hintl">Scratch-resistant &amp; UV are included. Add the rest as you like.</div>
+    <div class="checks" id="coatOpts"></div>
+  </div>
+</main>
+
+<div class="bar"><div class="wrap row">
+  <div class="tot">Total · frame + lenses<b id="total">$—</b><span class="fin" id="fin"></span></div>
+  <button class="add" id="add">Add to bag</button>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const Q=new URLSearchParams(location.search);
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
+/* ---- editable pricing (adjust these tiers anytime) ---- */
+const USE=[
+  {k:'sv-distance',l:'Single vision — Distance',d:'Everyday distance correction',base:95,rx:true,add:false},
+  {k:'sv-reading',l:'Single vision — Reading',d:'For reading / close work',base:95,rx:true,add:false},
+  {k:'progressive',l:'Progressive (multifocal)',d:'Distance + reading, no line',base:195,rx:true,add:true},
+  {k:'readers',l:'Readers',d:'Non-Rx magnification',base:75,rx:false,add:true,simple:true},
+  {k:'blue',l:'Blue-light (non-Rx)',d:'Clear lenses, screen filter',base:45,rx:false,add:false},
+  {k:'sun',l:'Sun tint (non-Rx)',d:'Tinted, no correction',base:45,rx:false,add:false},
+  {k:'plano',l:'Plano (no correction)',d:'Clear, for the look',base:35,rx:false,add:false},
+];
+const IDX=[{k:'1.50',l:'1.50 Standard',up:0},{k:'1.60',l:'1.60 Thin',up:30},{k:'1.67',l:'1.67 Extra thin',up:60},{k:'1.74',l:'1.74 Ultra thin',up:120}];
+const COAT=[{k:'ar',l:'Anti-reflective (AR)',up:30},{k:'bluef',l:'Blue-light filter',up:40},{k:'transitions',l:'Transitions® photochromic',up:90},{k:'polarized',l:'Polarized / tint (sun)',up:60}];
+
+let DATA=[],frame=null,sel={use:'sv-distance',idx:'1.50',coats:[],rxMethod:'type',rxFile:null};
+fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;init();});
+function init(){
+  const h=Q.get('h');frame=h&&DATA.find(p=>p.h===h);
+  if(frame){$('fimg').src=frame.img+'?width=240';$('fname').textContent=frame.model||frame.n;$('fsub').textContent=frame.b+' · '+(frame.t==='Sunglasses'?'Sun frame':'Optical frame')+' · $'+frame.p+' frame';}
+  else{$('fname').textContent='Prescription lenses';$('fsub').textContent='Pick a frame first, then add your lenses.';}
+  buildUse();buildIdx();buildCoat();buildTabs();price();
+}
+function buildUse(){$('useOpts').innerHTML=USE.map(u=>`<div class="opt${u.k===sel.use?' on':''}" data-u="${u.k}"><div><b>${u.l}</b><div class="d">${u.d}</div></div><div class="pr">+$${u.base}</div></div>`).join('');
+  $('useOpts').querySelectorAll('[data-u]').forEach(o=>o.onclick=()=>{sel.use=o.dataset.u;buildUse();applyUse();price();});applyUse();}
+function applyUse(){const u=USE.find(x=>x.k===sel.use);const rxNeeded=u.rx||u.add;
+  $('rxSec').style.display=(u.k==='blue'||u.k==='sun'||u.k==='plano')?'none':'block';
+  document.querySelectorAll('.addcol').forEach(e=>e.style.display=u.add?'':'none');
+}
+function buildIdx(){$('idxOpts').innerHTML=IDX.map(i=>`<div class="opt${i.k===sel.idx?' on':''}" data-i="${i.k}"><div><b>${i.l}</b></div><div class="pr">${i.up?'+$'+i.up:'included'}</div></div>`).join('');
+  $('idxOpts').querySelectorAll('[data-i]').forEach(o=>o.onclick=()=>{sel.idx=o.dataset.i;buildIdx();price();});}
+function buildCoat(){$('coatOpts').innerHTML=COAT.map(c=>`<div class="chk${sel.coats.includes(c.k)?' on':''}" data-c="${c.k}"><div><b>${c.l}</b></div><div style="display:flex;align-items:center;gap:10px"><span class="pr">+$${c.up}</span><span class="box">✓</span></div></div>`).join('');
+  $('coatOpts').querySelectorAll('[data-c]').forEach(o=>o.onclick=()=>{const k=o.dataset.c;sel.coats=sel.coats.includes(k)?sel.coats.filter(x=>x!==k):sel.coats.concat(k);buildCoat();price();});}
+function buildTabs(){$('rxTabs').querySelectorAll('.tab').forEach(t=>t.onclick=()=>{sel.rxMethod=t.dataset.p;$('rxTabs').querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));$('pane-'+t.dataset.p).classList.add('on');});}
+$('rxfile').onchange=e=>{const f=e.target.files[0];if(!f)return;sel.rxFile=f.name;$('drop').classList.add('has');$('drop').innerHTML='<b>✓ '+f.name+'</b><br><span style="font-size:12px">Tap to replace</span>';};
+function lensTotal(){const u=USE.find(x=>x.k===sel.use);let t=u.base+(IDX.find(i=>i.k===sel.idx).up||0);sel.coats.forEach(k=>{const c=COAT.find(x=>x.k===k);if(c)t+=c.up;});return t;}
+function price(){const framep=frame?frame.p:0;const tot=framep+lensTotal();$('total').textContent='$'+tot;$('fin').textContent='or 4× $'+(tot/4).toFixed(2)+' · Shop Pay';}
+function collectRx(){const g=id=>{const v=$(id)?.value;return v===''||v==null?null:v;};
+  return {od:{sph:g('od_sph'),cyl:g('od_cyl'),axis:g('od_axis'),add:g('od_add')},os:{sph:g('os_sph'),cyl:g('os_cyl'),axis:g('os_axis'),add:g('os_add')},pd:g('pd')};}
+$('add').onclick=()=>{
+  if(!frame){toast('Pick a frame first');return;}
+  const u=USE.find(x=>x.k===sel.use);
+  const rx={use:sel.use,useLabel:u.l,index:sel.idx,coatings:sel.coats.slice(),method:(u.rx||u.add)?sel.rxMethod:'none',
+    values:(u.rx||u.add)?collectRx():null,file:sel.rxFile,lensPrice:lensTotal()};
+  let bag=[];try{bag=JSON.parse(localStorage.getItem('upc_bag')||'[]');}catch(e){}
+  bag.push({h:frame.h,q:1,rx});localStorage.setItem('upc_bag',JSON.stringify(bag));
+  try{window.MK&&MK.track('AddToCart',{handle:frame.h,value:frame.p+rx.lensPrice,rx:true});}catch(e){}
+  toast('Added with prescription lenses ✓');setTimeout(()=>location.href='bag.html',500);
+};
+</script>
+<script src="/mk.js"></script>
+</body></html>

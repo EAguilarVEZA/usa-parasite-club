@@ -26,6 +26,8 @@ h1.title{font-family:var(--disp);font-weight:400;font-size:clamp(28px,5vw,42px);
 .item .nm{font-weight:700;font-size:16px}
 .item .sub{font-size:12.5px;color:var(--muted);margin-top:2px}
 .item .availed{font-size:12px;color:#1a7a3a;margin-top:8px;background:#f0faef;border:1px solid #d7eed3;display:inline-block;padding:5px 10px;border-radius:8px}
+.item .rxline{font-size:12.5px;color:#1a4d8f;background:#eef4ff;border:1px solid #cfe0ff;display:inline-block;padding:5px 10px;border-radius:8px;margin-top:8px}
+.item .addrx{font-size:12px;color:#5a31f4;font-weight:700;text-decoration:underline;cursor:pointer;margin-left:4px}
 .item .ctrls{display:flex;align-items:center;gap:14px;margin-top:12px}
 .qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:30px;overflow:hidden}
 .qty button{border:none;background:#fff;width:34px;height:34px;font-size:16px;cursor:pointer;font-family:inherit}
@@ -100,7 +102,9 @@ async function frontURL(p){
 
 let DATA=[];
 fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;render();});
-function bagItems(){return getBag().map(b=>{const p=DATA.find(x=>x.h===b.h);return p?{p,q:b.q||1}:null;}).filter(Boolean);}
+function bagItems(){return getBag().map((b,i)=>{const p=DATA.find(x=>x.h===b.h);return p?{p,q:b.q||1,rx:b.rx,i}:null;}).filter(Boolean);}
+function lensLabel(rx){if(!rx)return'';const a=[rx.useLabel,rx.index+' index'];if(rx.coatings&&rx.coatings.length)a.push(rx.coatings.length+' coating'+(rx.coatings.length>1?'s':''));const m={type:'Rx entered',upload:'Rx uploaded',later:'Rx to follow'}[rx.method];if(m)a.push(m);return a.join(' · ');}
+function itemTotal(it){return (it.p.p+(it.rx?it.rx.lensPrice:0))*it.q;}
 function render(){
   const items=bagItems();
   const n=items.reduce((s,it)=>s+it.q,0);
@@ -109,48 +113,54 @@ function render(){
     $('items').innerHTML=`<div class="empty">Your bag is empty.<br><br><a href="browse.html?b=Portrait">Browse the houses</a> or <a href="tryon3d.html">open the try-on</a> to add frames.</div>`;
     $('summary').innerHTML='';return;
   }
-  $('items').innerHTML=items.map(({p,q})=>`
-    <div class="item" data-h="${p.h}">
-      <div class="pic"><img id="img_${p.h}" alt="${p.n}" style="display:none"><span class="np" id="np_${p.h}">…</span></div>
+  $('items').innerHTML=items.map(it=>{const {p,q,rx,i}=it;return `
+    <div class="item" data-i="${i}">
+      <div class="pic"><img id="img_${i}" alt="${p.n}" style="display:none"><span class="np" id="np_${i}">…</span></div>
       <div class="info">
         <div class="nm">${displayModel(p)}</div>
         <div class="sub">${p.b} · ${p.n} · ${p.t==='Sunglasses'?'Sunglasses':'Optical frame'}</div>
+        ${rx?`<div class="rxline">🔎 Rx lenses — ${lensLabel(rx)} <b>+$${rx.lensPrice}</b></div>`:''}
         <div class="availed">Ships free · authenticity guaranteed</div>
         <div class="ctrls">
-          <div class="qty"><button data-dec="${p.h}">–</button><span>${q}</span><button data-inc="${p.h}">+</button></div>
-          <button class="rmv" data-rm="${p.h}">Remove</button>
+          <div class="qty"><button data-dec="${i}">–</button><span>${q}</span><button data-inc="${i}">+</button></div>
+          <button class="rmv" data-rm="${i}">Remove</button>
+          ${p.t!=='Sunglasses'&&!rx?`<a class="addrx" href="rx.html?h=${p.h}">+ Add Rx lenses</a>`:''}
         </div>
       </div>
-      <div class="price"><div class="fin4">or 4 × $${(p.p/4).toFixed(2)}</div><div class="pv">$${p.p*q}</div></div>
-    </div>`).join('');
-  // images
-  items.forEach(({p})=>frontURL(p).then(u=>{const im=$('img_'+p.h),np=$('np_'+p.h);if(u){im.src=u;im.style.display='';if(np)np.style.display='none';}else if(np){np.textContent='No front photo';}}).catch(()=>{}));
-  // controls
-  $('items').querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>chg(b.dataset.inc,1));
-  $('items').querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>chg(b.dataset.dec,-1));
-  $('items').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{setBag(getBag().filter(x=>x.h!==b.dataset.rm));render();toast('Removed');});
-  // summary
-  const sub=items.reduce((s,it)=>s+it.p.p*it.q,0);
-  const mo=(sub/12).toFixed(2);
+      <div class="price"><div class="fin4">or 4 × $${(itemTotal(it)/4).toFixed(2)}</div><div class="pv">$${itemTotal(it)}</div></div>
+    </div>`;}).join('');
+  items.forEach(it=>frontURL(it.p).then(u=>{const im=$('img_'+it.i),np=$('np_'+it.i);if(u){im.src=u;im.style.display='';if(np)np.style.display='none';}else if(np){np.textContent='No front photo';}}).catch(()=>{}));
+  $('items').querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>chg(+b.dataset.inc,1));
+  $('items').querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>chg(+b.dataset.dec,-1));
+  $('items').querySelectorAll('button[data-rm]').forEach(b=>b.onclick=()=>{const bag=getBag();bag.splice(+b.dataset.rm,1);setBag(bag);render();toast('Removed');});
+  const sub=items.reduce((s,it)=>s+itemTotal(it),0);
+  const lensSum=items.reduce((s,it)=>s+(it.rx?it.rx.lensPrice*it.q:0),0);
+  const hasRx=lensSum>0;const mo=(sub/12).toFixed(2);
   $('summary').innerHTML=`
     <h2>Order summary</h2>
-    <div class="srow"><span>Subtotal</span><span>$${sub.toFixed(2)}</span></div>
+    <div class="srow"><span>Frames</span><span>$${(sub-lensSum).toFixed(2)}</span></div>
+    ${hasRx?`<div class="srow"><span>Prescription lenses</span><span>$${lensSum.toFixed(2)}</span></div>`:''}
     <div class="srow"><span>Shipping</span><span>Free</span></div>
     <div class="srow"><span>Taxes</span><span class="mut">Calculated at checkout</span></div>
     <div class="srow total"><span>Total</span><span>$${sub.toFixed(2)}</span></div>
     <div class="pay"><b>Pay over time.</b> 4 interest-free payments of <b>$${(sub/4).toFixed(2)}</b> — or monthly from <b>$${mo}/mo</b> with <span class="shop">shop</span> Pay (0% APR options).</div>
     <button class="checkout" id="checkout">Checkout · $${sub.toFixed(2)}</button>
+    ${hasRx?`<div class="secure" style="color:#1a4d8f">We verify your prescription before making your lenses.</div>`:''}
     <div class="trust"><span>🚚 Free delivery</span><span>↩ Free returns</span><span>✓ Authentic</span></div>
     <div class="alt">Not sure yet? <a href="trunk.html">Try them at home, free →</a></div>
     <div class="secure">🔒 Secure checkout powered by Shopify · Shop Pay</div>`;
   $('checkout').onclick=()=>{
-    const hs=items.map(it=>it.p.h+':'+it.q).join(',');
     toast('Opening secure checkout…');
     try{window.MK&&MK.track('InitiateCheckout',{value:sub,num_items:n});}catch(e){}
-    location.href=CART(hs);
+    const hs=items.map(it=>it.p.h+':'+it.q).join(',');
+    if(hasRx){
+      const nP=items.filter(it=>it.rx).length;
+      const title='Prescription lenses ('+nP+' pair'+(nP>1?'s':'')+')';
+      location.href='/api/shopify?action=draft&handles='+encodeURIComponent(hs)+'&lensTitle='+encodeURIComponent(title)+'&lensPrice='+lensSum.toFixed(2);
+    } else { location.href=CART(hs); }
   };
 }
-function chg(h,d){const bag=getBag();const it=bag.find(x=>x.h===h);if(!it)return;it.q=Math.max(1,Math.min(9,(it.q||1)+d));setBag(bag);render();}
+function chg(i,d){const bag=getBag();if(!bag[i])return;bag[i].q=Math.max(1,Math.min(9,(bag[i].q||1)+d));setBag(bag);render();}
 </script>
 <script src="/mk.js"></script>
 </body></html>
