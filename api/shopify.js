@@ -200,6 +200,32 @@ module.exports = async (req, res) => {
       return res.end();
     }
 
+    // Rx checkout: frames + a custom "Prescription lenses" line item -> hosted invoice checkout.
+    // params: handles=h1:1,h2:1  lensTitle=...  lensPrice=195.00
+    if (action === 'draft') {
+      const items = String(q.handles || '').split(',').map(s => s.trim()).filter(Boolean);
+      const lineItems = [];
+      for (const it of items) {
+        const [h, qq] = it.split(':');
+        const vgid = await variantForHandle(h);
+        if (vgid) lineItems.push({ variantId: vgid, quantity: parseInt(qq || '1', 10) || 1 });
+      }
+      const lensPrice = q.lensPrice ? Number(q.lensPrice) : 0;
+      const lensTitle = q.lensTitle || 'Prescription lenses';
+      if (lensPrice > 0) lineItems.push({ title: lensTitle, originalUnitPrice: lensPrice.toFixed(2), quantity: 1, requiresShipping: false, taxable: true });
+      if (!lineItems.length) return res.status(400).json({ error: 'no items' });
+      const { j } = await gqlR(
+        `mutation($input:DraftOrderInput!){ draftOrderCreate(input:$input){ draftOrder{ id name invoiceUrl } userErrors{ field message } } }`,
+        { input: { lineItems, tags: ['rx'], note: 'Rx order — verify prescription before production.' } }
+      );
+      const r = j && j.data && j.data.draftOrderCreate;
+      if (!r || (r.userErrors && r.userErrors.length) || !r.draftOrder || !r.draftOrder.invoiceUrl) {
+        return res.status(200).json({ ok: false, errors: (r && r.userErrors) || j.errors || j });
+      }
+      res.writeHead(302, { Location: r.draftOrder.invoiceUrl });
+      return res.end();
+    }
+
     // Trunk hold: create a draft order (a quote/hold) for the selected frames.
     // params: handles=h1,h2,... email=... tier=standard|inner
     if (action === 'trunk') {
@@ -232,7 +258,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ ok: true, tier, limit, draft: r.draftOrder, missing });
     }
 
-    return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'summary', 'sync', 'variants', 'checkout', 'cart', 'trunk'] });
+    return res.status(400).json({ error: 'unknown action', allowed: ['ping', 'summary', 'sync', 'variants', 'checkout', 'cart', 'draft', 'trunk'] });
   } catch (e) {
     return res.status(500).json({ error: String(e) });
   }
