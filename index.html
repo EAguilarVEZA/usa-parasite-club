@@ -153,9 +153,9 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
     <div class="ai">A</div>
     <div>
       <h3>Not sure where to start?</h3>
-      <p>Adrian asks you four quick questions — what you're after, your vibe, your face — and lines up a shortlist to try on. No browsing required.</p>
+      <p>Adrian can <b style="color:#fff">look at your face</b> and recommend the frame shapes that actually suit you — or just ask you a few quick questions. No browsing required.</p>
     </div>
-    <button class="btn lime" id="bandAdrian">✦ Help me choose</button>
+    <button class="btn lime" id="bandAdrian">✦ Read my face</button>
   </div>
 </div></section>
 
@@ -217,7 +217,7 @@ function buildHouses(){
       </div>
     </a>`;}).join('');
 }
-$('heroAdrian').onclick=$('bandAdrian').onclick=()=>{location.href='browse.html?b=Portrait&adrian=1';};
+$('heroAdrian').onclick=$('bandAdrian').onclick=()=>{location.href='stylist.html';};
 
 $('dropform').onsubmit=e=>{
   e.preventDefault();const em=$('dropemail').value.trim();if(!em)return;

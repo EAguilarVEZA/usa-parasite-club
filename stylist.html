@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Adrian · Face-Shape Stylist — Parasite Club USA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0c0c0e;--bg:#fff;--soft:#f4f3ee;--soft2:#eceae3;--line:#e7e5dd;--muted:#6c6c74;--lime:#C2F500;--limeink:#1d2400;--sans:'Inter',system-ui,sans-serif;--disp:'Anton',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}
+body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-tap-highlight-color:transparent}
+.cam{position:fixed;inset:0;overflow:hidden;background:#0a0a0c}
+#view{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}#video{display:none}
+.scrim{position:absolute;inset:0;background:linear-gradient(#0000 40%,#000a)}
+.top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+.logo{font-family:var(--disp);font-size:15px;color:#fff;text-shadow:0 1px 8px #0009}.logo b{color:var(--lime)}
+.ic{width:38px;height:38px;border-radius:50%;background:#ffffffe8;border:1px solid #00000012;color:#111;display:grid;place-items:center;font-size:15px;cursor:pointer;text-decoration:none}
+.oval{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:min(64vw,300px);height:min(86vw,400px);border:2px dashed #ffffff88;border-radius:50%;z-index:14;pointer-events:none}
+.say{position:absolute;left:16px;right:16px;bottom:150px;z-index:16;text-align:center;color:#fff;font-size:14px;text-shadow:0 2px 10px #000;min-height:20px}
+.say b{color:var(--lime)}
+.cta{position:absolute;left:0;right:0;bottom:0;z-index:20;padding:16px 16px calc(20px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:10px}
+.btn{background:var(--lime);color:var(--limeink);border:none;font-weight:800;font-size:15px;padding:16px 30px;border-radius:34px;cursor:pointer;min-width:240px;text-align:center}
+.btn.dark{background:#ffffffe8;color:#111}
+.btn:active{transform:scale(.98)}
+/* result sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;z-index:30;background:#fff;border-radius:22px 22px 0 0;max-height:88vh;overflow:auto;padding:22px 20px calc(20px + env(safe-area-inset-bottom));display:none}
+.sheet.show{display:block}
+.sheet .tag{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a}
+.sheet h1{font-family:var(--disp);font-weight:400;font-size:clamp(30px,8vw,46px);text-transform:uppercase;line-height:.95;margin-top:4px}
+.sheet .why{font-size:14px;color:#3a3a40;margin-top:12px;line-height:1.55}
+.sheet .why b{color:var(--ink)}
+.recs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.recs .pill{font-size:12px;font-weight:700;background:#f3fbd6;border:1px solid #d6ef9a;color:#2c3a00;padding:6px 11px;border-radius:20px}
+.shortlist{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.card2{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.card2 .pic{height:70px;background:var(--soft);display:grid;place-items:center}
+.card2 .pic img{max-height:60px;max-width:88%;object-fit:contain;mix-blend-mode:multiply}
+.card2 .nm{font-size:9px;font-weight:700;text-align:center;padding:4px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.go{width:100%;background:var(--ink);color:#fff;border:none;font-weight:800;font-size:15px;padding:16px;border-radius:34px;cursor:pointer;margin-top:6px}
+.alt{text-align:center;margin-top:12px;font-size:13px;color:var(--muted)}
+.alt a{color:var(--ink);font-weight:700;text-decoration:underline;cursor:pointer}
+.shapes{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.shapes button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.err{position:absolute;left:50%;top:56%;transform:translateX(-50%);z-index:45;background:#fff;border:1px solid #f3b1a1;color:#a23;font-size:13px;padding:12px 16px;border-radius:12px;max-width:80%;text-align:center;display:none}
+</style></head><body>
+<div class="cam">
+  <video id="video" playsinline muted autoplay></video>
+  <canvas id="view"></canvas>
+  <div class="scrim"></div>
+  <div class="oval" id="oval" style="display:none"></div>
+  <div class="top"><div class="logo">PARASITE<b>·</b>CLUB · <span style="opacity:.85">Adrian</span></div>
+    <a class="ic" href="index.html">✕</a></div>
+  <div class="say" id="say"></div>
+  <div class="err" id="err"></div>
+  <div class="cta" id="cta">
+    <div class="say" style="position:static;bottom:auto;margin-bottom:6px"><b>Adrian:</b> let me look at your face — I'll find the shapes that suit you best.</div>
+    <button class="btn" id="start">Scan my face</button>
+    <a class="btn dark" href="browse.html?b=Portrait&adrian=1" style="text-decoration:none">Just ask me questions instead</a>
+  </div>
+
+  <div class="sheet" id="sheet"></div>
+</div>
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/vision_bundle.mjs";
+const $=id=>document.getElementById(id);
+let view=$('view'),ctx=view.getContext('2d'),video=$('video'),landmarker=null,stream=null,running=false,samples=[];
+const setFavs=a=>localStorage.setItem('upc_favs',JSON.stringify(a));
+function fail(m){const e=$('err');e.textContent=m;e.style.display='block';}
+function say(h){$('say').innerHTML=h;}
+
+const SHAPES={
+ oval:{name:'Oval',why:"Balanced proportions — the most versatile face shape. Almost anything works, so this is about mood, not correction.",recs:['Bold statement frames','Angular or geometric','Classic acetate'],bands:['wide','mid','tall']},
+ round:{name:'Round',why:"Soft curves with similar width and length. <b>Angular, rectangular and geometric</b> frames add structure and lengthen your face.",recs:['Rectangular','Angular / geometric','Wider than tall'],bands:['wide']},
+ square:{name:'Square',why:"Strong jaw with a broad forehead. <b>Round, oval and softly curved</b> frames balance the angles and soften your features.",recs:['Round','Oval','Rimless / thin'],bands:['tall','mid']},
+ heart:{name:'Heart',why:"Wider forehead narrowing to a delicate chin. <b>Bottom-heavy, round or light rimless</b> frames (and gentle cat-eye) balance the top.",recs:['Round','Bottom-heavy','Light / rimless'],bands:['mid','tall']},
+ long:{name:'Long / Oblong',why:"Length greater than width. <b>Tall, oversized and decorative</b> frames add width and shorten the face.",recs:['Oversized','Tall / deep lenses','Bold temples'],bands:['tall','mid']},
+ diamond:{name:'Diamond',why:"Cheekbones the widest point with a narrow forehead and jaw. <b>Cat-eye, oval and rimless</b> frames (wider than your cheekbones) flatter you.",recs:['Cat-eye','Oval','Rimless'],bands:['mid','tall']},
+};
+
+async function start(){
+  $('cta').style.display='none';$('oval').style.display='block';say("<b>Adrian:</b> hold still, face me, and keep your face inside the oval…");
+  try{const v=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.20/wasm");
+    landmarker=await FaceLandmarker.createFromOptions(v,{baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"},runningMode:"VIDEO",numFaces:1});
+  }catch(e){return fail("Couldn't load the face engine.");}
+  try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false});}catch(e){return fail("Allow camera access so I can read your face.");}
+  video.srcObject=stream;await video.play().catch(()=>{});running=true;samples=[];requestAnimationFrame(loop);
+}
+function loop(){
+  if(!running)return;const vw=video.videoWidth,vh=video.videoHeight;
+  if(vw&&vh){if(view.width!==vw){view.width=vw;view.height=vh;}
+    ctx.clearRect(0,0,vw,vh);ctx.save();ctx.translate(vw,0);ctx.scale(-1,1);ctx.drawImage(video,0,0,vw,vh);ctx.restore();
+    let res=null;try{res=landmarker.detectForVideo(video,performance.now());}catch(e){}
+    if(res&&res.faceLandmarks&&res.faceLandmarks[0]){
+      const lm=res.faceLandmarks[0];samples.push(measure(lm,vw,vh));
+      const p=Math.min(samples.length/45,1);say("<b>Adrian:</b> reading your face… "+Math.round(p*100)+"%");
+      if(samples.length>=45){running=false;finish();return;}
+    } else { say("<b>Adrian:</b> I can't see you clearly — face the camera in good light."); }
+  }
+  requestAnimationFrame(loop);
+}
+function measure(lm,vw,vh){
+  const P=i=>({x:lm[i].x*vw,y:lm[i].y*vh});
+  const d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+  const cheek=d(P(234),P(454));           // face width at cheekbones
+  const len=d(P(10),P(152));              // forehead top → chin
+  const fore=d(P(54),P(284));             // forehead width
+  const jaw=d(P(172),P(397));             // jaw width
+  return {cheek,len,fore,jaw};
+}
+function classify(){
+  const avg=k=>samples.reduce((s,m)=>s+m[k],0)/samples.length;
+  const W=avg('cheek'),H=avg('len'),F=avg('fore'),J=avg('jaw');
+  const lr=H/W;                            // length/width
+  let shape='oval';
+  if(lr>1.5) shape='long';
+  else if(F> J*1.12 && J< W*0.92) shape='heart';
+  else if(W> F*1.06 && W> J*1.06 && lr>1.15) shape='diamond';
+  else if(Math.abs(F-J)/W<0.10 && lr<1.25) shape='square';
+  else if(lr<1.08) shape='round';
+  else shape='oval';
+  return {shape,lr:lr.toFixed(2)};
+}
+function bandOf(aspect){return aspect>=2.95?'wide':(aspect>=2.5?'mid':'tall');}
+/* pick shortlist matching the face shape's preferred silhouette bands */
+async function pickMatches(bands){
+  const d=await fetch('products.json').then(r=>r.json());
+  const seen=new Set(),pool=[];
+  d.forEach(p=>{const k=p.b+'|'+(p.model||p.n);if(!seen.has(k)){seen.add(k);pool.push(p);}});
+  // sample ~42 across the catalog, prefer New
+  pool.sort(()=>Math.random()-0.5);const cand=pool.slice(0,42);
+  const load=u=>new Promise(res=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=()=>res(null);im.src=u+'?width=200';});
+  const scored=[];
+  for(const p of cand){const im=await load(p.img);if(!im)continue;
+    try{const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;
+      let minx=c.width,miny=c.height,maxx=0,maxy=0;for(let y=0;y<c.height;y+=3)for(let xx=0;xx<c.width;xx+=3){const i=(y*c.width+xx)*4;if(a[i]>232&&a[i+1]>232&&a[i+2]>232)continue;if(xx<minx)minx=xx;if(xx>maxx)maxx=xx;if(y<miny)miny=y;if(y>maxy)maxy=y;}
+      const bw=maxx-minx,bh=maxy-miny;if(bw<8||bh<6)continue;const asp=bw/bh;const band=bandOf(asp);
+      const match=bands.includes(band);scored.push({p,band,asp,score:(match?2:0)+(p.new?0.5:0)+Math.random()*0.3});
+    }catch(e){}}
+  scored.sort((a,b)=>b.score-a.score);
+  const picks=[],housesUsed={};
+  for(const s of scored){const h=s.p.b;housesUsed[h]=(housesUsed[h]||0);if(housesUsed[h]<3){picks.push(s.p);housesUsed[h]++;}if(picks.length>=6)break;}
+  return picks.length?picks:cand.slice(0,6);
+}
+async function finish(){
+  $('oval').style.display='none';const {shape}=classify();show(shape,true);
+}
+async function show(shapeKey,scanned){
+  const S=SHAPES[shapeKey];say('');
+  const sheet=$('sheet');sheet.classList.add('show');
+  sheet.innerHTML=`<div class="tag">${scanned?'Adrian read your face':'Your pick'}</div>
+    <h1>${S.name} face</h1>
+    <div class="why">${S.why}</div>
+    <div class="recs">${S.recs.map(r=>`<span class="pill">${r}</span>`).join('')}</div>
+    <div id="matchWrap"><div class="alt" style="margin-top:16px">✦ Finding your matches…</div></div>
+    <div class="alt">Not quite? Tell me your shape:
+      <div class="shapes">${Object.keys(SHAPES).map(k=>`<button data-s="${k}">${SHAPES[k].name}</button>`).join('')}</div>
+    </div>`;
+  sheet.querySelectorAll('.shapes button').forEach(b=>b.onclick=()=>show(b.dataset.s,false));
+  const picks=await pickMatches(S.bands);
+  const wrap=$('matchWrap');
+  wrap.innerHTML=`<div class="shortlist">${picks.map(p=>`<div class="card2"><div class="pic"><img crossorigin="anonymous" src="${p.img}?width=180"></div><div class="nm">${p.model||p.n}</div></div>`).join('')}</div>
+    <button class="go" id="tryset">Try Adrian's ${picks.length} picks on →</button>`;
+  $('tryset').onclick=()=>{try{const f=JSON.parse(localStorage.getItem('upc_favs')||'[]');picks.forEach(p=>{if(!f.includes(p.h))f.push(p.h);});setFavs(f);}catch(e){}try{window.MK&&MK.track('Lead',{type:'faceshape',shape:shapeKey});}catch(e){}location.href='tryon3d.html?picks=1';};
+}
+$('start').onclick=start;
+</script>
+<script src="/mk.js"></script>
+</body></html>
