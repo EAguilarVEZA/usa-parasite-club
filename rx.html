@@ -115,7 +115,10 @@ table.rx input,table.rx select{width:100%;min-width:64px;border:1px solid var(--
     <div class="pdrow">
       <label>PD (pupillary distance)</label>
       <input id="pd" type="number" step="0.5" placeholder="e.g. 63">
-      <span class="pdnote">One number in mm. Don't know it? Leave blank — we'll help you measure it.</span>
+      <span class="pdnote">Millimetres. Don't know it? Leave blank — our <b>camera tool measures your PD</b> before we make your lenses.</span>
+    </div>
+    <div class="pdrow" id="heightNote" style="display:none">
+      <span class="pdnote" style="color:#8a5a00;background:#fff7e6;border:1px solid #ffe0a3;padding:9px 11px;border-radius:8px">📏 <b>Progressives need a fitting height</b> measured with <b>this exact frame</b> — a prescription alone isn't enough. You don't enter it here: we capture it precisely with our camera measurement (or during your free home try-on, frame in hand) before production, so the corridor lines up with your eyes.</span>
     </div>
   </div>
 
@@ -145,17 +148,18 @@ const $=id=>document.getElementById(id);
 const Q=new URLSearchParams(location.search);
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
 /* ---- editable pricing (adjust these tiers anytime) ---- */
+/* Retail lens pricing — grounded in IcareLabs 2026 uncut cost + margin (edit freely). Base = poly, incl. scratch + UV. */
 const USE=[
   {k:'sv-distance',l:'Single vision — Distance',d:'Everyday distance correction',base:95,rx:true,add:false},
   {k:'sv-reading',l:'Single vision — Reading',d:'For reading / close work',base:95,rx:true,add:false},
-  {k:'progressive',l:'Progressive (multifocal)',d:'Distance + reading, no line',base:195,rx:true,add:true},
+  {k:'progressive',l:'Progressive (multifocal)',d:'Distance + reading, no line',base:225,rx:true,add:true},
   {k:'readers',l:'Readers',d:'Non-Rx magnification',base:75,rx:false,add:true,simple:true},
-  {k:'blue',l:'Blue-light (non-Rx)',d:'Clear lenses, screen filter',base:45,rx:false,add:false},
-  {k:'sun',l:'Sun tint (non-Rx)',d:'Tinted, no correction',base:45,rx:false,add:false},
-  {k:'plano',l:'Plano (no correction)',d:'Clear, for the look',base:35,rx:false,add:false},
+  {k:'blue',l:'Blue-light (non-Rx)',d:'Clear lenses, screen filter',base:65,rx:false,add:false},
+  {k:'sun',l:'Sun tint (non-Rx)',d:'Tinted, no correction',base:65,rx:false,add:false},
+  {k:'plano',l:'Plano (no correction)',d:'Clear, for the look',base:45,rx:false,add:false},
 ];
-const IDX=[{k:'1.50',l:'1.50 Standard',up:0},{k:'1.60',l:'1.60 Thin',up:30},{k:'1.67',l:'1.67 Extra thin',up:60},{k:'1.74',l:'1.74 Ultra thin',up:120}];
-const COAT=[{k:'ar',l:'Anti-reflective (AR)',up:30},{k:'bluef',l:'Blue-light filter',up:40},{k:'transitions',l:'Transitions® photochromic',up:90},{k:'polarized',l:'Polarized / tint (sun)',up:60}];
+const IDX=[{k:'1.50',l:'1.50 Standard',up:0},{k:'1.60',l:'1.60 Thin',up:40},{k:'1.67',l:'1.67 Extra thin',up:90},{k:'1.74',l:'1.74 Ultra thin',up:160}];
+const COAT=[{k:'ar',l:'Premium anti-reflective (AR)',up:45},{k:'bluef',l:'Blue-light filter',up:40},{k:'transitions',l:'Transitions® photochromic',up:100},{k:'polarized',l:'Polarized / tint (sun)',up:70}];
 
 let DATA=[],frame=null,sel={use:'sv-distance',idx:'1.50',coats:[],rxMethod:'type',rxFile:null};
 fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;init();});
@@ -170,6 +174,7 @@ function buildUse(){$('useOpts').innerHTML=USE.map(u=>`<div class="opt${u.k===se
 function applyUse(){const u=USE.find(x=>x.k===sel.use);const rxNeeded=u.rx||u.add;
   $('rxSec').style.display=(u.k==='blue'||u.k==='sun'||u.k==='plano')?'none':'block';
   document.querySelectorAll('.addcol').forEach(e=>e.style.display=u.add?'':'none');
+  const hn=$('heightNote');if(hn)hn.style.display=(u.k==='progressive')?'flex':'none';
 }
 function buildIdx(){$('idxOpts').innerHTML=IDX.map(i=>`<div class="opt${i.k===sel.idx?' on':''}" data-i="${i.k}"><div><b>${i.l}</b></div><div class="pr">${i.up?'+$'+i.up:'included'}</div></div>`).join('');
   $('idxOpts').querySelectorAll('[data-i]').forEach(o=>o.onclick=()=>{sel.idx=o.dataset.i;buildIdx();price();});}
