@@ -165,6 +165,7 @@ let DATA=[],frame=null,sel={use:'sv-distance',idx:'1.50',coats:[],rxMethod:'type
 fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;init();});
 function init(){
   const h=Q.get('h');frame=h&&DATA.find(p=>p.h===h);
+  const u0=Q.get('use');if(u0&&USE.some(x=>x.k===u0))sel.use=u0;
   if(frame){$('fimg').src=frame.img+'?width=240';$('fname').textContent=frame.model||frame.n;$('fsub').textContent=frame.b+' · '+(frame.t==='Sunglasses'?'Sun frame':'Optical frame')+' · $'+frame.p+' frame';}
   else{$('fname').textContent='Prescription lenses';$('fsub').textContent='Pick a frame first, then add your lenses.';}
   buildUse();buildIdx();buildCoat();buildTabs();price();

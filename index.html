@@ -51,6 +51,18 @@ section{padding:54px 0}
 .shead h2{font-family:var(--disp);font-weight:400;font-size:clamp(26px,4vw,40px);text-transform:uppercase;line-height:1}
 .shead p{color:var(--muted);font-size:14.5px;max-width:40ch}
 .kick{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a;margin-bottom:8px}
+/* type trio */
+.types{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.type{display:block;border:1px solid var(--line);border-radius:22px;padding:24px;background:var(--soft);transition:.18s;position:relative;overflow:hidden}
+.type:hover{transform:translateY(-4px);box-shadow:0 22px 44px -24px #0003;border-color:#d8d6cd}
+.type .tno{font-family:var(--disp);font-size:13px;color:#b7b7b0;letter-spacing:.1em}
+.type h3{font-family:var(--disp);font-weight:400;font-size:26px;text-transform:uppercase;line-height:1;margin:6px 0 8px}
+.type p{font-size:13px;color:var(--muted);min-height:38px}
+.type .go2{display:inline-flex;margin-top:12px;font-weight:600;font-size:14px;color:var(--ink)}
+.type.sun{background:linear-gradient(160deg,#FFF9D6,#ffe6007a)}
+.type.sun h3{color:#5a4b00}
+.type.rd{background:linear-gradient(160deg,#F3FBD6,#c2f5007a)}
+@media(max-width:820px){.types{grid-template-columns:1fr}}
 /* house cards */
 .houses{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 .house{display:block;background:var(--soft);border:1px solid var(--line);border-radius:22px;padding:24px;transition:.18s;position:relative;overflow:hidden}
@@ -121,12 +133,21 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
 <main>
 <section class="hero"><div class="wrap">
   <span class="eyebrow">★ <b>Live 3D try-on</b> · no download · free home trunk</span>
-  <h1>European frames.<br>On your face in <span class="hl">seconds.</span></h1>
-  <p class="sub">Three independent European houses — Portrait, Acid and Parasite — in one members' club. Pick a house, heart what you love, and watch it land on your face right in your browser.</p>
+  <h1>Sun's on.<br>European frames on your face in <span class="hl">seconds.</span></h1>
+  <p class="sub">Three independent European houses — Portrait, Acid and Parasite — one members' club. Start with sunglasses, add readers, or go full prescription. Heart what you love and watch it land on your face right in your browser.</p>
   <div class="cta">
-    <a class="btn primary" href="#houses">Pick your house →</a>
+    <a class="btn primary" href="browse.html?b=Portrait&t=Sunglasses">Shop sunglasses →</a>
     <button class="btn lime" id="heroAdrian">✦ Help me choose</button>
     <a class="btn ghost" href="tryon3d.html">Jump to try-on</a>
+  </div>
+</div></section>
+
+<section style="padding:28px 0 0"><div class="wrap">
+  <div class="shead" style="margin-bottom:18px"><div><div class="kick">What are you after?</div><h2>Sun first. Then readers. Then Rx.</h2></div></div>
+  <div class="types reveal">
+    <a class="type sun" href="browse.html?b=Portrait&t=Sunglasses"><span class="tno">01</span><h3>Sunglasses</h3><p>The hero. UV-ready European shapes — no prescription needed.</p><span class="go2">Shop sun →</span></a>
+    <a class="type rd" href="browse.html?b=Portrait&t=Readers"><span class="tno">02</span><h3>Readers</h3><p>Simple +power reading lenses in any optical frame. No doctor's note.</p><span class="go2">Shop readers →</span></a>
+    <a class="type op" href="browse.html?b=Portrait&t=Eyeglasses"><span class="tno">03</span><h3>Prescription</h3><p>Single-vision or progressive, made to your script.</p><span class="go2">Shop optical →</span></a>
   </div>
 </div></section>
 
@@ -136,7 +157,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
     <div class="step"><div class="no">1</div><h4>Pick your house</h4><p>Portrait, Acid or Parasite — or let <b>Adrian</b>, our Atelier assistant, help you choose.</p><div class="acts"><a href="browse.html?b=Portrait&adrian=1">✦ Ask Adrian</a></div></div>
     <div class="step"><div class="no">2</div><h4>Heart your favorites</h4><p>Swipe the collection, tap the heart on the ones you love.</p></div>
     <div class="step"><div class="no">3</div><h4>Try them on</h4><p>Live 3D in your browser — nothing to install:</p><div class="acts"><a href="tryon3d.html">Try virtually</a><a href="trunk.html">Try at home</a></div></div>
-    <div class="step"><div class="no">4</div><h4>Buy</h4><p>Checkout with Shop Pay — or pay in 4.</p><div class="acts"><a class="buy" href="browse.html?b=Portrait">Start shopping</a></div></div>
+    <div class="step"><div class="no">4</div><h4>Buy</h4><p>Checkout with Shop Pay — or pay in 4.</p><div class="acts"><a class="buy" href="browse.html?b=Portrait&t=Sunglasses">Start shopping</a></div></div>
   </div>
 </div></section>
 
@@ -202,11 +223,11 @@ const HOUSES=[
 ];
 let DATA=[];
 fetch('products.json').then(r=>r.json()).then(d=>{DATA=d;buildHouses();});
-function sampleFor(b){const l=DATA.filter(p=>p.b===b&&p.t==='Eyeglasses');return l[Math.floor(Math.random()*Math.min(l.length,40))]||DATA.find(p=>p.b===b);}
+function sampleFor(b){const s=DATA.filter(p=>p.b===b&&p.t==='Sunglasses');const l=s.length?s:DATA.filter(p=>p.b===b&&p.t==='Eyeglasses');return l[Math.floor(Math.random()*Math.min(l.length,40))]||DATA.find(p=>p.b===b);}
 function countFor(b){const s=new Set(DATA.filter(p=>p.b===b).map(p=>p.model||p.n));return s.size;}
 function buildHouses(){
   $('houses-grid').innerHTML=HOUSES.map(h=>{const p=sampleFor(h.b);return `
-    <a class="house" href="browse.html?b=${h.b}">
+    <a class="house" href="browse.html?b=${h.b}&t=Sunglasses">
       <span class="ncount">${countFor(h.b)} styles</span>
       <div class="stage"><img src="${p.img}?width=420" alt="${h.b}"></div>
       <div class="body">

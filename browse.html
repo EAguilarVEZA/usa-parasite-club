@@ -128,9 +128,10 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
   <div class="filters">
     <div class="cols" id="cols"></div>
     <div class="seg" id="typeseg">
-      <button data-t="all" class="on">All</button>
-      <button data-t="Eyeglasses">Optical</button>
       <button data-t="Sunglasses">Sun</button>
+      <button data-t="Readers">Readers</button>
+      <button data-t="Eyeglasses">Optical</button>
+      <button data-t="all">All</button>
     </div>
   </div>
   <div class="colinfo" id="colinfo"></div>
@@ -226,13 +227,15 @@ function matchCol(p,k){
   return p.cols&&p.cols.includes(k);
 }
 
-let DATA=[],house=Q.get('b')||'Portrait',col='all',type='all',list=[],i=0,cur=null;
+let DATA=[],house=Q.get('b')||'Portrait',col='all',type=Q.get('t')||'Sunglasses',list=[],i=0,cur=null;
 if(!['Portrait','Acid','Parasite'].includes(house))house='Portrait';
+if(!['all','Eyeglasses','Sunglasses','Readers'].includes(type))type='Sunglasses';
 
 fetch('products.json').then(r=>r.json()).then(d=>{
-  DATA=d;buildHouses();buildCols();refresh();renderPick();
+  DATA=d;buildHouses();buildCols();markType();refresh();renderPick();
   if(Q.get('adrian')==='1')openAdrian();
 });
+function markType(){$('typeseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.t===type));}
 
 function buildHouses(){
   $('houses').innerHTML=['Portrait','Acid','Parasite'].map(h=>`<button class="hpill${h===house?' on':''}" data-h="${h}">${h}</button>`).join('');
@@ -247,7 +250,8 @@ $('typeseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{
   type=b.dataset.t;$('typeseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));refresh();
 });
 function buildList(){
-  let l=DATA.filter(p=>p.b===house&&matchCol(p,col)&&(type==='all'||p.t===type));
+  const tf=type==='Readers'?'Eyeglasses':type;
+  let l=DATA.filter(p=>p.b===house&&matchCol(p,col)&&(type==='all'||p.t===tf));
   const seen=new Set(),out=[];
   l.forEach(p=>{const k=modelKey(p);if(!seen.has(k)){seen.add(k);out.push(p);}});
   return out;
@@ -275,7 +279,7 @@ function show(){
       <button class="save${fav?' on':''}" id="save">${fav?'♥ Saved':'♡ Save to picks'}</button>
       <button class="try" id="trythis">Try this on</button>
     </div>
-    ${cur.t!=='Sunglasses'?`<a class="rxadd" href="rx.html?h=${cur.h}">+ Add prescription lenses</a>`:''}`;
+    ${type==='Readers'?`<a class="rxadd" href="rx.html?h=${cur.h}&use=readers">+ Add reading lenses</a>`:(cur.t!=='Sunglasses'?`<a class="rxadd" href="rx.html?h=${cur.h}">+ Add prescription lenses</a>`:'')}`;
   $('heart').onclick=$('save').onclick=toggleFav;
   $('trythis').onclick=()=>{ if(!getFavs().includes(cur.h))doFav(cur.h,true); location.href='tryon3d.html?h='+encodeURIComponent(cur.h); };
   // colorways (cw computed above)
