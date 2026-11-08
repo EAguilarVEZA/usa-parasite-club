@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head>
+<!doctype html><html lang="en"><head><!-- build: angles-v2 -->
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Browse — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,6 +63,12 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .counter b{color:var(--ink)}
 .prog{height:4px;background:var(--soft2);border-radius:4px;overflow:hidden;max-width:320px;margin:8px auto 0}
 .prog i{display:block;height:100%;background:var(--lime);width:0;transition:.3s}
+/* angle gallery (positions of the current frame) */
+.angles{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.angle{width:56px;height:46px;border-radius:10px;background:#fff;border:2px solid var(--line);overflow:hidden;cursor:pointer;display:grid;place-items:center;padding:3px}
+.angle.on{border-color:var(--ink)}
+.angle img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.anglbl{text-align:center;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#b3b1a6;margin-top:12px}
 /* mini grid toggle */
 .swatchrow{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
 .swatch{width:42px;height:42px;border-radius:10px;background:#fff;border:2px solid var(--line);overflow:hidden;cursor:pointer;display:grid;place-items:center}
@@ -270,6 +276,7 @@ function show(){
     ${cur.new?'<span class="new">New</span>':''}
     <button class="heart${fav?' on':''}" id="heart">${fav?'♥':'♡'}</button>
     <div class="imgwrap"><img id="cardimg" alt="${cur.n}" style="display:none"><div class="noimg" id="noimg">Finding a straight-on photo…</div></div>
+    <div class="angles" id="angles"></div>
     <div class="cinfo">
       <div><div class="col">${house}${col!=='all'?' · '+(COLS[house].find(c=>c[0]===col)||[])[1]:''}</div>
         <h2>${displayModel(cur)}</h2><div class="sub">${cwN>1?`<b style="color:#0c0c0e">Color:</b> ${cname} <span style="opacity:.6">· ${cwIdx+1} of ${cwN}</span>`:cname} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
@@ -288,6 +295,20 @@ function show(){
   $('counter').innerHTML=`<b>${i+1}</b> / ${list.length} · ${list.length} styles`;
   $('progbar').style.width=((i+1)/list.length*100)+'%';
   const want=cur.h;normalizedFrame(cur).then(u=>{if(!(cur&&cur.h===want))return;const im=$('cardimg'),ni=$('noimg');if(u){im.src=u;im.style.display='';if(ni)ni.style.display='none';}else{im.style.display='none';if(ni){ni.textContent='No straight-on photo yet';ni.style.display='';}}}).catch(()=>{});
+  renderAngles();
+}
+const szImg=(u,w)=>u.includes('lh3.googleusercontent')?u.replace(/=w\d+$/,'')+'=w'+w:(u.split('?')[0]+'?width='+w);
+function renderAngles(){
+  const el=$('angles');if(!el)return;
+  const angs=[...new Set((cur.imgs&&cur.imgs.length?cur.imgs:[cur.img]).filter(Boolean))].slice(0,6);
+  if(angs.length<2){el.innerHTML='';return;}
+  el.innerHTML=angs.map((u,n)=>`<div class="angle${n===0?' on':''}" data-u="${u}" data-n="${n}"><img src="${szImg(u,120)}" alt=""></div>`).join('');
+  el.querySelectorAll('.angle').forEach(a=>a.onclick=()=>{
+    el.querySelectorAll('.angle').forEach(x=>x.classList.remove('on'));a.classList.add('on');
+    const u=a.dataset.u,im=$('cardimg'),ni=$('noimg');
+    if(a.dataset.n==='0'){normalizedFrame(cur).then(d=>{im.src=d||szImg(u,700);im.style.display='';if(ni)ni.style.display='none';});}
+    else{im.src=szImg(u,700);im.style.display='';if(ni)ni.style.display='none';}
+  });
 }
 function toggleFav(){doFav(cur.h,!getFavs().includes(cur.h));show();renderPick();}
 function doFav(h,on){let f=getFavs();if(on){if(!f.includes(h))f.push(h);toast('Saved to your picks ♥');}else{f=f.filter(x=>x!==h);}setFavs(f);}
