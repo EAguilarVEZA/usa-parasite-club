@@ -77,6 +77,21 @@ section{padding:54px 0}
 .house:hover .go .arw{transform:translateX(3px)}
 .house .ncount{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;color:#8a8a8a}
 @media(max-width:820px){.houses{grid-template-columns:1fr}.house{display:flex;align-items:center;gap:18px}.house .stage{height:90px;width:130px;flex:none;margin:0}.house .stage img{height:70px}.house .body{flex:1}.house .ncount{display:none}}
+/* editorial */
+.editorial{position:relative;border-radius:26px;overflow:hidden;min-height:480px;display:flex;align-items:flex-end;color:#fff}
+.editorial img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.editorial .ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.72),rgba(0,0,0,0) 58%);z-index:1}
+.editorial .ec{position:relative;z-index:2;padding:40px;max-width:640px}
+.editorial .ek{font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;opacity:.85}
+.editorial h3{font-family:var(--disp);font-weight:400;font-size:clamp(32px,5.2vw,56px);text-transform:uppercase;line-height:.96;margin:10px 0}
+.editorial p{font-size:15px;max-width:44ch;opacity:.93;line-height:1.55}
+.editorial .btn{margin-top:20px}
+.lookbook{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.look{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:3/4;background:var(--soft);display:block}
+.look img{width:100%;height:100%;object-fit:cover;transition:.5s}.look:hover img{transform:scale(1.06)}
+.look .lov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.5),rgba(0,0,0,0) 52%);z-index:1}
+.look .cap{position:absolute;left:14px;bottom:12px;color:#fff;font-family:var(--disp);font-size:16px;letter-spacing:.04em;text-shadow:0 1px 8px #000a;z-index:2}
+@media(max-width:680px){.lookbook{grid-template-columns:1fr 1fr}.editorial .ec{padding:26px}}
 /* adrian band */
 .adrian{background:var(--ink);color:#fff;border-radius:26px;padding:34px;display:flex;align-items:center;gap:26px;flex-wrap:wrap}
 .adrian .ai{width:64px;height:64px;border-radius:50%;background:var(--lime);color:var(--limeink);display:grid;place-items:center;font-family:var(--disp);font-size:30px;flex:none}
@@ -167,6 +182,28 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
     <p>Each house has its own world. Start where your taste pulls you — you can roam all three.</p>
   </div>
   <div class="houses" id="houses-grid"></div>
+</div></section>
+
+<section id="portrait-editorial"><div class="wrap reveal">
+  <div class="shead">
+    <div><div class="kick">The house in focus</div><h2>Portrait — handmade in Italy</h2></div>
+    <a class="btn ghost" href="browse.html?b=Portrait">Explore Portrait →</a>
+  </div>
+  <div class="editorial">
+    <img class="bg" src="https://lh3.googleusercontent.com/d/1L3vi3vI-OPgSVd5OnSdTOj1_4naFgiiB=w1800" alt="Portrait Eyewear campaign">
+    <div class="ov"></div>
+    <div class="ec">
+      <div class="ek">Portrait</div>
+      <h3>Beauty lives<br>in contrast.</h3>
+      <p>Inspired by the complexity of identity — where fragility meets rebellion. Every frame handcrafted by Italian artisans.</p>
+      <a class="btn lime" href="browse.html?b=Portrait&t=Sunglasses">Shop the house →</a>
+    </div>
+  </div>
+  <div class="lookbook">
+    <a class="look" href="browse.html?b=Portrait"><div class="lov"></div><img loading="lazy" src="https://lh3.googleusercontent.com/d/1FBGKGnEppYrL_XdX7lYe-I4a0cXwTAW7=w800" alt="Morris"><span class="cap">MORRIS</span></a>
+    <a class="look" href="browse.html?b=Portrait"><div class="lov"></div><img loading="lazy" src="https://lh3.googleusercontent.com/d/1qV52NE7XYekA90kOxtOvn-LyUOP0eptC=w800" alt="Pegaso"><span class="cap">PEGASO</span></a>
+    <a class="look" href="browse.html?b=Portrait"><div class="lov"></div><img loading="lazy" src="https://lh3.googleusercontent.com/d/1rFpW3Hsjrr3b2pw7eH6DUp7cdO4dCxzQ=w800" alt="Roland"><span class="cap">ROLAND</span></a>
+  </div>
 </div></section>
 
 <section><div class="wrap reveal">
