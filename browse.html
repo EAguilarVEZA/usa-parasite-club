@@ -346,7 +346,7 @@ function renderPick(){
   $('pickmini').innerHTML=f.slice(-5).map(h=>{const p=DATA.find(x=>x.h===h);return p?`<img src="${szImg(p.img,80)}">`:'';}).join('');
   $('pickcar').style.display=f.length?'inline':'none';
   const go=$('tryon');
-  if(f.length){go.classList.remove('dim');go.textContent='Try '+f.length+' on →';go.onclick=()=>location.href='tryon3d.html?picks=1';}
+  if(f.length){go.classList.remove('dim');go.textContent='Try '+f.length+' at home →';go.onclick=()=>location.href='trunk.html';}
   else{go.classList.add('dim');go.textContent='Heart some first';go.onclick=()=>toast('Tap ♡ on frames you like');$('pickpanel').classList.remove('show');}
   const pp=$('pickpanel');
   if(f.length){pp.innerHTML='<div class="ph">Your picks — tap remove to delete</div>'+f.map(h=>{const p=DATA.find(x=>x.h===h);if(!p)return '';return `<div class="prow"><img src="${szImg(p.img,110)}"><div class="pn">${displayModel(p)}<small>${colorName(p)} · $${p.p}</small></div><button class="rm" data-h="${h}">Remove ✕</button></div>`;}).join('');

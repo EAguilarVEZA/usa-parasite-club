@@ -6,8 +6,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#E7E2D7;--ink:#1A1815;--soft:#F2EEE5;--soft2:#E0D9CA;--muted:#8B8374;--line:#D7D0C2;
-  --lime:#B14A33;--limeink:#FDF6EF;--yellow:#DCD0BA;--ok:#5E7A52;
+  --bg:#ffffff;--ink:#111214;--soft:#F4F5F7;--soft2:#EDEFF2;--muted:#6B7177;--line:#E4E7EC;
+  --lime:#2B4BF2;--limeink:#ffffff;--yellow:#EEF1FF;--ok:#15935b;
   --sans:'Inter',system-ui,sans-serif;--disp:'Fraunces','Georgia',serif;
   --wrap:1180px;--r:18px;
 }
@@ -18,7 +18,7 @@ a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 .wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px}
 /* nav */
-.nav{position:sticky;top:0;z-index:50;background:rgba(242,238,229,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav .row{display:flex;align-items:center;justify-content:space-between;height:62px}
 .brand{font-family:var(--disp);font-size:19px;letter-spacing:.02em}
 .brand .dot{color:#9a9a9a}
@@ -59,9 +59,9 @@ section{padding:54px 0}
 .type h3{font-family:var(--disp);font-weight:400;font-size:26px;text-transform:uppercase;line-height:1;margin:6px 0 8px}
 .type p{font-size:13px;color:var(--muted);min-height:38px}
 .type .go2{display:inline-flex;margin-top:12px;font-weight:600;font-size:14px;color:var(--ink)}
-.type.sun{background:linear-gradient(160deg,#F4EFE4,#E6D4BC)}
+.type.sun{background:linear-gradient(160deg,#F4F6FF,#DCE4FF)}
 .type.sun h3{color:#5a4b00}
-.type.rd{background:linear-gradient(160deg,#F1EEE3,#D5DAC4)}
+.type.rd{background:linear-gradient(160deg,#F2FBFA,#D6F0EC)}
 @media(max-width:820px){.types{grid-template-columns:1fr}}
 /* house cards */
 .houses{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
@@ -104,11 +104,11 @@ section{padding:54px 0}
 .step{position:relative;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 22px;overflow:hidden;transition:.22s cubic-bezier(.2,.7,.2,1)}
 .step::before{content:"";position:absolute;left:0;top:0;height:6px;width:100%;background:var(--lime)}
 .step:hover{transform:translateY(-6px);box-shadow:0 22px 44px -26px rgba(150,190,0,.65);border-color:transparent}
-.step .no{font-family:var(--disp);font-size:18px;width:40px;height:40px;border-radius:50%;background:var(--lime);color:var(--limeink);display:grid;place-items:center;margin-bottom:14px;box-shadow:0 8px 16px -8px rgba(150,70,45,.6)}
+.step .no{font-family:var(--disp);font-size:18px;width:40px;height:40px;border-radius:50%;background:var(--lime);color:var(--limeink);display:grid;place-items:center;margin-bottom:14px;box-shadow:0 8px 16px -8px rgba(43,75,242,.5)}
 .step h4{font-size:16.5px;font-weight:800}
 .step p{font-size:13px;color:var(--muted);margin-top:6px}
 .step .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.step .acts span,.step .acts a{font-size:11px;font-weight:700;padding:6px 12px;border-radius:20px;background:#EFE5DA;border:1px solid #E1CFC1;color:#8A3F2C;white-space:nowrap;cursor:pointer;transition:.14s;text-decoration:none}
+.step .acts span,.step .acts a{font-size:11px;font-weight:700;padding:6px 12px;border-radius:20px;background:#EEF1FF;border:1px solid #D4DCFF;color:#2B4BF2;white-space:nowrap;cursor:pointer;transition:.14s;text-decoration:none}
 .step .acts a:hover{background:var(--lime);border-color:var(--lime);transform:translateY(-1px)}
 .step .acts .buy{background:var(--lime);border-color:var(--lime);color:var(--limeink)}
 .step .acts .buy:hover{filter:brightness(.96)}
@@ -153,7 +153,7 @@ footer{border-top:1px solid var(--line);padding:40px 0;margin-top:30px}
   <div class="cta">
     <a class="btn primary" href="browse.html?b=Portrait&t=Sunglasses">Shop sunglasses →</a>
     <button class="btn lime" id="heroAdrian">✦ Help me choose</button>
-    <a class="btn ghost" href="tryon3d.html">Jump to try-on</a>
+    <a class="btn ghost" href="trunk.html">Try at home — free →</a>
   </div>
 </div></section>
 
