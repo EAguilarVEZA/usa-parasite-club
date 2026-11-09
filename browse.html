@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><!-- build: wp-grid-v1 -->
+<!doctype html><html lang="en"><head><!-- build: wp-grid-v2-color -->
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Shop frames — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6,7 +6,7 @@
 <style>
 :root{
   --bg:#ffffff;--panel:#F4F5F7;--panel2:#EDEFF2;--ink:#111214;--muted:#6B7177;--line:#E4E7EC;
-  --blue:#2B4BF2;--blueink:#ffffff;--blue-soft:#EEF1FF;
+  --blue:#2B4BF2;--blueink:#ffffff;--blue-soft:#EEF1FF;--hc:#2B4BF2;
   --teal:#15B8A6;--coral:#FF5A4D;--tang:#FF8A3D;--lilac:#8B7BFF;--heart:#FF4D6D;
   --sans:'Inter',system-ui,sans-serif;--disp:'Fraunces','Georgia',serif;--wrap:1280px;
 }
@@ -20,7 +20,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .brand{font-weight:800;font-size:17px;letter-spacing:.16em}
 .nlinks{display:flex;gap:18px;margin-left:8px}
 .nlinks a{font-weight:600;font-size:14px;color:var(--ink);padding:4px 0;border-bottom:2px solid transparent}
-.nlinks a.on,.nlinks a:hover{border-color:var(--blue);color:var(--blue)}
+.nlinks a.on,.nlinks a:hover{border-color:var(--hc);color:var(--hc)}
 .nright{margin-left:auto;display:flex;align-items:center;gap:16px}
 .nright a{font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:5px}
 .pillbtn{background:var(--blue);color:var(--blueink);padding:9px 16px;border-radius:30px;font-weight:700;font-size:13px}
@@ -32,18 +32,18 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .reassure .dot{opacity:.4}
 /* hero band per house */
 .hb{padding:26px 0 6px}
-.hb .kick{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.hb .kick{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--hc)}
 .hb h1{font-family:var(--disp);font-weight:900;font-size:clamp(38px,5.6vw,62px);line-height:.92;letter-spacing:-.015em;margin-top:6px;text-transform:uppercase}
-.hb h1:after{content:"";display:block;width:52px;height:5px;background:var(--blue);margin-top:14px}
+.hb h1:after{content:"";display:block;width:52px;height:5px;background:var(--hc);margin-top:14px}
 .hb p{color:var(--muted);font-size:15px;margin-top:8px;max-width:60ch}
 /* layout */
 .plp{display:grid;grid-template-columns:238px 1fr;gap:30px;padding:14px 0 40px}
 .rail{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding-right:4px}
 .rail::-webkit-scrollbar{width:6px}.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
-.quizcard{background:var(--blue);color:#fff;border-radius:18px;padding:16px 16px 18px;margin-bottom:18px}
+.quizcard{background:var(--hc);color:#fff;border-radius:18px;padding:16px 16px 18px;margin-bottom:18px}
 .quizcard h4{font-family:var(--disp);font-weight:600;font-size:18px;line-height:1.05}
 .quizcard p{font-size:12.5px;opacity:.85;margin:5px 0 12px}
-.quizcard button{width:100%;background:#fff;color:var(--blue);border:none;border-radius:24px;padding:11px;font-weight:700;font-size:13.5px;cursor:pointer}
+.quizcard button{width:100%;background:#fff;color:var(--hc);border:none;border-radius:24px;padding:11px;font-weight:700;font-size:13.5px;cursor:pointer}
 .fg{border-top:1px solid var(--line);padding:16px 0}
 .fg:first-of-type{border-top:none}
 .fg h5{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:12px}
@@ -70,7 +70,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .pc{position:relative}
 .pc .frame{position:relative;background:var(--panel);border-radius:4px;aspect-ratio:1/.82;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:.2s;box-shadow:inset 0 0 0 1px #0000}
-.pc .frame:hover{background:var(--panel2);box-shadow:inset 0 0 0 2px var(--ink)}
+.pc .frame:hover{box-shadow:inset 0 0 0 3px var(--ink)}
 .pc .frame img{max-width:82%;max-height:76%;object-fit:contain;mix-blend-mode:multiply;transition:.25s cubic-bezier(.2,.7,.2,1)}
 .pc .frame:hover img{transform:scale(1.06) rotate(-1deg)}
 .pc .tag{position:absolute;top:0;left:0;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;padding:5px 10px;border-radius:0 0 4px 0}
@@ -222,7 +222,10 @@ const modelKey=p=>p.b+'|'+((stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase(
 const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
 const colorName=p=>{const b=displayModel(p);let c=(p.n||'').trim();if(c.toUpperCase().startsWith(b.toUpperCase()))c=c.slice(b.length).trim();return c||(p.n||'');};
 const szImg=(u,w)=>!u?'':u.includes('lh3.googleusercontent')?u.replace(/=w\d+$/,'')+'=w'+w:(u.split('?')[0]+'?width='+w);
-
+// vibrant color-block tiles behind frames
+const TILES=['#CAD7FF','#FFC9B8','#9FE6D4','#D9C6FF','#FFE08A','#A9DEF9','#FFC2D4','#BDEBC6','#FFD1A6','#C9E8FF'];
+const hashIdx=h=>{let s=0;for(let i=0;i<h.length;i++)s=(s*31+h.charCodeAt(i))>>>0;return s;};
+const HCOL={Portrait:'#2B4BF2',Acid:'#FF6A2B',Parasite:'#7B4DFF'};
 const HMETA={Portrait:'Premium · Handmade in Italy',Acid:'Designer · France · by Hugo Martin',Parasite:'Futurist · France · handcrafted'};
 const HKICK={Portrait:'Italian premium',Acid:'French design',Parasite:'Avant-garde'};
 const COLS={
@@ -253,6 +256,7 @@ fetch('products.json').then(r=>r.json()).then(d=>{
 function buildNav(){
   $('nlinks').innerHTML=['Portrait','Acid','Parasite'].map(h=>`<a href="#" data-h="${h}" class="${h===house?'on':''}">${h}</a>`).join('');
   $('nlinks').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();house=a.dataset.h;F.col='all';F.fams.clear();buildNav();buildFilters();render();});
+  document.documentElement.style.setProperty('--hc',HCOL[house]||'#2B4BF2');
   $('kick').textContent=HKICK[house]||'The club';$('hname').textContent=house;$('hmeta').textContent=HMETA[house];
 }
 function priceOpts(){return [['all','All prices'],['u150','Under $150'],['150','$150 – $250'],['250','$250 – $400'],['400','$400 +']];}
@@ -309,7 +313,7 @@ function render(){
     const sun=p.t==='Sunglasses';
     const buy=sun?`<a class="buy blue" href="rx.html?h=${p.h}&use=sun">Add sun lenses →</a>`:`<a class="buy blue" href="rx.html?h=${p.h}${type==='Readers'?'&use=readers':''}">Select lenses →</a>`;
     return `<div class="pc" data-model="${modelKey(p)}" data-h="${p.h}">
-      <div class="frame">
+      <div class="frame" style="background:${TILES[hashIdx(p.h)%TILES.length]}">
         ${p.new?`<span class="tag" style="background:${TAGCOL[p.b]}">New</span>`:''}
         <button class="heart${fav?' on':''}" data-h="${p.h}" title="Save">${fav?'♥':'♡'}</button>
         <img src="${szImg(p.img,460)}" alt="${p.n}" loading="lazy">
