@@ -1,165 +1,213 @@
-<!doctype html><html lang="en"><head><!-- build: maison-light-v1 -->
+<!doctype html><html lang="en"><head><!-- build: wp-grid-v1 -->
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Browse — Parasite Club USA</title>
+<title>Shop frames — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#E7E2D7;--ink:#1A1815;--soft:#F2EEE5;--soft2:#E0D9CA;--muted:#8B8374;--line:#D7D0C2;
-  --lime:#B14A33;--limeink:#FDF6EF;--yellow:#DCD0BA;--heart:#B14A33;
-  --sans:'Inter',system-ui,sans-serif;--disp:'Fraunces','Georgia',serif;--wrap:1180px;
+  --bg:#ffffff;--panel:#F4F5F7;--panel2:#EDEFF2;--ink:#111214;--muted:#6B7177;--line:#E4E7EC;
+  --blue:#2B4BF2;--blueink:#ffffff;--blue-soft:#EEF1FF;
+  --teal:#15B8A6;--coral:#FF5A4D;--tang:#FF8A3D;--lilac:#8B7BFF;--heart:#FF4D6D;
+  --sans:'Inter',system-ui,sans-serif;--disp:'Fraunces','Georgia',serif;--wrap:1280px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5;padding-bottom:88px}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5;padding-bottom:92px}
 a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
-.wrap{max-width:var(--wrap);margin:0 auto;padding:0 22px}
-.nav{position:sticky;top:0;z-index:50;background:rgba(242,238,229,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.nav .row{display:flex;align-items:center;justify-content:space-between;height:60px}
-.brand{font-family:var(--disp);font-size:18px}.brand .dot{color:#9a9a9a}
-.navbtn{background:var(--ink);color:#fff;font-weight:600;font-size:13px;padding:9px 15px;border-radius:30px;display:inline-flex;gap:6px;align-items:center}
-.bagct{background:var(--lime);color:var(--limeink);border-radius:20px;padding:1px 7px;font-weight:700;font-size:12px}
-/* house switch */
-.houses{display:flex;gap:8px;padding:16px 0 6px;overflow-x:auto;scrollbar-width:none}.houses::-webkit-scrollbar{display:none}
-.hpill{flex:none;border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 16px;font-weight:600;font-size:14px;cursor:pointer;white-space:nowrap}
-.hpill.on{background:var(--ink);color:#fff;border-color:var(--ink)}
-/* head */
-.bhead{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:10px 0 4px}
-.bhead h1{font-family:var(--disp);font-weight:400;font-size:clamp(30px,5vw,46px);text-transform:uppercase;line-height:1}
-.bhead .meta{font-size:13px;color:var(--muted);margin-top:4px}
-.adbtn{background:var(--lime);color:var(--limeink);border:none;font-weight:700;font-size:14px;padding:12px 18px;border-radius:30px;cursor:pointer;white-space:nowrap}
-/* filters */
-.filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 6px}
-.cols{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex:1}.cols::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:#fff;border-radius:30px;padding:8px 14px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;color:#444}
-.chip.on{background:var(--lime);color:var(--limeink);border-color:var(--lime)}
-.seg{display:flex;border:1px solid var(--line);border-radius:30px;overflow:hidden;flex:none}
-.seg button{border:none;background:#fff;font-family:inherit;font-weight:600;font-size:13px;padding:9px 14px;cursor:pointer;color:#555}
-.seg button.on{background:var(--ink);color:#fff}
-.colinfo{font-size:13px;color:var(--muted);margin:6px 0 2px;min-height:18px}
-/* carousel */
-.stage{position:relative;margin:8px 0 0;display:flex;align-items:center;justify-content:center;gap:10px}
-.arw{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:20px;cursor:pointer;display:grid;place-items:center;transition:.15s}
-.arw:hover{background:var(--soft);transform:scale(1.05)}.arw:active{transform:scale(.95)}
-.card{flex:1;max-width:640px;background:var(--soft);border:1px solid var(--line);border-radius:26px;padding:26px;position:relative;overflow:hidden}
-.card .imgwrap{height:300px;display:flex;align-items:center;justify-content:center}
-.card .imgwrap img{max-height:280px;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 16px 28px #0002)}
-.noimg{font-size:13px;color:#b3b1a6;text-align:center;padding:0 20px}
-.card .new{position:absolute;top:20px;left:20px;background:var(--yellow);color:#3a3300;font-weight:800;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:20px}
-.heart{position:absolute;top:18px;right:18px;width:50px;height:50px;border-radius:50%;background:#fff;border:1px solid var(--line);font-size:22px;cursor:pointer;display:grid;place-items:center;transition:.15s;color:#c9c7be}
-.heart:hover{transform:scale(1.08)}.heart.on{color:var(--heart);border-color:var(--heart);background:#fff0f4}
-.cinfo{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:18px;flex-wrap:wrap}
-.cinfo .col{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a}
-.cinfo h2{font-family:var(--disp);font-weight:400;font-size:30px;text-transform:uppercase;line-height:1;margin-top:3px}
-.cinfo .sub{font-size:12.5px;color:var(--muted);margin-top:3px}
-.cinfo .price{text-align:right}
-.cinfo .price .pv{font-family:var(--disp);font-size:30px;line-height:1}
-.cinfo .price .fin{font-size:11px;color:var(--muted)}
-.cactions{display:flex;gap:10px;margin-top:18px}
-.cactions .save{flex:1;border:1px solid var(--ink);background:#fff;color:var(--ink);font-weight:700;font-size:14px;padding:14px;border-radius:30px;cursor:pointer}
-.cactions .save.on{background:var(--heart);border-color:var(--heart);color:#fff}
-.cactions .try{flex:1;background:var(--ink);color:#fff;font-weight:700;font-size:14px;padding:14px;border-radius:30px;cursor:pointer;border:none}
-.rxadd{display:block;text-align:center;margin-top:10px;font-size:12.5px;font-weight:700;color:#5a31f4;text-decoration:underline}
-.counter{text-align:center;font-size:13px;color:var(--muted);margin-top:16px}
-.counter b{color:var(--ink)}
-.prog{height:4px;background:var(--soft2);border-radius:4px;overflow:hidden;max-width:320px;margin:8px auto 0}
-.prog i{display:block;height:100%;background:var(--lime);width:0;transition:.3s}
-/* angle gallery (positions of the current frame) */
-.angles{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-.angle{width:56px;height:46px;border-radius:10px;background:#fff;border:2px solid var(--line);overflow:hidden;cursor:pointer;display:grid;place-items:center;padding:3px}
-.angle.on{border-color:var(--ink)}
-.angle img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
-.anglbl{text-align:center;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#b3b1a6;margin-top:12px}
-/* mini grid toggle */
-.swatchrow{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
-.swatch{width:42px;height:42px;border-radius:10px;background:#fff;border:2px solid var(--line);overflow:hidden;cursor:pointer;display:grid;place-items:center}
-.swatch.on{border-color:var(--lime)}
-.swatch img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
-@media(max-width:680px){.arw{position:absolute;top:140px;z-index:5;background:#ffffffd8}.arw.prev{left:0}.arw.next{right:0}.card{max-width:none}.card .imgwrap{height:240px}.card .imgwrap img{max-height:220px}}
-/* sticky pick bar */
-.pickbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(242,238,229,.92);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom))}
-.pickbar .wrap{position:relative}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+/* top nav */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav .row{display:flex;align-items:center;gap:22px;height:62px}
+.brand{font-weight:800;font-size:17px;letter-spacing:.16em}
+.nlinks{display:flex;gap:18px;margin-left:8px}
+.nlinks a{font-weight:600;font-size:14px;color:var(--ink);padding:4px 0;border-bottom:2px solid transparent}
+.nlinks a.on,.nlinks a:hover{border-color:var(--blue);color:var(--blue)}
+.nright{margin-left:auto;display:flex;align-items:center;gap:16px}
+.nright a{font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:5px}
+.pillbtn{background:var(--blue);color:var(--blueink);padding:9px 16px;border-radius:30px;font-weight:700;font-size:13px}
+.ct{background:var(--ink);color:#fff;border-radius:20px;font-size:11px;padding:1px 7px;font-weight:700}
+/* reassurance strip */
+.reassure{background:var(--ink);color:#fff}
+.reassure .wrap{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;font-size:12.5px;font-weight:500;padding:9px 24px;letter-spacing:.01em}
+.reassure b{font-weight:700}
+.reassure .dot{opacity:.4}
+/* hero band per house */
+.hb{padding:26px 0 6px}
+.hb .kick{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.hb h1{font-family:var(--disp);font-weight:900;font-size:clamp(38px,5.6vw,62px);line-height:.92;letter-spacing:-.015em;margin-top:6px;text-transform:uppercase}
+.hb h1:after{content:"";display:block;width:52px;height:5px;background:var(--blue);margin-top:14px}
+.hb p{color:var(--muted);font-size:15px;margin-top:8px;max-width:60ch}
+/* layout */
+.plp{display:grid;grid-template-columns:238px 1fr;gap:30px;padding:14px 0 40px}
+.rail{position:sticky;top:78px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;padding-right:4px}
+.rail::-webkit-scrollbar{width:6px}.rail::-webkit-scrollbar-thumb{background:var(--line);border-radius:6px}
+.quizcard{background:var(--blue);color:#fff;border-radius:18px;padding:16px 16px 18px;margin-bottom:18px}
+.quizcard h4{font-family:var(--disp);font-weight:600;font-size:18px;line-height:1.05}
+.quizcard p{font-size:12.5px;opacity:.85;margin:5px 0 12px}
+.quizcard button{width:100%;background:#fff;color:var(--blue);border:none;border-radius:24px;padding:11px;font-weight:700;font-size:13.5px;cursor:pointer}
+.fg{border-top:1px solid var(--line);padding:16px 0}
+.fg:first-of-type{border-top:none}
+.fg h5{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);margin-bottom:12px}
+.opt{display:flex;align-items:center;gap:9px;padding:6px 0;cursor:pointer;font-size:14px;color:#3b4046}
+.opt input{appearance:none;width:17px;height:17px;border:1.5px solid #c4c9d0;border-radius:50%;flex:none;position:relative;cursor:pointer}
+.opt input:checked{border-color:var(--blue)}
+.opt input:checked:after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue)}
+.opt:hover{color:var(--ink)}
+.cfam{display:flex;flex-wrap:wrap;gap:8px}
+.cfam button{display:flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:20px;padding:5px 11px 5px 6px;font-size:12.5px;font-weight:600;color:#3b4046;cursor:pointer}
+.cfam button .sw{width:15px;height:15px;border-radius:50%;border:1px solid #0001;flex:none}
+.cfam button.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.clearf{margin-top:6px;font-size:12.5px;font-weight:700;color:var(--blue);background:none;border:none;cursor:pointer;padding:0}
+/* grid head */
+.ghead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.ghead .cnt{font-size:13.5px;color:var(--muted)}.ghead .cnt b{color:var(--ink)}
+.srt{border:1px solid var(--line);background:#fff;border-radius:22px;padding:8px 14px;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;color:var(--ink)}
+.search{flex:1;max-width:280px;position:relative}
+.search input{width:100%;border:1px solid var(--line);border-radius:22px;padding:9px 14px 9px 34px;font-family:inherit;font-size:13.5px;outline:none}
+.search input:focus{border-color:var(--blue)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;opacity:.45}
+.filtbtn{display:none}
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pc{position:relative}
+.pc .frame{position:relative;background:var(--panel);border-radius:4px;aspect-ratio:1/.82;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:.2s;box-shadow:inset 0 0 0 1px #0000}
+.pc .frame:hover{background:var(--panel2);box-shadow:inset 0 0 0 2px var(--ink)}
+.pc .frame img{max-width:82%;max-height:76%;object-fit:contain;mix-blend-mode:multiply;transition:.25s cubic-bezier(.2,.7,.2,1)}
+.pc .frame:hover img{transform:scale(1.06) rotate(-1deg)}
+.pc .tag{position:absolute;top:0;left:0;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#fff;padding:5px 10px;border-radius:0 0 4px 0}
+.pc .heart{position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;font-size:16px;color:#c7ccd3;transition:.14s}
+.pc .heart:hover{transform:scale(1.1)}.pc .heart.on{color:var(--heart);border-color:var(--heart)}
+.pc .tryon{position:absolute;bottom:10px;right:10px;background:var(--ink);color:#fff;border:none;border-radius:4px;padding:7px 12px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:.14s;opacity:0;transform:translateY(4px)}
+.pc .frame:hover .tryon{opacity:1;transform:translateY(0)}
+.pc .tryon:hover{background:var(--blue)}
+@media(hover:none){.pc .tryon{opacity:1;transform:none}}
+.pc .nm{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:13px}
+.pc .nm .t{font-family:var(--disp);font-weight:900;font-size:20px;line-height:.95;text-transform:uppercase;letter-spacing:-.01em}
+.pc .nm .pr{font-weight:800;font-size:15px;white-space:nowrap}
+.pc .sub{font-size:11px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+.pc .sw{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.pc .sw .s{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);overflow:hidden;cursor:pointer;background:#fff;padding:0}
+.pc .sw .s.on{border-color:var(--ink)}
+.pc .sw .s img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply}
+.pc .sw .more{font-size:11px;color:var(--muted);align-self:center}
+.pc .buy{display:block;margin-top:12px;text-align:center;background:var(--ink);border:1.5px solid var(--ink);color:#fff;border-radius:4px;padding:11px;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.14s}
+.pc .buy:hover{background:var(--blue);border-color:var(--blue)}
+.pc .buy.blue{background:var(--ink);border-color:var(--ink);color:#fff}
+.pc .buy.blue:hover{background:var(--blue);border-color:var(--blue)}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0}
+/* sticky picks bar */
+.pickbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:11px 0 calc(11px + env(safe-area-inset-bottom))}
 .pickbar .row{display:flex;align-items:center;gap:14px}
-.pickbar .lbl{font-weight:600;font-size:14px}.pickbar .lbl b{color:var(--heart)}
-.pickpanel{position:absolute;left:0;right:0;bottom:calc(100% + 12px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 -12px 34px -16px #0005;max-height:54vh;overflow:auto;padding:8px;display:none}
+.pickbar .lbl{font-weight:600;font-size:14px;cursor:pointer}.pickbar .lbl b{color:var(--heart)}
+.pickbar .mini{display:flex;gap:6px}
+.pickbar .mini img{width:34px;height:30px;object-fit:contain;mix-blend-mode:multiply;background:var(--panel);border-radius:7px;border:1px solid var(--line)}
+.pickbar .go{margin-left:auto;background:var(--blue);color:#fff;font-weight:700;font-size:14px;padding:13px 22px;border-radius:28px;cursor:pointer;border:none;display:inline-flex;gap:8px;align-items:center}
+.pickbar .go.dim{background:var(--panel2);color:#9aa0a7;cursor:default}
+.pickpanel{position:absolute;left:24px;right:24px;bottom:calc(100% + 10px);max-width:520px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 -12px 34px -16px #0004;max-height:52vh;overflow:auto;padding:8px;display:none}
 .pickpanel.show{display:block}
-.pickpanel .ph{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9a9a9a;padding:8px 10px}
+.pickpanel .ph{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:9px 10px}
 .prow{display:flex;align-items:center;gap:12px;padding:8px 10px;border-top:1px solid var(--line)}
-.prow img{width:52px;height:40px;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:8px;flex:none}
+.prow img{width:50px;height:38px;object-fit:contain;mix-blend-mode:multiply;background:var(--panel);border-radius:8px;flex:none}
 .prow .pn{flex:1;font-size:13px;font-weight:600}.prow .pn small{display:block;color:var(--muted);font-weight:400}
-.prow .rm{border:1px solid var(--line);background:#fff;border-radius:20px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer;color:var(--heart);flex:none}
-.prow .rm:active{transform:scale(.95)}
-.pickbar .mini{display:flex;gap:6px;margin-left:4px}
-.pickbar .mini img{width:34px;height:30px;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:7px;border:1px solid var(--line)}
-.pickbar .go{margin-left:auto;background:var(--lime);color:var(--limeink);font-weight:700;font-size:14px;padding:14px 22px;border-radius:30px;cursor:pointer;border:none;display:inline-flex;gap:8px;align-items:center}
-.pickbar .go.dim{background:var(--soft2);color:#9a9a9a;cursor:default}
-/* adrian modal */
-.modal{position:fixed;inset:0;z-index:100;background:#0c0c0ecc;display:none;align-items:flex-end;justify-content:center}
+.prow .rm{border:1px solid var(--line);background:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--heart)}
+/* quiz modal (full-screen, WP-style image cards) */
+.modal{position:fixed;inset:0;z-index:100;background:#fff;display:none;flex-direction:column}
 .modal.show{display:flex}
-.sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:26px 24px calc(26px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
-@media(min-width:620px){.modal{align-items:center}.sheet{border-radius:24px}}
-.sheet .ahead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
-.sheet .ai{width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-family:var(--disp);font-size:20px}
-.sheet h3{font-family:var(--disp);font-weight:400;font-size:24px;text-transform:uppercase;line-height:1}
-.sheet .q{font-size:16px;font-weight:600;margin:18px 0 12px}
-.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.opt{border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px;text-align:left;cursor:pointer;font-family:inherit;transition:.12s}
-.opt:hover{border-color:var(--ink)}
-.opt b{display:block;font-size:15px;font-weight:700}
-.opt span{font-size:12px;color:var(--muted)}
-.opt.on{border-color:var(--lime);background:#F6EDE3}
-.sheet .step{font-size:12px;color:#9a9a9a;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.sheet .x{position:absolute;top:14px;right:16px;font-size:20px;cursor:pointer;color:#999}
-.adresult{text-align:center;padding:8px 0}
-.adresult .rimgs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:14px 0}
-.adresult .rimgs img{width:60px;height:50px;object-fit:contain;mix-blend-mode:multiply;background:var(--soft);border-radius:8px;border:1px solid var(--line)}
-.bigbtn{width:100%;background:var(--lime);color:var(--limeink);border:none;font-weight:700;font-size:15px;padding:16px;border-radius:30px;cursor:pointer;margin-top:8px}
-.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-weight:600;font-size:13px;padding:12px 18px;border-radius:30px;opacity:0;transition:.25s;pointer-events:none;z-index:120}
+.modal .mtop{display:flex;align-items:center;justify-content:center;height:58px;border-bottom:1px solid var(--line);position:relative;flex:none}
+.modal .mtop .b{font-weight:800;letter-spacing:.16em;font-size:14px}
+.modal .mtop .x{position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:22px;cursor:pointer;color:#888}
+.msheet{flex:1;overflow:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 20px;text-align:center}
+.msheet .step{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.08em}
+.msheet h3{font-family:var(--disp);font-weight:600;font-size:clamp(26px,3.6vw,38px);margin:8px 0 26px}
+.qopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,230px));gap:18px;justify-content:center;width:100%;max-width:820px}
+.qopt{border:none;background:none;cursor:pointer;font-family:inherit}
+.qopt .im{border-radius:16px;aspect-ratio:1/.82;display:grid;place-items:center;transition:.16s;border:2px solid transparent}
+.qopt:hover .im{transform:translateY(-3px)}
+.qopt.on .im{border-color:var(--blue)}
+.qopt .im span{font-family:var(--disp);font-size:30px;font-weight:600;color:#1114}
+.qopt b{display:block;font-size:16px;font-weight:700;margin-top:10px}
+.qopt small{color:var(--muted);font-size:12.5px}
+.qskip{margin-top:26px;background:#fff;border:1.5px solid var(--line);border-radius:26px;padding:11px 22px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+.qresult{max-width:560px}
+.qresult .rimgs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.qresult .rimgs img{width:64px;height:52px;object-fit:contain;mix-blend-mode:multiply;background:var(--panel);border-radius:8px}
+.bigbtn{width:100%;max-width:360px;background:var(--blue);color:#fff;border:none;font-weight:700;font-size:15px;padding:15px;border-radius:28px;cursor:pointer;margin:7px auto 0;display:block}
+.bigbtn.alt{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:98px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-weight:600;font-size:13px;padding:12px 18px;border-radius:30px;opacity:0;transition:.25s;pointer-events:none;z-index:120}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){
+  .plp{grid-template-columns:1fr;gap:16px}
+  .nlinks{display:none}
+  .rail{position:fixed;inset:0;top:0;z-index:70;background:#fff;max-height:none;padding:18px 20px 90px;display:none;overflow:auto}
+  .rail.show{display:block}
+  .filtbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:22px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer}
+  .railclose{display:block;text-align:right;font-size:22px;color:#888;cursor:pointer;margin-bottom:6px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:14px}
+  .pc .nm .t{font-size:17px}
+}
+@media(min-width:901px){.railclose{display:none}.filtbtn{display:none!important}}
+@media(max-width:560px){.grid{grid-template-columns:repeat(2,1fr);gap:12px}.pc .nm .t{font-size:15px}.pc .buy{font-size:12px}}
 </style></head><body>
 
 <header class="nav"><div class="wrap row">
-  <a class="brand" href="index.html">PARASITE<span class="dot">·</span>CLUB<span class="dot">·</span>USA</a>
-  <div style="display:flex;gap:14px;align-items:center">
-    <a href="bag.html" style="font-weight:600;font-size:14px">Bag<span id="bagcount" style="display:none;background:var(--ink);color:#fff;border-radius:20px;font-size:11px;padding:1px 7px;margin-left:4px;font-weight:700"></span></a>
-    <a class="navbtn" href="tryon3d.html">Try on <span class="bagct" id="bagn" style="display:none"></span></a>
+  <a class="brand" href="index.html">PARASITE·CLUB</a>
+  <nav class="nlinks" id="nlinks"></nav>
+  <div class="nright">
+    <a href="#" id="savedlink">♡ <span id="savedn">0</span></a>
+    <a href="bag.html">Bag<span class="ct" id="bagcount" style="display:none;margin-left:5px"></span></a>
+    <a class="pillbtn" href="tryon3d.html">Try on</a>
   </div>
 </div></header>
+<div class="reassure"><div class="wrap">
+  <span><b>Free</b> shipping</span><span class="dot">·</span>
+  <span><b>Free</b> 30-day returns</span><span class="dot">·</span>
+  <span>Frames from <b>$95</b></span><span class="dot">·</span>
+  <span>Home try-on trunk</span><span class="dot">·</span>
+  <span><b>FSA / HSA</b> accepted</span>
+</div></div>
 
 <div class="wrap">
-  <div class="houses" id="houses"></div>
-  <div class="bhead">
-    <div><h1 id="hname">Portrait</h1><div class="meta" id="hmeta"></div></div>
-    <button class="adbtn" id="adbtn">✦ Help me choose</button>
-  </div>
-  <div class="filters">
-    <div class="cols" id="cols"></div>
-    <div class="seg" id="typeseg">
-      <button data-t="Sunglasses">Sun</button>
-      <button data-t="Readers">Readers</button>
-      <button data-t="Eyeglasses">Optical</button>
-      <button data-t="all">All</button>
-    </div>
-  </div>
-  <div class="colinfo" id="colinfo"></div>
+  <div class="hb"><div class="kick" id="kick">The club</div><h1 id="hname">Portrait</h1><p id="hmeta"></p></div>
 
-  <div class="stage">
-    <button class="arw prev" id="prev">‹</button>
-    <div class="card" id="card"></div>
-    <button class="arw next" id="next">›</button>
+  <div class="plp">
+    <aside class="rail" id="rail">
+      <div class="railclose" id="railclose">✕</div>
+      <div class="quizcard">
+        <h4>Not sure where to start?</h4>
+        <p>Answer a few questions — Adrian builds your shortlist.</p>
+        <button id="quizbtn">Take the 60-sec style quiz</button>
+      </div>
+      <div id="filters"></div>
+    </aside>
+
+    <section>
+      <div class="ghead">
+        <button class="filtbtn" id="filtbtn">⚙ Filters</button>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg><input id="q" placeholder="Search frames…"></div>
+        <div class="cnt" id="cnt"></div>
+        <select class="srt" id="sort">
+          <option value="feat">Featured</option>
+          <option value="new">Newest</option>
+          <option value="plo">Price: low to high</option>
+          <option value="phi">Price: high to low</option>
+          <option value="az">Name: A–Z</option>
+        </select>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
   </div>
-  <div class="counter" id="counter"></div>
-  <div class="prog"><i id="progbar"></i></div>
-  <div class="swatchrow" id="swatchrow"></div>
 </div>
 
 <div class="pickbar"><div class="wrap row">
   <div class="pickpanel" id="pickpanel"></div>
-  <div class="lbl" id="picklbl" style="cursor:pointer"><b id="pickn">0</b> saved <span id="pickcar" style="opacity:.45;font-size:11px">▴ manage</span></div>
+  <div class="lbl" id="picklbl"><b id="pickn">0</b> saved <span id="pickcar" style="opacity:.45;font-size:11px">▴ manage</span></div>
   <div class="mini" id="pickmini"></div>
-  <button class="go dim" id="tryon">Try them on →</button>
+  <button class="go dim" id="tryon">Heart some first</button>
 </div></div>
 
-<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="modal" id="modal">
+  <div class="mtop"><span class="b">PARASITE·CLUB</span><span class="x" id="qx">✕</span></div>
+  <div class="msheet" id="msheet"></div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -168,233 +216,182 @@ const Q=new URLSearchParams(location.search);
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1900);}
 (function(){try{const bag=JSON.parse(localStorage.getItem('upc_bag')||'[]');const n=bag.reduce((s,b)=>s+(b.q||1),0);const el=$('bagcount');if(n&&el){el.textContent=n;el.style.display='inline-block';}}catch(e){}})();
 const getFavs=()=>{try{return JSON.parse(localStorage.getItem('upc_favs')||'[]')}catch(e){return[]}};
-const setFavs=a=>{localStorage.setItem('upc_favs',JSON.stringify(a));};
+const setFavs=a=>localStorage.setItem('upc_favs',JSON.stringify(a));
 const stripNum=s=>(s||'').replace(/\s*\d+\s*$/,'').trim();
-const modelKey=p=>p.b+'|'+(stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase();
+const modelKey=p=>p.b+'|'+((stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase());
 const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
 const colorName=p=>{const b=displayModel(p);let c=(p.n||'').trim();if(c.toUpperCase().startsWith(b.toUpperCase()))c=c.slice(b.length).trim();return c||(p.n||'');};
-/* ---- image normalizer: pick whitest-bg frame shot, crop to the frame, cache ---- */
-const _imgCache={};
-function loadImg(u){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';im.onload=()=>res(im);im.onerror=rej;im.src=u+'?width=600';});}
-function cornerW(a,w,h){const pts=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]];let s=0;pts.forEach(([x,y])=>{const i=(y*w+x)*4;s+=(a[i]+a[i+1]+a[i+2])/3;});return s/4;}
-/* Is this a flat, straight-on FRONT shot? (symmetric silhouette + frame-shaped aspect) */
-function frontEval(a,w,h){
-  let minx=w,miny=h,maxx=0,maxy=0;
-  for(let y=0;y<h;y+=2)for(let px=0;px<w;px+=2){const i=(y*w+px)*4;if(a[i]>232&&a[i+1]>232&&a[i+2]>232)continue;if(px<minx)minx=px;if(px>maxx)maxx=px;if(y<miny)miny=y;if(y>maxy)maxy=y;}
-  const bw=maxx-minx,bh=maxy-miny;if(bw<8||bh<6)return{ok:false};
-  const GW=32,GH=24;let match=0,tot=0;
-  const m=(gx,gy)=>{const sx=Math.round(minx+bw*gx/(GW-1)),sy=Math.round(miny+bh*gy/(GH-1));const i=(sy*w+sx)*4;return (a[i]>232&&a[i+1]>232&&a[i+2]>232)?0:1;};
-  for(let gy=0;gy<GH;gy++)for(let gx=0;gx<GW;gx++){tot++;if(m(gx,gy)===m(GW-1-gx,gy))match++;}
-  const sym=match/tot,asp=bw/bh;
-  return{ok:true,front:(sym>=0.86&&asp>=2.2&&asp<=4.3),sym,asp,minx,miny,bw,bh};
-}
-/* pick the best straight-on white-bg shot; null if the model has none */
-async function chooseFront(p){
-  const cands=(p.imgs&&p.imgs.length?p.imgs:[p.img]).slice(0,5);
-  let best=null,bestSym=-1;
-  for(const u of cands){try{const im=await loadImg(u);const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;
-    const x=c.getContext('2d');x.drawImage(im,0,0);const a=x.getImageData(0,0,c.width,c.height).data;
-    const white=cornerW(a,c.width,c.height),ev=frontEval(a,c.width,c.height);
-    if(ev.ok&&ev.front&&white>=215&&ev.sym>bestSym){bestSym=ev.sym;best={c,ev};}
-  }catch(e){}}
-  return best;
-}
-async function normalizedFrame(p){
-  if(_imgCache[p.h]!==undefined)return _imgCache[p.h];
-  const b=await chooseFront(p);
-  if(!b){_imgCache[p.h]=null;return null;}            // no straight-on photo → show none
-  let {minx,miny,bw,bh}=b.ev;const padX=bw*0.10,padY=bh*0.18;
-  minx=Math.max(0,minx-padX);miny=Math.max(0,miny-padY);bw=Math.min(b.c.width-minx,bw+padX*2);bh=Math.min(b.c.height-miny,bh+padY*2);
-  const o=document.createElement('canvas');o.width=Math.round(bw);o.height=Math.round(bh);
-  o.getContext('2d').drawImage(b.c,minx,miny,bw,bh,0,0,o.width,o.height);
-  const url=o.toDataURL('image/png');_imgCache[p.h]=url;return url;
-}
+const szImg=(u,w)=>!u?'':u.includes('lh3.googleusercontent')?u.replace(/=w\d+$/,'')+'=w'+w:(u.split('?')[0]+'?width='+w);
 
 const HMETA={Portrait:'Premium · Handmade in Italy',Acid:'Designer · France · by Hugo Martin',Parasite:'Futurist · France · handcrafted'};
+const HKICK={Portrait:'Italian premium',Acid:'French design',Parasite:'Avant-garde'};
 const COLS={
-  Portrait:[['all','All'],['essential','Essential'],['editorial','Editorial'],['metal','Metal']],
-  Acid:[['all','All'],['acetate','Acetate'],['metal','Metal'],['boost','Boost'],['premium','Premium']],
-  Parasite:[['all','All'],['signature','Icons'],['lab','Lab']],
+  Portrait:[['essential','Essential'],['editorial','Editorial'],['metal','Metal']],
+  Acid:[['acetate','Acetate'],['metal','Metal'],['boost','Boost'],['premium','Premium']],
+  Parasite:[['signature','Icons'],['lab','Lab']],
 };
-const COLINFO={
-  all:'The full house — every style, optical and sun.',
-  essential:'Everyday icons — clean, wearable shapes you reach for daily.',
-  editorial:'Statement frames with character and a point of view.',
-  metal:'Lightweight metal constructions — minimal and refined.',
-  acetate:'Sculpted acetate — rich color and hand-finished texture.',
-  boost:'Bolder, brighter — Acid turned up.',
-  premium:'The elevated tier — premium materials and detailing.',
-  signature:'Parasite icons — the avant-garde shapes the house is known for.',
-  lab:'The experimental Lab line — Parasite at its most futurist.',
-};
-function matchCol(p,k){
-  if(k==='all')return true;
-  if(k==='signature')return !(p.cols&&p.cols.length);
-  return p.cols&&p.cols.includes(k);
-}
+function matchCol(p,k){if(k==='all')return true;if(k==='signature')return !(p.cols&&p.cols.length);return p.cols&&p.cols.includes(k);}
+/* color families */
+const CFAM=[
+  ['black','Black','#1a1a1a'],['tortoise','Tortoise','#6b4323'],['crystal','Crystal','#dfe6ea'],
+  ['brown','Brown','#7a5230'],['green','Green','#3f6f4a'],['blue','Blue','#395a9e'],
+  ['grey','Grey','#8b9199'],['havana','Havana','#5a3a1e'],['red','Red/Pink','#b5424e'],
+  ['clear','Clear/Nude','#eadfce'],['gold','Gold','#c6a15b'],['silver','Silver','#b9bfc6'],
+];
+function famOf(p){const c=colorName(p).toLowerCase();for(const [k] of CFAM){if(k==='red'){if(/red|pink|bordeaux|burgundy|rose/.test(c))return 'red';}else if(k==='crystal'){if(/crystal|clear|transparent/.test(c))return 'crystal';}else if(k==='clear'){if(/nude|milk|beige|sand|tan/.test(c))return 'clear';}else if(c.includes(k))return k;}return null;}
 
-let DATA=[],house=Q.get('b')||'Portrait',col='all',type=Q.get('t')||'Sunglasses',list=[],i=0,cur=null;
+let DATA=[],house=Q.get('b')||'Portrait',type=Q.get('t')||'Sunglasses';
+let F={col:'all',fams:new Set(),price:'all',shopnew:false,q:''},sort='feat';
 if(!['Portrait','Acid','Parasite'].includes(house))house='Portrait';
 if(!['all','Eyeglasses','Sunglasses','Readers'].includes(type))type='Sunglasses';
 
 fetch('products.json').then(r=>r.json()).then(d=>{
-  DATA=d;buildHouses();buildCols();markType();refresh();renderPick();
-  if(Q.get('adrian')==='1')openAdrian();
+  DATA=d;buildNav();buildFilters();render();renderPick();
+  if(Q.get('adrian')==='1')openQuiz();
 });
-function markType(){$('typeseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.t===type));}
 
-function buildHouses(){
-  $('houses').innerHTML=['Portrait','Acid','Parasite'].map(h=>`<button class="hpill${h===house?' on':''}" data-h="${h}">${h}</button>`).join('');
-  $('houses').querySelectorAll('.hpill').forEach(b=>b.onclick=()=>{house=b.dataset.h;col='all';buildHouses();buildCols();refresh();});
-  $('hname').textContent=house;$('hmeta').textContent=HMETA[house];
+function buildNav(){
+  $('nlinks').innerHTML=['Portrait','Acid','Parasite'].map(h=>`<a href="#" data-h="${h}" class="${h===house?'on':''}">${h}</a>`).join('');
+  $('nlinks').querySelectorAll('a').forEach(a=>a.onclick=e=>{e.preventDefault();house=a.dataset.h;F.col='all';F.fams.clear();buildNav();buildFilters();render();});
+  $('kick').textContent=HKICK[house]||'The club';$('hname').textContent=house;$('hmeta').textContent=HMETA[house];
 }
-function buildCols(){
-  $('cols').innerHTML=COLS[house].map(c=>`<button class="chip${c[0]===col?' on':''}" data-c="${c[0]}">${c[1]}</button>`).join('');
-  $('cols').querySelectorAll('.chip').forEach(b=>b.onclick=()=>{col=b.dataset.c;buildCols();refresh();});
+function priceOpts(){return [['all','All prices'],['u150','Under $150'],['150','$150 – $250'],['250','$250 – $400'],['400','$400 +']];}
+function inPrice(p){const v=p.p;switch(F.price){case 'u150':return v<150;case '150':return v>=150&&v<250;case '250':return v>=250&&v<400;case '400':return v>=400;default:return true;}}
+
+function buildFilters(){
+  const typeOpts=[['Sunglasses','Sunglasses'],['Readers','Readers'],['Eyeglasses','Optical'],['all','All frames']];
+  let h='';
+  h+=`<div class="fg"><h5>Category</h5>${typeOpts.map(t=>`<label class="opt"><input type="radio" name="ty" ${t[0]===type?'checked':''} data-t="${t[0]}">${t[1]}</label>`).join('')}</div>`;
+  h+=`<div class="fg"><h5>Collection</h5><label class="opt"><input type="radio" name="col" ${F.col==='all'?'checked':''} data-c="all">All</label>${COLS[house].map(c=>`<label class="opt"><input type="radio" name="col" ${F.col===c[0]?'checked':''} data-c="${c[0]}">${c[1]}</label>`).join('')}</div>`;
+  h+=`<div class="fg"><h5>Color</h5><div class="cfam">${CFAM.map(c=>`<button data-f="${c[0]}" class="${F.fams.has(c[0])?'on':''}"><span class="sw" style="background:${c[2]}"></span>${c[1]}</button>`).join('')}</div></div>`;
+  h+=`<div class="fg"><h5>Price</h5>${priceOpts().map(p=>`<label class="opt"><input type="radio" name="pr" ${F.price===p[0]?'checked':''} data-p="${p[0]}">${p[1]}</label>`).join('')}</div>`;
+  h+=`<div class="fg"><h5>Shop by</h5><label class="opt"><input type="checkbox" style="border-radius:5px" ${F.shopnew?'checked':''} id="newonly">New arrivals</label><button class="clearf" id="clearf">Clear all filters</button></div>`;
+  $('filters').innerHTML=h;
+  $('filters').querySelectorAll('input[name=ty]').forEach(r=>r.onchange=()=>{type=r.dataset.t;render();});
+  $('filters').querySelectorAll('input[name=col]').forEach(r=>r.onchange=()=>{F.col=r.dataset.c;render();});
+  $('filters').querySelectorAll('input[name=pr]').forEach(r=>r.onchange=()=>{F.price=r.dataset.p;render();});
+  $('filters').querySelectorAll('.cfam button').forEach(b=>b.onclick=()=>{const f=b.dataset.f;F.fams.has(f)?F.fams.delete(f):F.fams.add(f);b.classList.toggle('on');render();});
+  $('newonly').onchange=e=>{F.shopnew=e.target.checked;render();};
+  $('clearf').onclick=()=>{F.col='all';F.fams.clear();F.price='all';F.shopnew=false;F.q='';$('q').value='';buildFilters();render();};
 }
-$('typeseg').querySelectorAll('button').forEach(b=>b.onclick=()=>{
-  type=b.dataset.t;$('typeseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));refresh();
-});
-function buildList(){
+
+function baseList(){
   const tf=type==='Readers'?'Eyeglasses':type;
-  let l=DATA.filter(p=>p.b===house&&matchCol(p,col)&&(type==='all'||p.t===tf));
-  const seen=new Set(),out=[];
-  l.forEach(p=>{const k=modelKey(p);if(!seen.has(k)){seen.add(k);out.push(p);}});
+  let l=DATA.filter(p=>p.b===house&&(type==='all'||p.t===tf)&&matchCol(p,F.col)&&inPrice(p));
+  if(F.fams.size)l=l.filter(p=>{const f=famOf(p);return f&&F.fams.has(f);});
+  if(F.shopnew)l=l.filter(p=>p.new);
+  if(F.q){const q=F.q.toLowerCase();l=l.filter(p=>(p.n||'').toLowerCase().includes(q)||(p.model||'').toLowerCase().includes(q));}
+  // dedupe to one card per model
+  const seen=new Set(),out=[];l.forEach(p=>{const k=modelKey(p);if(!seen.has(k)){seen.add(k);out.push(p);}});
   return out;
 }
 function colorways(p){return DATA.filter(x=>modelKey(x)===modelKey(p));}
-function refresh(){
-  list=buildList();
-  if(!list.length){
-    // graceful fallback: never dead-end a house on an empty filter — slide to one that has frames
-    for(const t of ['Sunglasses','Eyeglasses','all']){
-      if(t===type)continue;
-      const prev=type;type=t;
-      const l=buildList();
-      if(l.length){list=l;markType();break;}
-      type=prev;
-    }
-  }
-  i=0;$('colinfo').textContent=COLINFO[col]||'';
-  if(!list.length){$('card').innerHTML='<div style="padding:40px;text-align:center;color:#9a9a9a">No frames in this filter yet.</div>';$('counter').textContent='';$('progbar').style.width='0';$('swatchrow').innerHTML='';return;}
-  show();
-}
-function show(){
-  cur=list[i];const fav=getFavs().includes(cur.h);
-  const fin=(cur.p/4).toFixed(2);
-  const cw=colorways(cur),cwIdx=cw.findIndex(x=>x.h===cur.h),cwN=cw.length,cname=colorName(cur);
-  $('card').innerHTML=`
-    ${cur.new?'<span class="new">New</span>':''}
-    <button class="heart${fav?' on':''}" id="heart">${fav?'♥':'♡'}</button>
-    <div class="imgwrap"><img id="cardimg" alt="${cur.n}" style="display:none"><div class="noimg" id="noimg">Finding a straight-on photo…</div></div>
-    <div class="angles" id="angles"></div>
-    <div class="cinfo">
-      <div><div class="col">${house}${col!=='all'?' · '+(COLS[house].find(c=>c[0]===col)||[])[1]:''}</div>
-        <h2>${displayModel(cur)}</h2><div class="sub">${cwN>1?`<b style="color:#0c0c0e">Color:</b> ${cname} <span style="opacity:.6">· ${cwIdx+1} of ${cwN}</span>`:cname} · ${cur.t==='Sunglasses'?'Sunglasses':'Optical'}</div></div>
-      <div class="price"><div class="pv">$${cur.p}</div><div class="fin">or 4× $${fin} · Shop Pay</div></div>
-    </div>
-    <div class="cactions">
-      <button class="save${fav?' on':''}" id="save">${fav?'♥ Saved':'♡ Save to picks'}</button>
-      <button class="try" id="trythis">Try this on</button>
-    </div>
-    ${type==='Readers'?`<a class="rxadd" href="rx.html?h=${cur.h}&use=readers">+ Add reading lenses</a>`:(cur.t!=='Sunglasses'?`<a class="rxadd" href="rx.html?h=${cur.h}">+ Add prescription lenses</a>`:'')}`;
-  $('heart').onclick=$('save').onclick=toggleFav;
-  $('trythis').onclick=()=>{ if(!getFavs().includes(cur.h))doFav(cur.h,true); location.href='tryon3d.html?h='+encodeURIComponent(cur.h); };
-  // colorways (cw computed above)
-  $('swatchrow').innerHTML=cw.length>1?cw.slice(0,8).map(c=>`<div class="swatch${c.h===cur.h?' on':''}" data-h="${c.h}"><img src="${c.img}?width=90"></div>`).join(''):'';
-  $('swatchrow').querySelectorAll('.swatch').forEach(s=>s.onclick=()=>{cur=DATA.find(p=>p.h===s.dataset.h);list[i]=cur;show();});
-  $('counter').innerHTML=`<b>${i+1}</b> / ${list.length} · ${list.length} styles`;
-  $('progbar').style.width=((i+1)/list.length*100)+'%';
-  const want=cur.h;normalizedFrame(cur).then(u=>{if(!(cur&&cur.h===want))return;const im=$('cardimg'),ni=$('noimg');if(u){im.src=u;im.style.display='';if(ni)ni.style.display='none';}else{im.style.display='none';if(ni){ni.textContent='No straight-on photo yet';ni.style.display='';}}}).catch(()=>{});
-  renderAngles();
-}
-const szImg=(u,w)=>u.includes('lh3.googleusercontent')?u.replace(/=w\d+$/,'')+'=w'+w:(u.split('?')[0]+'?width='+w);
-function renderAngles(){
-  const el=$('angles');if(!el)return;
-  const angs=[...new Set((cur.imgs&&cur.imgs.length?cur.imgs:[cur.img]).filter(Boolean))].slice(0,6);
-  if(angs.length<2){el.innerHTML='';return;}
-  el.innerHTML=angs.map((u,n)=>`<div class="angle${n===0?' on':''}" data-u="${u}" data-n="${n}"><img src="${szImg(u,120)}" alt=""></div>`).join('');
-  el.querySelectorAll('.angle').forEach(a=>a.onclick=()=>{
-    el.querySelectorAll('.angle').forEach(x=>x.classList.remove('on'));a.classList.add('on');
-    const u=a.dataset.u,im=$('cardimg'),ni=$('noimg');
-    if(a.dataset.n==='0'){normalizedFrame(cur).then(d=>{im.src=d||szImg(u,700);im.style.display='';if(ni)ni.style.display='none';});}
-    else{im.src=szImg(u,700);im.style.display='';if(ni)ni.style.display='none';}
+function sortList(l){const a=l.slice();
+  if(sort==='plo')a.sort((x,y)=>x.p-y.p);
+  else if(sort==='phi')a.sort((x,y)=>y.p-x.p);
+  else if(sort==='az')a.sort((x,y)=>displayModel(x).localeCompare(displayModel(y)));
+  else if(sort==='new')a.sort((x,y)=>(y.new?1:0)-(x.new?1:0));
+  return a;}
+
+const TAGCOL={Portrait:'var(--blue)',Acid:'var(--tang)',Parasite:'var(--lilac)'};
+function render(){
+  // empty-filter fallback on category only
+  let list=baseList();
+  if(!list.length&&(F.col!=='all'||F.fams.size||F.price!=='all'||F.shopnew||F.q)){ /* keep filters, show empty */ }
+  else if(!list.length){for(const t of ['Sunglasses','Eyeglasses','all']){if(t===type)continue;const pv=type;type=t;list=baseList();if(list.length){buildFilters();break;}type=pv;}}
+  list=sortList(list);
+  $('cnt').innerHTML=`<b>${list.length}</b> frame${list.length===1?'':'s'}`;
+  const favs=getFavs();
+  if(!list.length){$('grid').innerHTML='<div class="empty">No frames match these filters.<br><button class="clearf" onclick="document.getElementById(\'clearf\').click()">Clear filters</button></div>';return;}
+  $('grid').innerHTML=list.map(p=>{
+    const cw=colorways(p),cwN=cw.length,fav=favs.includes(p.h);
+    const sw=cwN>1?`<div class="sw">${cw.slice(0,5).map(c=>`<button class="s${c.h===p.h?' on':''}" data-h="${c.h}" data-model="${modelKey(p)}"><img src="${szImg(c.img,60)}" alt=""></button>`).join('')}${cwN>5?`<span class="more">+${cwN-5}</span>`:''}</div>`:'';
+    const sun=p.t==='Sunglasses';
+    const buy=sun?`<a class="buy blue" href="rx.html?h=${p.h}&use=sun">Add sun lenses →</a>`:`<a class="buy blue" href="rx.html?h=${p.h}${type==='Readers'?'&use=readers':''}">Select lenses →</a>`;
+    return `<div class="pc" data-model="${modelKey(p)}" data-h="${p.h}">
+      <div class="frame">
+        ${p.new?`<span class="tag" style="background:${TAGCOL[p.b]}">New</span>`:''}
+        <button class="heart${fav?' on':''}" data-h="${p.h}" title="Save">${fav?'♥':'♡'}</button>
+        <img src="${szImg(p.img,460)}" alt="${p.n}" loading="lazy">
+        <button class="tryon" data-h="${p.h}">◉ Try on</button>
+      </div>
+      <div class="nm"><span class="t">${displayModel(p)}</span><span class="pr">$${p.p}</span></div>
+      <div class="sub">${sun?'Sunglasses':'Optical'}${cwN>1?' · '+cwN+' colors':''}</div>
+      ${sw}${buy}
+    </div>`;
+  }).join('');
+  // wire cards
+  $('grid').querySelectorAll('.heart').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();toggleFav(b.dataset.h);});
+  $('grid').querySelectorAll('.tryon').forEach(b=>b.onclick=e=>{e.preventDefault();if(!getFavs().includes(b.dataset.h))doFav(b.dataset.h,true,true);location.href='tryon3d.html?h='+encodeURIComponent(b.dataset.h);});
+  $('grid').querySelectorAll('.sw .s').forEach(s=>s.onclick=e=>{e.preventDefault();
+    const np=DATA.find(x=>x.h===s.dataset.h);const card=s.closest('.pc');
+    card.querySelector('.frame img').src=szImg(np.img,460);
+    card.querySelector('.heart').dataset.h=np.h;card.querySelector('.tryon').dataset.h=np.h;
+    const fav=getFavs().includes(np.h);const ht=card.querySelector('.heart');ht.classList.toggle('on',fav);ht.textContent=fav?'♥':'♡';
+    card.querySelector('.buy').href=(np.t==='Sunglasses'?`rx.html?h=${np.h}&use=sun`:`rx.html?h=${np.h}`);
+    card.querySelectorAll('.sw .s').forEach(x=>x.classList.toggle('on',x===s));
+    card.dataset.h=np.h;
   });
 }
-function toggleFav(){doFav(cur.h,!getFavs().includes(cur.h));show();renderPick();}
-function doFav(h,on){let f=getFavs();if(on){if(!f.includes(h))f.push(h);toast('Saved to your picks ♥');}else{f=f.filter(x=>x!==h);}setFavs(f);}
-$('prev').onclick=()=>{if(!list.length)return;i=(i-1+list.length)%list.length;show();};
-$('next').onclick=()=>{if(!list.length)return;i=(i+1)%list.length;show();};
-document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')$('prev').click();if(e.key==='ArrowRight')$('next').click();});
-// swipe
-let sx=null;$('card').addEventListener('pointerdown',e=>sx=e.clientX);
-window.addEventListener('pointerup',e=>{if(sx==null)return;const dx=e.clientX-sx;if(Math.abs(dx)>50){dx<0?$('next').click():$('prev').click();}sx=null;});
+$('sort').onchange=()=>{sort=$('sort').value;render();};
+$('q').oninput=()=>{F.q=$('q').value.trim();render();};
+$('filtbtn').onclick=()=>$('rail').classList.add('show');
+$('railclose').onclick=()=>$('rail').classList.remove('show');
+
+function toggleFav(h){doFav(h,!getFavs().includes(h));render();renderPick();}
+function doFav(h,on,quiet){let f=getFavs();if(on){if(!f.includes(h))f.push(h);if(!quiet)toast('Saved to your picks ♥');}else{f=f.filter(x=>x!==h);}setFavs(f);renderPick();}
 
 function renderPick(){
-  const f=getFavs();$('pickn').textContent=f.length;
-  $('bagn').style.display=f.length?'inline-block':'none';$('bagn').textContent=f.length;
-  const mini=f.slice(-5).map(h=>{const p=DATA.find(x=>x.h===h);return p?`<img src="${p.img}?width=80">`:'';}).join('');
-  $('pickmini').innerHTML=mini;
+  const f=getFavs();$('pickn').textContent=f.length;$('savedn').textContent=f.length;
+  $('pickmini').innerHTML=f.slice(-5).map(h=>{const p=DATA.find(x=>x.h===h);return p?`<img src="${szImg(p.img,80)}">`:'';}).join('');
   $('pickcar').style.display=f.length?'inline':'none';
   const go=$('tryon');
   if(f.length){go.classList.remove('dim');go.textContent='Try '+f.length+' on →';go.onclick=()=>location.href='tryon3d.html?picks=1';}
-  else{go.classList.add('dim');go.textContent='Heart some first';go.onclick=()=>toast('Tap the heart on frames you like');$('pickpanel').classList.remove('show');}
-  // build manage panel
+  else{go.classList.add('dim');go.textContent='Heart some first';go.onclick=()=>toast('Tap ♡ on frames you like');$('pickpanel').classList.remove('show');}
   const pp=$('pickpanel');
-  if(f.length){pp.innerHTML='<div class="ph">Your picks — tap remove to delete</div>'+f.map(h=>{const p=DATA.find(x=>x.h===h);if(!p)return '';return `<div class="prow"><img src="${p.img}?width=110"><div class="pn">${displayModel(p)}<small>${p.n} · $${p.p}</small></div><button class="rm" data-h="${h}">Remove ✕</button></div>`;}).join('');
-    pp.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{doFav(b.dataset.h,false);toast('Removed from picks');renderPick();if(cur)show();});}
+  if(f.length){pp.innerHTML='<div class="ph">Your picks — tap remove to delete</div>'+f.map(h=>{const p=DATA.find(x=>x.h===h);if(!p)return '';return `<div class="prow"><img src="${szImg(p.img,110)}"><div class="pn">${displayModel(p)}<small>${colorName(p)} · $${p.p}</small></div><button class="rm" data-h="${h}">Remove ✕</button></div>`;}).join('');
+    pp.querySelectorAll('.rm').forEach(b=>b.onclick=()=>{doFav(b.dataset.h,false);toast('Removed');render();});}
 }
 $('picklbl').onclick=()=>{if(getFavs().length)$('pickpanel').classList.toggle('show');};
+$('savedlink').onclick=e=>{e.preventDefault();if(getFavs().length)$('pickpanel').classList.toggle('show');else toast('No saved frames yet');};
 
-/* ---------- Adrian quiz ---------- */
+/* ---------- Style quiz (WP-style, image cards) ---------- */
 const QUIZ=[
-  {k:'type',q:'What are you after?',o:[['Eyeglasses','Optical','Prescription / clear lenses'],['Sunglasses','Sun','Tinted / UV'],['all','Both','Show me everything']]},
-  {k:'vibe',q:'Your vibe?',o:[['understated','Understated','Clean & everyday'],['statement','Statement','Bold, noticed'],['avant','Avant-garde','Sculptural & futurist']]},
-  {k:'face',q:'Your face shape?',o:[['round','Round','Softer, fuller'],['square','Square','Strong jaw / angular'],['oval','Oval / long','Balanced, longer'],['unsure','Not sure','Surprise me']]},
-  {k:'house',q:'A house in mind?',o:[['any','Any house','Best across all three'],['Portrait','Portrait','Italian premium'],['Acid','Acid','French design'],['Parasite','Parasite','Futurist']]},
+  {k:'type',q:'What are you looking for?',o:[['Sunglasses','Sunglasses','Tinted / UV','var(--tang)'],['Eyeglasses','Eyeglasses','Prescription / clear','var(--blue)'],['all','Both','Show me everything','var(--teal)']]},
+  {k:'vibe',q:"What's your vibe?",o:[['understated','Understated','Clean & everyday','var(--teal)'],['statement','Statement','Bold, get noticed','var(--coral)'],['avant','Avant-garde','Sculptural & futurist','var(--lilac)']]},
+  {k:'face',q:'Your face shape?',o:[['round','Round','Softer, fuller','var(--blue)'],['square','Square','Strong, angular','var(--tang)'],['oval','Oval / long','Balanced, longer','var(--teal)'],['unsure','Not sure','Surprise me','var(--lilac)']]},
+  {k:'house',q:'A house in mind?',o:[['any','Any house','Best of all three','var(--blue)'],['Portrait','Portrait','Italian premium','var(--teal)'],['Acid','Acid','French design','var(--tang)'],['Parasite','Parasite','Futurist','var(--lilac)']]},
 ];
 let ans={},qi=0;
-function openAdrian(){qi=0;ans={};$('modal').classList.add('show');renderQuiz();}
-function closeAdrian(){$('modal').classList.remove('show');}
+function openQuiz(){qi=0;ans={};$('modal').classList.add('show');renderQuiz();}
+function closeQuiz(){$('modal').classList.remove('show');}
+$('quizbtn').onclick=openQuiz;$('qx').onclick=closeQuiz;
 function renderQuiz(){
   const s=QUIZ[qi];
-  $('sheet').innerHTML=`
-    <div class="x" id="ax">✕</div>
-    <div class="ahead"><div class="ai">A</div><div><div class="step">Adrian · ${qi+1} of ${QUIZ.length}</div><h3>Let's find your pair</h3></div></div>
-    <div class="q">${s.q}</div>
-    <div class="opts">${s.o.map(o=>`<button class="opt" data-v="${o[0]}"><b>${o[1]}</b><span>${o[2]}</span></button>`).join('')}</div>`;
-  $('ax').onclick=closeAdrian;
-  $('sheet').querySelectorAll('.opt').forEach(b=>b.onclick=()=>{ans[s.k]=b.dataset.v;qi++;qi<QUIZ.length?renderQuiz():finishQuiz();});
+  $('msheet').innerHTML=`<div class="step">${qi+1} of ${QUIZ.length}</div><h3>${s.q}</h3>
+    <div class="qopts">${s.o.map(o=>`<button class="qopt" data-v="${o[0]}"><div class="im" style="background:color-mix(in srgb, ${o[3]} 14%, #fff);box-shadow:inset 0 0 0 2px color-mix(in srgb, ${o[3]} 30%, #fff)"><span style="color:${o[3]}">${o[1][0]}</span></div><b>${o[1]}</b><small>${o[2]}</small></button>`).join('')}</div>
+    <button class="qskip" id="qskip">I'm not sure. Skip it.</button>`;
+  $('msheet').querySelectorAll('.qopt').forEach(b=>b.onclick=()=>{ans[s.k]=b.dataset.v;qi++;qi<QUIZ.length?renderQuiz():finishQuiz();});
+  $('qskip').onclick=()=>{qi++;qi<QUIZ.length?renderQuiz():finishQuiz();};
 }
 const VIBECOLS={understated:['essential','acetate','signature'],statement:['editorial','boost'],avant:['lab','premium','metal']};
 function finishQuiz(){
   let pool=DATA.slice();
   if(ans.house&&ans.house!=='any')pool=pool.filter(p=>p.b===ans.house);
   if(ans.type&&ans.type!=='all')pool=pool.filter(p=>p.t===ans.type);
-  const vc=VIBECOLS[ans.vibe]||[];
-  let matched=pool.filter(p=>vc.some(k=>matchCol(p,k)));
-  if(matched.length<5)matched=pool;                          // fallback: don't return empty
-  // dedupe by model, shuffle, take 6
-  const seen=new Set(),uniq=[];
-  matched.sort(()=>Math.random()-0.5).forEach(p=>{const k=modelKey(p);if(!seen.has(k)){seen.add(k);uniq.push(p);}});
-  const pick=uniq.slice(0,6);
-  let f=getFavs();pick.forEach(p=>{if(!f.includes(p.h))f.push(p.h);});setFavs(f);
-  renderPick();
-  $('sheet').innerHTML=`
-    <div class="x" id="ax">✕</div>
-    <div class="ahead"><div class="ai">A</div><div><div class="step">Adrian</div><h3>Your shortlist</h3></div></div>
-    <div class="adresult">
-      <p style="font-size:14px;color:var(--muted)">Based on your answers I saved <b style="color:var(--ink)">${pick.length}</b> frames to your picks. Let's see them on you.</p>
-      <div class="rimgs">${pick.map(p=>`<img src="${p.img}?width=120" title="${p.n}">`).join('')}</div>
-      <button class="bigbtn" id="trythem">Try my ${pick.length} picks on →</button>
-      <button class="bigbtn" id="browsethem" style="background:#fff;border:1px solid var(--line);color:var(--ink)">Browse them first</button>
-    </div>`;
-  $('ax').onclick=closeAdrian;
-  $('trythem').onclick=()=>location.href='tryon3d.html?picks=1';
-  $('browsethem').onclick=()=>{closeAdrian();if(ans.house&&ans.house!=='any'){house=ans.house;}col='all';if(ans.type)type=ans.type;buildHouses();buildCols();$('typeseg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.t===type));refresh();toast('Hearted frames are in your picks ♥');};
+  const vc=VIBECOLS[ans.vibe]||[];let matched=pool.filter(p=>vc.some(k=>matchCol(p,k)));
+  if(matched.length<6)matched=pool;
+  const seen=new Set(),uniq=[];matched.sort(()=>Math.random()-0.5).forEach(p=>{const k=modelKey(p);if(!seen.has(k)){seen.add(k);uniq.push(p);}});
+  const pick=uniq.slice(0,6);let f=getFavs();pick.forEach(p=>{if(!f.includes(p.h))f.push(p.h);});setFavs(f);renderPick();
+  $('msheet').innerHTML=`<div class="qresult"><div class="step">Your shortlist</div><h3>6 frames, picked for you</h3>
+    <p style="color:var(--muted);font-size:14.5px">Saved to your picks. See them on your face, or browse first.</p>
+    <div class="rimgs">${pick.map(p=>`<img src="${szImg(p.img,120)}" title="${p.n}">`).join('')}</div>
+    <button class="bigbtn" id="qtry">Try my ${pick.length} picks on →</button>
+    <button class="bigbtn alt" id="qbrowse">Browse them first</button></div>`;
+  $('qtry').onclick=()=>location.href='tryon3d.html?picks=1';
+  $('qbrowse').onclick=()=>{closeQuiz();if(ans.house&&ans.house!=='any')house=ans.house;if(ans.type)type=ans.type;F.col='all';F.fams.clear();buildNav();buildFilters();render();toast('Your picks are hearted ♥');};
 }
-$('adbtn').onclick=openAdrian;
-$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeAdrian();});
+$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeQuiz();});
 </script>
 <script src="/mk.js"></script>
 </body></html>
