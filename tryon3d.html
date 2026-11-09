@@ -2,9 +2,9 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Try On — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#0c0c0e;--bg:#ffffff;--soft:#f4f3ee;--soft2:#eceae3;--line:#e7e5dd;--muted:#6c6c74;--lime:#C2F500;--limeink:#1d2400;--heart:#ff3b6b;--sans:'Inter',system-ui,sans-serif;--disp:'Anton',sans-serif}
+:root{--ink:#1A1815;--bg:#ffffff;--soft:#f4f3ee;--soft2:#eceae3;--line:#D7D0C2;--muted:#8B8374;--lime:#B14A33;--limeink:#FDF6EF;--heart:#B14A33;--sans:'Inter',system-ui,sans-serif;--disp:'Fraunces','Georgia',serif}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:#fff;color:var(--ink);font-family:var(--sans);overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -16,12 +16,12 @@ a{color:inherit;text-decoration:none}
 /* top bar over video */
 .top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
 .logo{font-family:var(--disp);font-size:15px;letter-spacing:.04em;color:#fff;text-shadow:0 1px 8px #0009}.logo b{color:var(--lime)}
-.ic{width:38px;height:38px;border-radius:50%;background:#ffffffe8;border:1px solid #00000012;color:#111;display:grid;place-items:center;font-size:16px;cursor:pointer;box-shadow:0 2px 10px #0003;backdrop-filter:blur(6px)}
+.ic{width:38px;height:38px;border-radius:50%;background:rgba(242,238,229,.82);border:1px solid #00000012;color:#111;display:grid;place-items:center;font-size:16px;cursor:pointer;box-shadow:0 2px 10px #0003;backdrop-filter:blur(6px)}
 .ic:active{transform:scale(.93)}
 .tr{display:flex;gap:9px}
 /* tools bottom-left over video */
 .tools{position:absolute;left:16px;bottom:26px;z-index:18;display:flex;flex-direction:column;gap:12px}
-.rbtn{width:50px;height:50px;border-radius:50%;background:#ffffffe8;border:1px solid #00000012;color:#111;display:grid;place-items:center;font-size:20px;cursor:pointer;box-shadow:0 2px 12px #0003;backdrop-filter:blur(7px);position:relative}
+.rbtn{width:50px;height:50px;border-radius:50%;background:rgba(242,238,229,.82);border:1px solid #00000012;color:#111;display:grid;place-items:center;font-size:20px;cursor:pointer;box-shadow:0 2px 12px #0003;backdrop-filter:blur(7px);position:relative}
 .rbtn:active{transform:scale(.92)}
 .rbtn .lab{position:absolute;left:60px;white-space:nowrap;font-size:11px;font-weight:600;opacity:0;transition:.2s;background:#111;color:#fff;padding:6px 10px;border-radius:20px;pointer-events:none}
 .rbtn:hover .lab{opacity:.95}
@@ -289,7 +289,7 @@ function paint(){
   const p2=$('pz2');if(p2)p2.textContent='$'+current.p;
   updateFav();prepFrame(current);
 }
-function updateFav(){const b=$('fav');if(!b||!current)return;const on=favs().includes(current.h);b.textContent=on?'♥':'♡';b.style.color=on?'#ff3b6b':'';b.style.borderColor=on?'#ff3b6b':'';}
+function updateFav(){const b=$('fav');if(!b||!current)return;const on=favs().includes(current.h);b.textContent=on?'♥':'♡';b.style.color=on?'#B14A33':'';b.style.borderColor=on?'#B14A33':'';}
 function prepFrame(p){
   if(keyCache[p.h]!==undefined&&keyCache[p.h]!==null)return;
   chooseFront3(p).then(b=>{ if(!b){keyCache[p.h]={none:true};if(current&&current.h===p.h)say("<b>Adrian:</b> no straight-on photo for this one yet — can't place it on your face. Try another.");return;} try{
