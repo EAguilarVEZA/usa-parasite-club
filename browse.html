@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><!-- build: angles-v2 -->
+<!doctype html><html lang="en"><head><!-- build: angles-v3-fallback -->
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Browse — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -264,7 +264,18 @@ function buildList(){
 }
 function colorways(p){return DATA.filter(x=>modelKey(x)===modelKey(p));}
 function refresh(){
-  list=buildList();i=0;$('colinfo').textContent=COLINFO[col]||'';
+  list=buildList();
+  if(!list.length){
+    // graceful fallback: never dead-end a house on an empty filter — slide to one that has frames
+    for(const t of ['Sunglasses','Eyeglasses','all']){
+      if(t===type)continue;
+      const prev=type;type=t;
+      const l=buildList();
+      if(l.length){list=l;markType();break;}
+      type=prev;
+    }
+  }
+  i=0;$('colinfo').textContent=COLINFO[col]||'';
   if(!list.length){$('card').innerHTML='<div style="padding:40px;text-align:center;color:#9a9a9a">No frames in this filter yet.</div>';$('counter').textContent='';$('progbar').style.width='0';$('swatchrow').innerHTML='';return;}
   show();
 }
