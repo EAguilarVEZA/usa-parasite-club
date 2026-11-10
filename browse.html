@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><!-- build: wp-grid-v2-color -->
+<!doctype html><html lang="en"><head><!-- build: wp-grid-v3-fit -->
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Shop frames — Parasite Club USA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,6 +94,10 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
 .pc .buy.blue{background:var(--ink);border-color:var(--ink);color:#fff}
 .pc .buy.blue:hover{background:var(--blue);border-color:var(--blue)}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:60px 0}
+.fitb{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 7px;border-radius:4px;margin-top:7px}
+.fitb.ok{background:#e9f8ef;color:#15935b}.fitb.lg{background:#eef1ff;color:#2B4BF2}.fitb.sm{background:#fdeeee;color:#c0392b}
+#fitbanner .fb{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13.5px;font-weight:600;flex-wrap:wrap}
+#fitbanner .fb a{margin-left:auto;color:#fff;text-decoration:underline;font-weight:700}
 /* sticky picks bar */
 .pickbar{position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:11px 0 calc(11px + env(safe-area-inset-bottom))}
 .pickbar .row{display:flex;align-items:center;gap:14px}
@@ -175,6 +179,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
         <h4>Not sure where to start?</h4>
         <p>Answer a few questions — Adrian builds your shortlist.</p>
         <button id="quizbtn">Take the 60-sec style quiz</button>
+        <a href="fitfinder.html" style="display:block;text-align:center;margin-top:10px;color:#fff;font-weight:700;font-size:13px;text-decoration:underline">📐 Measure my fit</a>
       </div>
       <div id="filters"></div>
     </aside>
@@ -192,6 +197,7 @@ a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
           <option value="az">Name: A–Z</option>
         </select>
       </div>
+      <div id="fitbanner"></div>
       <div class="grid" id="grid"></div>
     </section>
   </div>
@@ -217,6 +223,14 @@ function toast(t){const e=$('toast');e.textContent=t;e.classList.add('show');cle
 (function(){try{const bag=JSON.parse(localStorage.getItem('upc_bag')||'[]');const n=bag.reduce((s,b)=>s+(b.q||1),0);const el=$('bagcount');if(n&&el){el.textContent=n;el.style.display='inline-block';}}catch(e){}})();
 const getFavs=()=>{try{return JSON.parse(localStorage.getItem('upc_favs')||'[]')}catch(e){return[]}};
 const setFavs=a=>localStorage.setItem('upc_favs',JSON.stringify(a));
+const getFit=()=>{try{return JSON.parse(localStorage.getItem('upc_fit')||'null')}catch(e){return null}};
+function fitVerdict(p,fit){
+  if(!fit||!p.dims||!p.dims.total)return null;      // activates once frames carry real dimensions
+  const d=p.dims.total-fit.target;
+  if(Math.abs(d)<=2)return{cls:'ok',label:'Fits you ✓'};
+  if(d>2)return{cls:'lg',label:'Runs large'};
+  return{cls:'sm',label:'Runs small'};
+}
 const stripNum=s=>(s||'').replace(/\s*\d+\s*$/,'').trim();
 const modelKey=p=>p.b+'|'+((stripNum(p.model||p.n)||(p.model||p.n)).toUpperCase());
 const displayModel=p=>stripNum(p.model||p.n)||(p.model||p.n);
@@ -306,9 +320,12 @@ function render(){
   list=sortList(list);
   $('cnt').innerHTML=`<b>${list.length}</b> frame${list.length===1?'':'s'}`;
   const favs=getFavs();
+  const FIT=getFit();
+  $('fitbanner').innerHTML=FIT?`<div class="fb">📐 Your fit: <b>${FIT.size}</b> · face ${FIT.face}mm${FIT.roundUp?' · rounding up on borderline':''} — frames sized to you.<a href="fitfinder.html">Re-measure</a></div>`:'';
   if(!list.length){$('grid').innerHTML='<div class="empty">No frames match these filters.<br><button class="clearf" onclick="document.getElementById(\'clearf\').click()">Clear filters</button></div>';return;}
   $('grid').innerHTML=list.map(p=>{
     const cw=colorways(p),cwN=cw.length,fav=favs.includes(p.h);
+    const fv=fitVerdict(p,FIT);
     const sw=cwN>1?`<div class="sw">${cw.slice(0,5).map(c=>`<button class="s${c.h===p.h?' on':''}" data-h="${c.h}" data-model="${modelKey(p)}"><img src="${szImg(c.img,60)}" alt=""></button>`).join('')}${cwN>5?`<span class="more">+${cwN-5}</span>`:''}</div>`:'';
     const sun=p.t==='Sunglasses';
     const buy=sun?`<a class="buy blue" href="rx.html?h=${p.h}&use=sun">Add sun lenses →</a>`:`<a class="buy blue" href="rx.html?h=${p.h}${type==='Readers'?'&use=readers':''}">Select lenses →</a>`;
@@ -321,6 +338,7 @@ function render(){
       </div>
       <div class="nm"><span class="t">${displayModel(p)}</span><span class="pr">$${p.p}</span></div>
       <div class="sub">${sun?'Sunglasses':'Optical'}${cwN>1?' · '+cwN+' colors':''}</div>
+      ${fv?`<span class="fitb ${fv.cls}">${fv.label}</span>`:''}
       ${sw}${buy}
     </div>`;
   }).join('');

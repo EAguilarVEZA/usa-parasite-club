@@ -1,0 +1,206 @@
+<!doctype html><html lang="en"><head><!-- build: fitfinder-v1 -->
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Find My Fit — Parasite Club USA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--panel:#F4F5F7;--ink:#111214;--muted:#6B7177;--line:#E4E7EC;--blue:#2B4BF2;--ok:#15935b;--warn:#E8912B;--sans:'Inter',system-ui,sans-serif;--disp:'Fraunces','Georgia',serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+.nav{border-bottom:1px solid var(--line)}
+.nav .row{display:flex;align-items:center;gap:16px;height:60px}
+.brand{font-weight:800;letter-spacing:.16em;font-size:16px}
+.nright{margin-left:auto;display:flex;gap:16px;font-weight:600;font-size:14px}
+.hero{text-align:center;padding:30px 0 10px}
+.hero .kick{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}
+.hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(36px,6vw,60px);text-transform:uppercase;line-height:.92;letter-spacing:-.015em;margin-top:6px}
+.hero p{color:var(--muted);max-width:56ch;margin:12px auto 0;font-size:15px}
+.stage{position:relative;max-width:560px;margin:22px auto 0;border-radius:16px;overflow:hidden;background:#000;aspect-ratio:4/3}
+#vid{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#ov{position:absolute;inset:0;width:100%;height:100%}
+.hint{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#000a,#0000);color:#fff;font-size:13px;font-weight:600;padding:16px 14px 12px;text-align:center}
+.live{display:flex;gap:18px;justify-content:center;margin:16px 0}
+.live .m{text-align:center}
+.live .m .v{font-family:var(--disp);font-weight:900;font-size:30px;line-height:1}
+.live .m .l{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+.qbadge{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;font-weight:700;padding:6px 12px;border-radius:20px;margin:0 auto;border:1px solid var(--line)}
+.qbadge.ok{color:var(--ok);border-color:#bfe6cf;background:#f0fbf4}
+.qbadge.warn{color:var(--warn);border-color:#f2dcb6;background:#fdf6ea}
+.ctas{display:flex;gap:10px;justify-content:center;margin:18px 0 6px;flex-wrap:wrap}
+.btn{border:none;border-radius:28px;padding:14px 26px;font-family:inherit;font-weight:800;font-size:14px;letter-spacing:.03em;text-transform:uppercase;cursor:pointer}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.primary:disabled{background:#c7cdd6;cursor:default}
+.btn.ghost{background:#fff;border:1.5px solid var(--ink);color:var(--ink)}
+.note{text-align:center;color:var(--muted);font-size:12.5px;margin-top:8px}
+.priv{text-align:center;font-size:12px;color:var(--muted);margin:10px auto 30px;max-width:48ch}
+/* result */
+.result{display:none;max-width:620px;margin:14px auto 40px}
+.result.show{display:block}
+.rcard{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.rtop{background:var(--ink);color:#fff;padding:22px 22px 20px;text-align:center}
+.rtop .sz{font-family:var(--disp);font-weight:900;font-size:40px;text-transform:uppercase;line-height:1}
+.rtop .szsub{font-size:13px;opacity:.75;margin-top:4px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line)}
+.rgrid .c{background:#fff;padding:16px;text-align:center}
+.rgrid .c .v{font-family:var(--disp);font-weight:900;font-size:26px}
+.rgrid .c .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:3px}
+.rbody{padding:18px 20px}
+.rbody .ln{font-size:14px;color:#333;margin-bottom:8px;display:flex;gap:8px}
+.rbody .ln b{color:var(--ink)}
+.rbody .tgt{background:var(--panel);border-radius:10px;padding:12px 14px;font-size:13.5px;margin:12px 0}
+.conf{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;color:#555;margin-top:12px}
+.err{max-width:520px;margin:20px auto;border:1px solid #f2c9c9;background:#fdf1f1;color:#a3342f;border-radius:12px;padding:16px;font-size:14px;display:none}
+.err.show{display:block}
+</style></head><body>
+<header class="nav"><div class="wrap row">
+  <a class="brand" href="index.html">PARASITE·CLUB</a>
+  <div class="nright"><a href="browse.html">Shop</a><a href="tryon3d.html">Try on</a></div>
+</div></header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kick">Measured, not guessed</div>
+    <h1>Find My Fit</h1>
+    <p>We measure your face in real millimeters — right on your device — so we match you to the frame size that actually fits. Nothing is uploaded. Look straight at the camera in good light.</p>
+  </div>
+
+  <div class="err" id="err"></div>
+
+  <div id="capture">
+    <div class="stage"><video id="vid" autoplay playsinline muted></video><canvas id="ov"></canvas>
+      <div class="hint" id="hint">Starting camera…</div>
+    </div>
+    <div class="live">
+      <div class="m"><div class="v" id="liveFace">—</div><div class="l">Face width</div></div>
+      <div class="m"><div class="v" id="livePD">—</div><div class="l">PD</div></div>
+    </div>
+    <div style="text-align:center"><span class="qbadge" id="qbadge">Detecting…</span></div>
+    <div class="ctas">
+      <button class="btn primary" id="measure" disabled>Measure my fit</button>
+    </div>
+    <div class="note">Hold still for a moment while we take the measurement.</div>
+    <div class="priv">🔒 100% on-device. Your camera feed and measurements never leave your phone — we don't store or upload any image.</div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="rcard">
+      <div class="rtop"><div class="sz" id="rSize">Medium</div><div class="szsub" id="rSizeSub">Your frame size</div></div>
+      <div class="rgrid">
+        <div class="c"><div class="v" id="rFace">—</div><div class="l">Face width</div></div>
+        <div class="c"><div class="v" id="rPD">—</div><div class="l">PD</div></div>
+        <div class="c"><div class="v" id="rTarget">—</div><div class="l">Ideal frame width</div></div>
+      </div>
+      <div class="rbody">
+        <div class="tgt" id="rTgtLine"></div>
+        <div class="ln" id="rTip"></div>
+        <label class="conf"><input type="checkbox" id="roundup" checked><span>When a frame is between two sizes, show me the <b>larger</b> one (recommended — a touch big looks intentional; too small pinches).</span></label>
+        <div class="ctas" style="margin-top:16px">
+          <button class="btn primary" id="shopFit">Shop frames that fit me →</button>
+          <button class="btn ghost" id="redo">Measure again</button>
+        </div>
+        <div class="note">Measured on-device via iris scale (~±1–2 mm). For an exact reading we'll add a card-calibration confirm.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14";
+const $=id=>document.getElementById(id);
+const IRIS_MM=11.7;          // mean human iris horizontal diameter
+// face-width size bands (temple-to-temple, mm) — tunable
+const BANDS=[[0,131,'Narrow'],[131,141,'Medium'],[141,999,'Wide']];
+function bandOf(mm){for(const [lo,hi,name] of BANDS)if(mm>=lo&&mm<hi)return name;return 'Medium';}
+
+let lm=null,running=false,last={face:0,pd:0,ok:false},buf=[];
+const vid=$('vid'),ov=$('ov'),ctx=ov.getContext('2d');
+
+function fail(msg){$('err').textContent=msg;$('err').classList.add('show');$('hint').textContent='Camera unavailable';}
+
+async function boot(){
+  try{
+    const fs=await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
+    lm=await FaceLandmarker.createFromOptions(fs,{
+      baseOptions:{modelAssetPath:"https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task",delegate:"GPU"},
+      outputFacialTransformationMatrixes:true,runningMode:"VIDEO",numFaces:1
+    });
+  }catch(e){fail("Couldn't load the measurement engine. Check your connection and reload. ("+e.message+")");return;}
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"user",width:{ideal:1280},height:{ideal:960}},audio:false});
+    vid.srcObject=stream;await vid.play();
+  }catch(e){fail("We need camera access to measure your face. Enable it in your browser and reload.");return;}
+  ov.width=vid.videoWidth||640;ov.height=vid.videoHeight||480;
+  $('hint').textContent='Look straight ahead, fill the circle';
+  running=true;loop();
+}
+const D=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function yawFromMatrix(m){ // m is 16-length column-major; approximate yaw from rotation
+  if(!m)return 0;const r20=m[8];return Math.asin(Math.max(-1,Math.min(1,-r20)))*180/Math.PI;
+}
+function measureOnce(res){
+  if(!res.faceLandmarks||!res.faceLandmarks.length)return null;
+  const p=res.faceLandmarks[0];const W=ov.width,H=ov.height;
+  const px=i=>({x:p[i].x*W,y:p[i].y*H});
+  // iris diameters (px): left 469-471 horiz, right 474-476 horiz
+  const irisL=D(px(469),px(471)),irisR=D(px(474),px(476));
+  const iris=(irisL+irisR)/2; if(iris<2)return null;
+  const mmPx=IRIS_MM/iris;
+  const pd=D(px(468),px(473))*mmPx;                 // pupil centers
+  const face=D(px(234),px(454))*mmPx;               // cheek/temple silhouette
+  let yaw=0;const mats=res.facialTransformationMatrixes;
+  if(mats&&mats.length)yaw=yawFromMatrix(mats[0].data);
+  const ok=Math.abs(yaw)<12 && iris>6;              // straight-on & close enough
+  return {pd,face,ok,yaw};
+}
+function loop(){
+  if(!running)return;
+  const res=lm.detectForVideo(vid,performance.now());
+  const m=measureOnce(res);
+  ctx.clearRect(0,0,ov.width,ov.height);
+  if(m){
+    last=m;
+    $('liveFace').textContent=Math.round(m.face)+'mm';
+    $('livePD').textContent=Math.round(m.pd)+'mm';
+    const b=$('qbadge');
+    if(m.ok){b.className='qbadge ok';b.textContent='✓ Good — hold still';$('measure').disabled=false;$('hint').textContent='Looking good — tap Measure';}
+    else{b.className='qbadge warn';b.textContent=Math.abs(m.yaw)>=12?'↻ Face straight at the camera':'Move a little closer';$('measure').disabled=true;}
+  }else{
+    $('qbadge').className='qbadge';$('qbadge').textContent='No face detected';$('measure').disabled=true;
+  }
+  requestAnimationFrame(loop);
+}
+$('measure').onclick=async()=>{
+  buf=[];$('measure').disabled=true;$('hint').textContent='Measuring… hold still';
+  const t0=performance.now();
+  while(performance.now()-t0<1600){
+    const res=lm.detectForVideo(vid,performance.now());const m=measureOnce(res);
+    if(m&&m.ok){buf.push(m);}
+    await new Promise(r=>setTimeout(r,45));
+  }
+  if(buf.length<8){$('hint').textContent='Hmm, hold steadier and try again';$('measure').disabled=false;return;}
+  // robust average (trim outliers)
+  const med=arr=>{const s=arr.slice().sort((a,b)=>a-b);return s[Math.floor(s.length/2)];};
+  const faceM=med(buf.map(b=>b.face)),pdM=med(buf.map(b=>b.pd));
+  finish(faceM,pdM);
+};
+function finish(face,pd){
+  running=false;try{vid.srcObject&&vid.srcObject.getTracks().forEach(t=>t.stop());}catch(e){}
+  const size=bandOf(face);const target=Math.round(face+2); // ideal frame total width ≈ face + 2mm
+  const fit={face:Math.round(face),pd:+pd.toFixed(1),size,target,roundUp:true,ts:Date.now()};
+  try{localStorage.setItem('upc_fit',JSON.stringify(fit));}catch(e){}
+  $('rSize').textContent=size;
+  $('rFace').textContent=fit.face+'mm';$('rPD').textContent=fit.pd+'mm';$('rTarget').textContent='~'+target+'mm';
+  $('rTgtLine').innerHTML=`Your face is <b>${fit.face} mm</b> temple-to-temple. The sweet spot is a frame whose <b>total width</b> is about <b>${target} mm</b> — we'll match you to the closest, and size up on anything borderline.`;
+  $('rTip').innerHTML=size==='Wide'?'You carry larger frames well — bold, oversized shapes will look intentional.':size==='Narrow'?'Go for lighter, smaller frames so they sit clean without overhang.':'You fit the most versatile range — most shapes will work for you.';
+  $('capture').style.display='none';$('result').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('redo').onclick=()=>location.reload();
+$('roundup').onchange=e=>{try{const f=JSON.parse(localStorage.getItem('upc_fit')||'{}');f.roundUp=e.target.checked;localStorage.setItem('upc_fit',JSON.stringify(f));}catch(x){}};
+$('shopFit').onclick=()=>location.href='browse.html?fit=1';
+boot();
+</script>
+<script src="/mk.js"></script>
+</body></html>
